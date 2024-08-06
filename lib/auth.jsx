@@ -8,7 +8,7 @@ export const USER_INFO_KEY = "userInfo"
 export const login = async(username, password) => {
     try {
         console.log("login is called");
-        const response = await axios.post("http://localhost:8080/mahashakti/users/login",  {
+        const response = await axios.post("http://192.168.1.11:8080/mahashakti/users/login",  {
             username,
             password
         }, {

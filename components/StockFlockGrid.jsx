@@ -3,37 +3,30 @@ import React from 'react'
 
 const StockFlockGrid = ({items}) => {
   return (
-    <View className="w-full" style={{height: '20%' }}>
+    <View className="flex flex-row pb-2" style={{height: '20%' }}>
 
-      <FlatList
-        data={items}
-        numColumns={2}
-        keyExtractor={item=>item.id}
-        showsVerticalScrollIndicator={false}
-        columnWrapperStyle={{
-          justifyContent: 'space-between'
-        }}
-       
-        className="mx-1"
-        renderItem={({item}) => {
-          return (
-            <TouchableOpacity 
-            className="bg-secondary rounded-2xl mb-3 flex-1 justify-center items-center mx-1"
-            activeOpacity={0.7}
+      <View className="basis-1/2">
+        <TouchableOpacity 
+        className="bg-secondary rounded-2xl flex-1 mx-1"
+        activeOpacity={0.7}>
+          <View className="flex-none h-full items-center">
+              <Text className = "text-center font-bold text-white text-2xl pt-7">Eggs Stock</Text>
+              <Text className = "">1200</Text>
+            </View>
+        </TouchableOpacity>
+      </View>
 
-            >
-            <View className="flex-1 justify-center items-center">
-                <Text className = "pt-10 text-center font-bold text-white text-2xl">{item.name}</Text>
-                <Text className = "pb-10">{item.count}</Text>
-              </View>
-            </TouchableOpacity>
-          )
-
-        }}
-      />
+      <View className="basis-1/2">
+        <TouchableOpacity 
+        className="bg-secondary rounded-2xl flex-1 mx-1"
+        activeOpacity={0.7}>
+          <View className="flex-none h-full items-center">
+              <Text className = "text-center font-bold text-white text-2xl pt-7">Flock Count</Text>
+              <Text className = "">23000</Text>
+            </View>
+        </TouchableOpacity>
+      </View>
     </View>
-
-
   )
 }
 

@@ -2,21 +2,21 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 
 const ActivityGrid = () => {
+
   return (
-  
-    <TouchableOpacity 
-    className="bg-secondary rounded-2xl mb-3 h-full flex-1 justify-center items-center mx-2"
-    activeOpacity={0.7}
-    style={{height: '15%' }}
 
->
+    <View className="flex-none pb-2" style={{height: '15%' }}>
+      <TouchableOpacity 
+      className="bg-secondary rounded-2xl flex-1 mx-2"
+      activeOpacity={0.7}
+      style={{height: '15%' }}>
+        <View className="flex-none h-full items-center">
+          <Text className = "text-center font-bold text-white text-2xl pt-7">Activity</Text>
+        </View>
 
+      </TouchableOpacity>
+    </View>
 
-
-  <Text>ActivityGrid</Text>
-
-
-</TouchableOpacity>
   )
 }
 

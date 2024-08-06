@@ -33,7 +33,7 @@ const WeatherGrid = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex(prevIndex => (prevIndex + 1) % 6);
-    }, 5000);
+    }, 3000);
 
 
 
@@ -60,7 +60,7 @@ const WeatherGrid = () => {
   }
 
   return (
-    <View className="w-full" style={{ height: '25%' }}>
+    <View className="flex-none" style={{ height: '20%' }}>
       <FlatList
         data={weatherData.slice(index, index + 1)}
         numColumns={1}
@@ -68,28 +68,31 @@ const WeatherGrid = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}
         className="mx-1"
-        renderItem={({ item }) => (
+        renderItem={({ item }) => {
+          return (
 
           <TouchableOpacity 
-            className="bg-secondary h-full rounded-2xl flex-1 justify-center items-center mx-1"
+            className="bg-secondary rounded-2xl flex-1 mx-1"
             activeOpacity={0.7}
           >
              <ImageBackground
-        source={weatherImageBg[item.mood]}
-        style={{ height: "100%", width: "100%" }}
-        imageStyle={{ borderRadius: 10 }}>
-            <View className="flex-1 justify-center items-center">
-              <Text className="text-center font-bold text-white text-xl">{item.date}</Text>
-              <Text>{item.currentTemp}</Text>
-              <Text>Min {item.minTemp}</Text>
-              <Text>Max {item.maxTemp}</Text>
-              <Text>Humidity{item.humidity}</Text>
-              <Text>{item.summary}</Text>
-              <Text className="pb-3">Wind {item.wind}</Text>
-            </View>
+                source={weatherImageBg[item.mood]}
+                style={{ height: "100%", width: "100%" }}
+                imageStyle={{ borderRadius: 10 }}
+                >
+                    <View className="flex-none h-full items-center">
+                      <Text className="text-center font-bold text-white text-xl">{item.date}</Text>
+                      <Text>{item.currentTemp}</Text>
+                      <Text>Min {item.minTemp}</Text>
+                      <Text>Max {item.maxTemp}</Text>
+                      <Text>Humidity{item.humidity}</Text>
+                      <Text>{item.summary}</Text>
+                      <Text>Wind {item.wind}</Text>
+                    </View>
             </ImageBackground>
           </TouchableOpacity>
-        )}
+          )
+        }}
       />
     </View>
   );
