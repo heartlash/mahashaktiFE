@@ -60,7 +60,7 @@ const WeatherGrid = () => {
   }
 
   return (
-    <View className="flex-none" style={{ height: '20%' }}>
+    <View className="flex-none pb-2" style={{ height: '15%' }}>
       <FlatList
         data={weatherData.slice(index, index + 1)}
         numColumns={1}
@@ -72,24 +72,29 @@ const WeatherGrid = () => {
           return (
 
           <TouchableOpacity 
-            className="bg-secondary rounded-2xl flex-1 mx-1"
+            className="bg-secondary rounded-2xl flex-none mx-1"
             activeOpacity={0.7}
           >
              <ImageBackground
                 source={weatherImageBg[item.mood]}
                 style={{ height: "100%", width: "100%" }}
-                imageStyle={{ borderRadius: 10 }}
-                >
-                    <View className="flex-none h-full items-center">
-                      <Text className="text-center font-bold text-white text-xl">{item.date}</Text>
-                      <Text>{item.currentTemp}</Text>
-                      <Text>Min {item.minTemp}</Text>
-                      <Text>Max {item.maxTemp}</Text>
-                      <Text>Humidity{item.humidity}</Text>
-                      <Text>{item.summary}</Text>
-                      <Text>Wind {item.wind}</Text>
-                    </View>
-            </ImageBackground>
+                imageStyle={{ borderRadius: 10 }}>
+
+                <View className="flex-none h-full flex-row">
+                  <View className="basis-2/3 pl-3">
+                    <Text className="text-left font-bold text-white text-xl pt-2">{item.date}</Text>
+                    <Text className="text-left text-white pt-1">{item.summary}</Text>
+                   
+                  </View>
+                  <View className="basis-1/3 pr-3">
+                    <Text className="text-white font-bold text-right pt-2">{item.currentTemp}</Text>
+                    <Text className="text-white text-right">Min {item.minTemp}</Text>
+                    <Text className="text-white text-right">Max {item.maxTemp}</Text>
+                    <Text className="text-white text-right">Humidity {item.humidity}</Text>
+                    <Text className="text-white text-right">Wind {item.wind}</Text>
+                  </View>
+                </View>
+              </ImageBackground>
           </TouchableOpacity>
           )
         }}

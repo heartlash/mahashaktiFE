@@ -12,6 +12,15 @@ import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 
+import { AntDesign, Feather } from "@expo/vector-icons";
+
+export const tabIcons = {
+    home: (props)=> <AntDesign name="home" size={26} {...props} />,
+    profits: (props)=> <Feather name="compass" size={26} {...props} />,
+    admin: (props)=> <AntDesign name="pluscircleo" size={26} {...props} />,
+    profile: (props)=> <AntDesign name="user" size={26} {...props} />,
+}
+
 export default {
   play,
   bookmark,

@@ -55,7 +55,7 @@ const StockCarousel = () => {
         imageStyle={{ borderRadius: 10 }}
       >
         <View className="bg-opacity-70 rounded-2xl px-4 py-2">
-          <Text className="text-white text-lg font-bold">WeatherGrid</Text>
+          <Text className="text-white text-lg font-bold">Material Stock</Text>
         </View>
       </ImageBackground>
     </View>
