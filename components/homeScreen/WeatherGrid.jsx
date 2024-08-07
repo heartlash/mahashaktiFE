@@ -1,16 +1,15 @@
 import { View, Text, TouchableOpacity, ImageBackground, FlatList, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import {images} from '../constants';
 import { getWeatherData } from '@/lib/weather';
 
 const weatherImageBg = {
-    Snow: require("../assets/images/Snow.png"),
-    Atmosphere: require("../assets/images/Atmosphere.png"),
-    Drizzle: require("../assets/images/Drizzle.png"),
-    Clouds: require("../assets/images/Clouds.png"),
-    Rain: require("../assets/images/Rain.png"),
-    Clear: require("../assets/images/Clear.png"),
-    Thunderstorm: require("../assets/images/Thunderstorm.png"),
+    Snow: require("../../assets/images/Snow.png"),
+    Atmosphere: require("../../assets/images/Atmosphere.png"),
+    Drizzle: require("../../assets/images/Drizzle.png"),
+    Clouds: require("../../assets/images/Clouds.png"),
+    Rain: require("../../assets/images/Rain.png"),
+    Clear: require("../../assets/images/Clear.png"),
+    Thunderstorm: require("../../assets/images/Thunderstorm.png"),
 }
 
 
@@ -83,15 +82,15 @@ const WeatherGrid = () => {
                 <View className="flex-none h-full flex-row">
                   <View className="basis-2/3 pl-3">
                     <Text className="text-left font-bold text-white text-xl pt-2">{item.date}</Text>
-                    <Text className="text-left text-white pt-1">{item.summary}</Text>
+                    <Text className="text-left font-psemibold text-white">{item.summary}</Text>
                    
                   </View>
                   <View className="basis-1/3 pr-3">
                     <Text className="text-white font-bold text-right pt-2">{item.currentTemp}</Text>
-                    <Text className="text-white text-right">Min {item.minTemp}</Text>
-                    <Text className="text-white text-right">Max {item.maxTemp}</Text>
-                    <Text className="text-white text-right">Humidity {item.humidity}</Text>
-                    <Text className="text-white text-right">Wind {item.wind}</Text>
+                    <Text className="text-white font-bold text-right">Min {item.minTemp}</Text>
+                    <Text className="text-white font-bold text-right">Max {item.maxTemp}</Text>
+                    <Text className="text-white font-bold text-right">Humidity {item.humidity}</Text>
+                    <Text className="text-white font-bold text-right">Wind {item.wind}</Text>
                   </View>
                 </View>
               </ImageBackground>

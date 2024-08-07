@@ -7,7 +7,7 @@ const ActivityGrid = () => {
 
     <View className="flex-none pb-2" style={{height: '15%' }}>
       <TouchableOpacity 
-      className="bg-secondary rounded-2xl flex-1 mx-2"
+      className="bg-cyan-400 rounded-2xl flex-1 mx-2"
       activeOpacity={0.7}
       style={{height: '15%' }}>
         <View className="flex-none h-full items-center">

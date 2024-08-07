@@ -1,11 +1,6 @@
 import axios from "axios";
+import { convertTimestampToReadableDate } from "./util";
 
-
-const convertTimestampToReadableDate = (timestamp) => {
-    const date = new Date(timestamp * 1000); // Convert to milliseconds
-    const options = { weekday: 'long'};
-    return date.toLocaleDateString("en-US", options);
-};
 
   
 export const getWeatherData = async() => {
@@ -25,7 +20,6 @@ export const getWeatherData = async() => {
     try {
     const response = await axios.get("https://api.openweathermap.org/data/3.0/onecall?lat=26.6572726&lon=91.91236640000001&exclude=hourly,minutely,alerts&appid=d60be069eaf8b5112a449607a02fd559"); 
     
-
     var index = 0;
     var currentTemp = null;
     var day = null;
@@ -56,8 +50,6 @@ export const getWeatherData = async() => {
         index++;
     }
 
-    console.log("\n\n\n\\n")
-    //console.log("see weather list data: ", weatherDataList);
     return weatherDataList;
     } catch(error) {
         console.log(error);

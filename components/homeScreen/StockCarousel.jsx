@@ -12,19 +12,19 @@ const StockCarousel = () => {
   const carouselData = [
     {
       id: "01",
-      image: require("../assets/images/thumbnail.png"),
+      image: require("../../assets/images/thumbnail.png"),
     },
     {
       id: "02",
-      image: require("../assets/images/logo.png"),
+      image: require("../../assets/images/logo.png"),
     },
     {
       id: "03",
-      image: require("../assets/images/profile.png"),
+      image: require("../../assets/images/profile.png"),
     },
     {
       id: "04",
-      image: require("../assets/images/logo.png"),
+      image: require("../../assets/images/logo.png"),
     }
   ];
 
