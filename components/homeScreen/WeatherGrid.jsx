@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ImageBackground, FlatList, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, ImageBackground, FlatList, ActivityIndicator, Dimensions } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { getWeatherData } from '@/lib/weather';
 
@@ -11,15 +11,7 @@ const weatherImageBg = {
     Clear: require("../../assets/images/Clear.png"),
     Thunderstorm: require("../../assets/images/Thunderstorm.png"),
 }
-
-
-
-const WeatherGrid = () => {
-  const [index, setIndex] = useState(0);
-  const [weatherData, setWeatherData] = useState(null);
-  const [loading, setLoading] = useState(true)
- 
-  /*
+/*
     date: day,
             minTemp: daily.temp.min,
             maxTemp: daily.temp.max,
@@ -29,28 +21,31 @@ const WeatherGrid = () => {
             wind: daily.wind_speed,
             mood: daily.weather[0].main
   */
+
+
+const WeatherGrid = () => {
+  const [index, setIndex] = useState(0);
+  const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const screenWidth = Dimensions.get('window').width;
+
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex(prevIndex => (prevIndex + 1) % 6);
     }, 3000);
 
-
-
-    const loadWeatherData = async() => {
+    const loadWeatherData = async () => {
       var weatherData = await getWeatherData();
-      console.log("see the weatherData: ", weatherData);
-      if(weatherData) {
+      if (weatherData) {
         setWeatherData(weatherData);
-        setLoading(false)
+        setLoading(false);
       }
-  };
-  loadWeatherData();
-  return () => clearInterval(interval);
-
+    };
+    loadWeatherData();
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
-    // Show loading component while data is being fetched
     return (
       <View className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="#0000ff" />
@@ -62,44 +57,40 @@ const WeatherGrid = () => {
     <View className="flex-none pb-2" style={{ height: '15%' }}>
       <FlatList
         data={weatherData.slice(index, index + 1)}
-        numColumns={1}
         keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ flexGrow: 1 }}
-        className="mx-1"
-        renderItem={({ item }) => {
-          return (
-
+        renderItem={({ item }) => (
           <TouchableOpacity 
             className="bg-secondary rounded-2xl flex-none mx-1"
             activeOpacity={0.7}
+            style={{ width: screenWidth }}
           >
-             <ImageBackground
-                source={weatherImageBg[item.mood]}
-                style={{ height: "100%", width: "100%" }}
-                imageStyle={{ borderRadius: 10 }}>
-
-                <View className="flex-none h-full flex-row">
-                  <View className="basis-2/3 pl-3">
-                    <Text className="text-left font-bold text-white text-xl pt-2">{item.date}</Text>
-                    <Text className="text-left font-psemibold text-white">{item.summary}</Text>
-                   
-                  </View>
-                  <View className="basis-1/3 pr-3">
-                    <Text className="text-white font-bold text-right pt-2">{item.currentTemp}</Text>
-                    <Text className="text-white font-bold text-right">Min {item.minTemp}</Text>
-                    <Text className="text-white font-bold text-right">Max {item.maxTemp}</Text>
-                    <Text className="text-white font-bold text-right">Humidity {item.humidity}</Text>
-                    <Text className="text-white font-bold text-right">Wind {item.wind}</Text>
-                  </View>
+            <ImageBackground
+              source={weatherImageBg[item.mood]}
+              style={{ height: "100%", width: "100%" }}
+              imageStyle={{ borderRadius: 10 }}
+            >
+              <View className="flex-none h-full flex-row">
+                <View className="basis-2/3 pl-3">
+                  <Text className="text-left font-bold text-white text-xl pt-2">{item.date}</Text>
+                  <Text className="text-left font-psemibold text-white">{item.summary}</Text>
                 </View>
-              </ImageBackground>
+                <View className="basis-1/3 pr-3">
+                  <Text className="text-white font-bold text-right pt-2">{item.currentTemp}</Text>
+                  <Text className="text-white font-bold text-right">Min {item.minTemp}</Text>
+                  <Text className="text-white font-bold text-right">Max {item.maxTemp}</Text>
+                  <Text className="text-white font-bold text-right">Humidity {item.humidity}</Text>
+                  <Text className="text-white font-bold text-right">Wind {item.wind}</Text>
+                </View>
+              </View>
+            </ImageBackground>
           </TouchableOpacity>
-          )
-        }}
+        )}
       />
     </View>
   );
-}
+};
 
 export default WeatherGrid;

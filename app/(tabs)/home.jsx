@@ -5,7 +5,7 @@ import ProductionSaleGrid from '@/components/homeScreen/ProductionSaleGrid';
 import EggAndFlockGrid from '@/components/homeScreen/EggAndFlockGrid';
 import WeatherGrid from '@/components/homeScreen/WeatherGrid';
 import ActivityGrid from '@/components/homeScreen/ActivityGrid';
-import StockCarousel from '@/components/homeScreen/StockCarousel';
+import MaterialStockCarousel from '@/components/homeScreen/MaterialStockCarousel';
 
 
 const home = () => {
@@ -16,7 +16,7 @@ const home = () => {
         <ActivityGrid/>
         <EggAndFlockGrid/>
         <WeatherGrid/>
-        <StockCarousel/>
+        <MaterialStockCarousel/>
       </ScrollView>
     </SafeAreaView>
   )
