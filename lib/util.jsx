@@ -63,4 +63,21 @@ export const getFormattedDate = (dateString) => {
   };
   
   
+  export const getCurrentMonthInfo = () => {
+    const today = new Date();
+  
+    // Get the current year and month
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // 0-indexed, so January is 0 and December is 11
+  
+    const startDate = year + "-" + month + "-" + "01";
+    const endDate = new Date(year, month, 0)
+
+  
+    return {
+      currentMonth: month, // 1-indexed, so January is 1 and December is 12
+      startDate,
+      endDate,
+    };
+  };
   

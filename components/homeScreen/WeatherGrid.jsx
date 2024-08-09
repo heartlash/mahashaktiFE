@@ -23,13 +23,14 @@ const weatherImageBg = {
   */
 
 
-const WeatherGrid = () => {
+const WeatherGrid = ({refreshTrigger}) => {
   const [index, setIndex] = useState(0);
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const screenWidth = Dimensions.get('window').width;
 
   useEffect(() => {
+    console.log("useeffect is called:", refreshTrigger)
     const interval = setInterval(() => {
       setIndex(prevIndex => (prevIndex + 1) % 6);
     }, 3000);
@@ -43,7 +44,7 @@ const WeatherGrid = () => {
     };
     loadWeatherData();
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshTrigger]);
 
   if (loading) {
     return (

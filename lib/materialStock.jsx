@@ -7,7 +7,7 @@ export const getMaterialStock= async () => {
     console.log("comes here to material stock")
     const response = await Backend.get("/analytics/material-stock");
     console.log("after here to material stock")
-    console.log("see material stock: ", response.data);
+    //console.log("see material stock: ", response.data);
 
     if(response.data.status == 'SUCCESS') {
         var index  = 1

@@ -3,7 +3,7 @@ import { FlatList, View, Dimensions, ImageBackground, Text, ActivityIndicator } 
 import { getMaterialStock } from "@/lib/materialStock";
 
 
-const MaterialStockCarousel = () => {
+const MaterialStockCarousel = ({refreshTrigger}) => {
   const flatlistRef = useRef();
   const screenWidth = Dimensions.get("window").width;
   const itemWidth = screenWidth; // Each item takes the full screen width
@@ -23,7 +23,7 @@ const MaterialStockCarousel = () => {
     };
 
     fetchMaterialStock();
-  }, []); // Empty dependency array to run this effect only once on mount
+  }, [refreshTrigger]); // Empty dependency array to run this effect only once on mount
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,7 +35,7 @@ const MaterialStockCarousel = () => {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [materialStockData]);
+  }, [materialStockData, refreshTrigger]);
 
   const getItemLayout = (data, index) => ({
     length: itemWidth,

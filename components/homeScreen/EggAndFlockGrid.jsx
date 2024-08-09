@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { getFlockCount } from '@/lib/flock';
 import { getEggCount } from '@/lib/egg';
 
-const EggAndFlockGrid = () => {
+const EggAndFlockGrid = ({refreshTrigger}) => {
 
   const [flockCount, setFlockCount] = useState(null);
   const [eggCount, setEggCount] = useState(null);
@@ -49,7 +49,7 @@ const EggAndFlockGrid = () => {
 
 
 
-  }, []);
+  }, [refreshTrigger]);
 
 
   return (

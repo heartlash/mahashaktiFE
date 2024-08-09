@@ -2,9 +2,10 @@ import { View, Text, TouchableOpacity, FlatList, SafeAreaView, ActivityIndicator
 import React, { useState, useEffect } from 'react'
 import { getProductionHomeData } from '@/lib/production';
 import { getSaleHomeData } from '@/lib/sale';
+import { router } from 'expo-router';
 
 
-const ProductionSaleGrid = () => {
+const ProductionSaleGrid = ({refreshTrigger}) => {
 
   const [productionDate, setProductionDate] = useState(null);
   const [productionCount, setProductionCount] = useState(null);
@@ -22,7 +23,7 @@ const ProductionSaleGrid = () => {
     const fetchProductionHomeData = async() => {
     
       const result = await getProductionHomeData();
-      console.log("see value returned: ", result)
+      console.log("see refresh control now: ", refreshTrigger)
       
       if(typeof result !=='undefined') {
         setProductionDate(result.productionDate)
@@ -60,7 +61,7 @@ const ProductionSaleGrid = () => {
     fetchSaleHomeData();
 
 
-  }, []);
+  }, [refreshTrigger]);
 
 
   return (
@@ -70,6 +71,7 @@ const ProductionSaleGrid = () => {
             <TouchableOpacity 
             className="bg-amber-300 rounded-2xl flex-1 mx-1"
             activeOpacity={0.7}
+            onPress={() => router.push('/production')}
             >
                 <View className="flex-none h-full items-center">
 
