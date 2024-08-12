@@ -4,7 +4,6 @@ import {images} from '../../constants';
 import FormField from '@/components/FormField';
 import CustomButton from '@/components/CustomButton';
 import { Link, router } from 'expo-router';
-import { useContext } from 'react';
 import { login } from '@/lib/auth';
 
 const SignIn = () => {
