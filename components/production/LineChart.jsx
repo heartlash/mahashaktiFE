@@ -21,7 +21,7 @@ const LineChart = ({
   const animationGradient = useSharedValue({x: 0, y: 0});
   const cx = useSharedValue(20);
   const cy = useSharedValue(0);
-  const totalValue = data.reduce((acc, cur) => acc + cur.producedCount, 0);
+  const totalValue = data.reduce((acc, cur) => acc + cur.value, 0);
 
   useEffect(() => {
     // Animate the line and the gradient
