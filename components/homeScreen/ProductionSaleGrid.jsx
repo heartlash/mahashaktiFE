@@ -91,6 +91,7 @@ const ProductionSaleGrid = ({refreshTrigger}) => {
             <TouchableOpacity 
             className="bg-amber-300 rounded-2xl flex-1 mx-1"
             activeOpacity={0.7}
+            onPress={() => router.push('/sale')}
             >
                 <View className="flex-none h-full items-center">
 

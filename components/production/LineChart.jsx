@@ -95,7 +95,7 @@ const LineChart = ({
     .onTouchesUp(() => {
       runOnJS(setShowCursor)(false);
       selectedValue.value = withTiming(totalValue);
-      runOnJS(setSelectedDate)('Total');
+      runOnJS(setSelectedDate)('Total Production');
     })
     .onBegin(handleGestureEvent)
     .onChange(handleGestureEvent);

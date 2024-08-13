@@ -9,7 +9,7 @@ const AnimatedText = ({selectedValue, font}) => {
   const MARGIN_VERTICAL = 50;
 
   const animatedText = useDerivedValue(() => {
-    return `$${Math.round(selectedValue.value)}`;
+    return `${Math.round(selectedValue.value)}`;
   });
 
   const fontSize = font?.measureText('0');

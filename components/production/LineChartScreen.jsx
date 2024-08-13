@@ -109,19 +109,17 @@ const LineChartScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <View className="flex-1">
-          <TouchableOpacity
-                onPress={() => setCreateProduction(true)}
-                className="bg-blue-500 p-4 rounded-lg mb-2"
-              >
-                <Text className="text-white font-bold">Create</Text>
-              </TouchableOpacity>
-            </View>
-          {createProduction && (
-                    <CreateProduction
-                        onClose={() => setCreateProduction(false)}
-                    />
-                )}
+
+          {createProduction ? (
+            <CreateProduction
+              onClose={() => setCreateProduction(false)}
+            />
+          ) : (<TouchableOpacity
+            onPress={() => setCreateProduction(true)}
+            className="bg-blue-500 p-4 rounded-lg mb-2"
+          >
+            <Text className="text-white font-bold">Create</Text>
+          </TouchableOpacity>)}
           <ProductionList
             productionData={reversedData}
             setProductionData={setProductionData}
