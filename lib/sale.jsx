@@ -40,12 +40,15 @@ export const getSaleDataDateRange = async (startDate, endDate) => {
 
         if (response.data.status == 'SUCCESS') {
             for (var data of response.data.data) {
-                data.value = data.producedCount
-                data.label = data.productionDate
-                data.date = getFormattedDate(data.productionDate)
-                productionDataList.push(data)
+                data.vendorId = data.vendor.id
+                data.vendorName = data.vendor.name
+                data.vendor = null
+                if(data.paid === true) data.paid = 'Yes'
+                if(data.paid === false) data.paid = 'No'
+
+                saleDataList.push(data)
             }
-            return productionDataList
+            return saleDataList.reverse()
         }
     } catch (error) {
         console.log(error);
@@ -92,12 +95,7 @@ export const saveSaleData = async (saleData) => {
     var response;
     try {
         response = await Backend.post("/sale",
-            saleData,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            [saleData]);
 
         console.log("see response: ", response)
         if (response.data.status == 'SUCCESS') {
@@ -119,3 +117,14 @@ export const saveSaleData = async (saleData) => {
         };
     }
 };
+
+export const groupSalesByDate = (sales) => {
+    return sales.reduce((groups, sale) => {
+      const date = new Date(sale.saleDate).toDateString();
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(sale);
+      return groups;
+    }, {});
+  };
