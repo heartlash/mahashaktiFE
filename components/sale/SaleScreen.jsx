@@ -14,7 +14,7 @@ const SaleScreen = () => {
 
 
     const [saleData, setSaleData] = useState([]);
-    const [createSale, setCreateSale] = useState(false)
+    const [createSale, setCreateSale] = useState(false) 
     const [vendorData, setVendorData] = useState([]);
 
 
