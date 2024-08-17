@@ -25,7 +25,7 @@ const ProductionSaleGrid = ({refreshTrigger}) => {
       const result = await getProductionHomeData();
       console.log("see refresh control now: ", refreshTrigger)
       
-      if(typeof result !=='undefined') {
+      if(result !=null) {
         setProductionDate(result.productionDate)
         setProductionCount(result.productionCount)
         setProductionPercentage(result.productionPercentage)
@@ -46,7 +46,7 @@ const ProductionSaleGrid = ({refreshTrigger}) => {
       const result = await getSaleHomeData();
       console.log("see value returned: ", result)
       
-      if(typeof result !=='undefined') {
+      if(result !=null) {
         setSaleDate(result.saleDate)
         setSaleCount(result.saleCount)
         setLoadingSale(false);
