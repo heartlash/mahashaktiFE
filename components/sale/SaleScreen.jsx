@@ -93,7 +93,7 @@ const SaleScreen = () => {
 
     return (
         <View>
-            {saleData.length > 0 ? (
+            
                 <View>
                     <View className="flex-row space-x-4 p-4">
                         <View className="flex-1">
@@ -163,14 +163,13 @@ const SaleScreen = () => {
                         <Text className="text-white font-bold">Create</Text>
                     </TouchableOpacity>
                     )}
+                    {saleData.length > 0 ? (
                     <SaleList
                         saleData={saleData}
                         setSaleData={setSaleData}
                         vendorData={vendorData}
-                    />
+                    />) : (<Text>HEHE</Text>)}
                 </View>
-
-            ) : (<Text>HEHE</Text>)}
         </View>
 
     )

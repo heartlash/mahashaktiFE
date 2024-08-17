@@ -27,7 +27,7 @@ const CreateMaterialPurchase = ({ onClose, materialId }) => {
         if (date > new Date()) {
             Alert.alert('Invalid Date', 'You cannot select a future date.');
         } else {
-            setProductionDate(date);
+            setPurchaseDate(moment(date).tz(moment.tz.guess()).format('YYYY-MM-DD'));
         }
         hideDatePicker();
     };

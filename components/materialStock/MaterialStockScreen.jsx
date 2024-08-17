@@ -84,8 +84,14 @@ const MaterialStockScreen = () => {
                                     <PlusCircleIcon onPress={() => handlePressOnRecordPurchase()} />
                                 </View>
                                 <View className="flex-row justify-between">
-                                    <Button title="Consumption History" color="green" onPress={() => router.push('/materialpurchasehistory')}/>
-                                    <Button title="Purchase History" color="green" onPress={() => router.push('/materialpurchasehistory')}/>
+                                    <Button title="Consumption History" color="green" onPress={() => router.push({
+                                        pathname: '/materialconsumptionhistory', 
+                                        params: {id: item.materialId},
+                                    })} />
+                                    <Button title="Purchase History" color="green" onPress={() => router.push({
+                                        pathname: '/materialpurchasehistory',
+                                        params: {id: item.materialId},
+                                    })} />
                                 </View>
                             </View>
                         )}
