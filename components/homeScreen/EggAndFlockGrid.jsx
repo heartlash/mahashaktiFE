@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, FlatList, SafeAreaView, ActivityIndicator
 import React, { useEffect, useState } from 'react'
 import { getFlockCount } from '@/lib/flock';
 import { getEggCount } from '@/lib/egg';
+import { router } from 'expo-router';
 
 const EggAndFlockGrid = ({refreshTrigger}) => {
 
@@ -71,7 +72,8 @@ const EggAndFlockGrid = ({refreshTrigger}) => {
       <View className="basis-1/2">
         <TouchableOpacity 
         className="bg-amber-300 rounded-2xl flex-1 mx-1"
-        activeOpacity={0.7}>
+        activeOpacity={0.7}
+        onPress={() => router.push('/flock')}>
           <View className="flex-none h-full items-center">
             <Text className = "text-center font-bold text-white text-2xl pt-5">Flocks</Text>
             {loadingFlock ? ( <ActivityIndicator size="small" color="#0000ff" className="pt-5"/>) : (

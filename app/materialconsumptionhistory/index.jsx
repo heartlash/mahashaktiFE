@@ -4,7 +4,7 @@ import MaterialConsumptionHistoryScreen from '@/components/materialConsumptionHi
 
 const MaterialConsumptionHistory = () => {
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <MaterialConsumptionHistoryScreen/>
     </View>
   )
