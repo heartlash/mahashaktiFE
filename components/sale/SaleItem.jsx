@@ -3,9 +3,12 @@ import { View, Text, TouchableOpacity, TextInput, Button, Modal, ActivityIndicat
 import RNPickerSelect from 'react-native-picker-select';
 import { deleteSaleData, updateSaleData, groupSalesByDate } from '@/lib/sale';
 import { getUserInfo } from '@/lib/auth';
+import { PencilIcon, PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleData }) => {
+const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleData, vendorData }) => {
 
   const [edited, setEdited] = useState(item);
   const [loading, setLoading] = useState(false);
@@ -67,98 +70,115 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
     );
   };
 
-  
+
   return (
 
     <TouchableOpacity
-      className="bg-white p-4 rounded-lg shadow-md mb-4"
+      className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200"
       onPress={onPress}
     >
-
       {/* First Row */}
-      <View className="flex-row justify-between mb-2">
-        <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
-          <Text className="text-gray-600">Eggs Sold: </Text>
+      <View className="flex-row justify-between mb-3">
+        <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+          <Text className="text-gray-700 font-semibold">Eggs Sold: </Text>
           {editItem === item ? (
             <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
+              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
               value={edited.soldCount.toString()}
               onChangeText={(text) => handleEditChange('soldCount', text)}
               keyboardType="numeric"
             />
           ) : (
-            <Text className="text-gray-600">{item.soldCount}</Text>
+            <Text className="text-gray-700">{item.soldCount}</Text>
           )}
         </View>
-        <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row'}`}>
-          <Text className="text-gray-600">Rate: </Text>
+        <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+          <Text className="text-gray-700 font-semibold">Rate: </Text>
           {editItem === item ? (
             <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
+              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
               value={edited.rate.toString()}
               onChangeText={(text) => handleEditChange('rate', text)}
               keyboardType="numeric"
             />
           ) : (
-            <Text className="text-gray-600">{item.rate}</Text>
+            <Text className="text-gray-700">{item.rate}</Text>
           )}
-
         </View>
       </View>
 
       {/* Second Row */}
-      <View className="flex-row justify-between mb-2">
-        <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
-          <Text className="text-gray-600">Amount: </Text>
+      <View className="flex-row justify-between mb-3">
+        <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+          <Text className="text-gray-700 font-semibold">Amount: </Text>
           {editItem === item ? (
             <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
+              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
               value={edited.amount.toString()}
               onChangeText={(text) => handleEditChange('amount', text)}
               keyboardType="numeric"
             />
           ) : (
-            <Text className="text-gray-600">{item.amount}</Text>
+            <Text className="text-gray-700">{item.amount}</Text>
           )}
         </View>
-        <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row'}`}>
-          <Text className="text-gray-600">Paid: </Text>
+        <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+          <Text className="text-gray-700 font-semibold">Paid: </Text>
           {editItem === item ? (
-            <View className="border border-gray-300 p-2 rounded bg-white">
+            <View className="border border-gray-300 px-3 py-2 rounded-lg bg-white">
               <RNPickerSelect
                 onValueChange={(value) => handleEditChange('paid', value)}
                 items={[
                   { label: 'Yes', value: true },
                   { label: 'No', value: false },
                 ]}
-                placeholder={{ label: item.paid, value: item.paid ? true : false }}
-                className="text-gray-600" />
+                placeholder={{
+                  label: item.paid,
+                  value: item.paid,
+                }}
+                className="text-gray-700"
+              />
             </View>
           ) : (
-            <Text className="text-gray-600">{item.paid}</Text>
+            <Text className="text-gray-700">{item.paid}</Text>
           )}
         </View>
       </View>
 
       {/* Third Row */}
-      <View className="flex-row justify-between mb-2">
-        <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
-          <Text className="text-gray-600">Vendor: </Text>
+      <View className="flex-row justify-between mb-3">
+        <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+          <Text className="text-gray-700 font-semibold">Vendor: </Text>
           {editItem === item ? (
-            <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
-              value={edited.vendorName.toString()}
-              onChangeText={(text) => handleEditChange('vendor', text)}
-              keyboardType="numeric"
-            />
+            <View className="border border-gray-300 px-3 py-2 rounded-lg bg-white">
+              <RNPickerSelect
+                onValueChange={(value) => handleEditChange('paid', value)}
+                items={vendorData}
+                placeholder={{
+                  label: item.vendorName && vendorData.find(v => v.label === item.vendorName)
+                    ? item.vendorName
+                    : 'Select Vendor...',
+                  value: item.vendorName,
+                }} className="text-gray-700"
+              />
+            </View>
           ) : (
-            <Text className="text-gray-600">{item.vendorName}</Text>
+            <Text className="text-gray-700">{item.vendorName}</Text>
           )}
         </View>
-        {isExpanded && (<View className="flex-1 pr-2 flex-row">
-          <Text className="text-gray-600">Created By: </Text>
-          <Text className="text-gray-600">{item.createdBy}</Text>
-        </View>
+        {isExpanded && (
+          <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Created By: </Text>
+            {editItem === item ? (
+              <TextInput
+                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 bg-gray-200"
+                value={item.createdBy}
+                editable={false}
+              />
+            ) : (
+              <Text className="text-gray-700">{item.createdBy}</Text>
+            )}
+          </View>
         )}
       </View>
 
@@ -166,44 +186,50 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
       {isExpanded && (
         <View>
           {/* Fourth Row */}
-          <View className="flex-row justify-between mb-2">
-            <View className="flex-1 pr-2 flex-row">
-              <Text className="text-gray-600">Updated By: </Text>
-              <Text className="text-gray-600">{item.updatedBy}</Text>
+          <View>
+            <View className={`flex-1 pr-4 w-1/2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+              <Text className="text-gray-700 font-semibold">Updated By: </Text>
+              {editItem === item ? (
+                <TextInput
+                  className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 bg-gray-200"
+                  value={item.updatedBy}
+                  editable={false}
+                />
+              ) : (
+                <Text className="text-gray-700">{item.updatedBy}</Text>
+              )}
             </View>
           </View>
 
           {/* Edit and Delete Buttons */}
-          <View className="flex-row justify-between mt-4">
-
+          <View className="flex-row justify-end mt-4">
             {editItem === item ? (
-              <View className="flex-1 pr-2 flex-row">
-                <Button title="Cancel" onPress={() => setEditItem(null)} />
+              <View className="flex-1 flex-row justify-between">
+                <MaterialIcons name="cancel" size={30} color="black" onPress={() => setEditItem(null)} />
+                <Entypo name="save" size={30} color="black" onPress={handleSavePress} />
 
-                <Button title="Save" onPress={handleSavePress} />
               </View>
             ) : (
-              <View className="flex-1 pr-2 flex-row">
-                <Button title="Delete" color="red" onPress={handleDeletePress} />
-
-                <Button title="Edit" onPress={() => handleEditPress(item)} />
+              <View className="flex-1 flex-row justify-between">
+                <TrashIcon size={24} color="#FF0000" onPress={handleDeletePress} />
+                <PencilSquareIcon size={24} color="#4A90E2" onPress={() => handleEditPress(item)} />
               </View>
-
             )}
-
-            {loading && (
-              <Modal transparent={true}>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                  <ActivityIndicator size="large" color="#0000ff" />
-                  <Text>Loading...</Text>
-                </View>
-              </Modal>
-            )}
-
           </View>
+
+          {/* Loading Indicator */}
+          {loading && (
+            <Modal transparent={true}>
+              <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+                <ActivityIndicator size="large" color="#ffffff" />
+                <Text className="text-white mt-4">Loading...</Text>
+              </View>
+            </Modal>
+          )}
         </View>
       )}
     </TouchableOpacity>
+
 
   );
 };

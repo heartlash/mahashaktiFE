@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import SaleList from './SaleList';
 import CreateSale from './CreateSale';
-import RNPickerSelect from 'react-native-picker-select';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import { getSaleDataDateRange } from '@/lib/sale';
 import { getVendorsData } from '@/lib/vendor';
+import MonthYearSelector from '../MonthYearAndFilter';
 
 
 
@@ -14,69 +14,72 @@ const SaleScreen = () => {
 
 
     const [saleData, setSaleData] = useState([]);
-    const [createSale, setCreateSale] = useState(false) 
+    const [storedSaleData, setStoredSaleData] = useState([]);
+
+    const [createSale, setCreateSale] = useState(false)
     const [vendorData, setVendorData] = useState([]);
 
 
-    /// starts here
-
-    // State to store selected month and year
+    const [updateComponent, setUpdateComponent] = useState(false);
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [year, setYear] = useState(new Date().getFullYear());
 
     const [vendorFilter, setVendorFilter] = useState(null);
     const [paidFilter, setPaidFilter] = useState(null);
 
+
+    const filterData = () => {
+        var filteredList = []
+
+        for (var data of storedSaleData) {
+
+            if (vendorFilter === null && paidFilter === null)
+                filteredList.push(data)
+
+            else if (vendorFilter == data.vendorId && paidFilter === null)
+                filteredList.push(data)
+
+            else if (vendorFilter === null && paidFilter == data.paid)
+                filteredList.push(data)
+
+            else if (vendorFilter == data.vendorId && paidFilter == data.paid)
+                filteredList.push(data)
+        }
+
+        return filteredList
+    }
+
     const handleShowPress = () => {
+
         setSelectedMonth(month);
         setSelectedYear(year);
-        console.log("see vendor filter: ", vendorFilter)
-        console.log("see paid filter: ", paidFilter)
+        setUpdateComponent(!updateComponent);
 
-        const filterData = saleData.filter(item => {
-            const vendorMatch = vendorFilter !== null ? item.vendorId === parseInt(vendorFilter) : true;
-            const paidMatch = paidFilter !== null ? item.paid === paidFilter : true;
-            console.log("seee item vendor and paid here: ", item.vendorId, item.paid);
-            console.log("see vendorMatch and paidMatch: ", vendorMatch, paidMatch)
-            return vendorMatch && paidMatch;
-        });
+        console.log("see current filters: ", vendorFilter, paidFilter)
 
-        console.log("Filtered data: ", filterData);
-        setSaleData(filterData)
-        // Now you can use filterData as needed, e.g., update state or display it
+        const filteredData = filterData()
+        setSaleData(filteredData)
     };
 
 
-    // Generate month options (1-12)
-    const monthOptions = [{ "label": "January", "value": 1 }, { "label": "February", "value": 2 }, { "label": "March", "value": 3 }, { "label": "April", "value": 4 }, { "label": "May", "value": 5 }, { "label": "June", "value": 6 }, { "label": "July", "value": 7 }, { "label": "August", "value": 8 }, { "label": "September", "value": 9 }, { "label": "October", "value": 10 }, { "label": "November", "value": 11 }, { "label": "December", "value": 12 }]
-    const monthMaps = { "1": "January", "2": "February", "3": "March", "4": "April", "5": "May", "6": "June", "7": "July", "8": "August", "9": "September", "10": "October", "11": "November", "12": "December" }
-    console.log("see here: ", monthMaps[selectedMonth])
-
-    // Generate year options (e.g., from 1900 to 2100)
-    const yearOptions = Array.from({ length: 201 }, (_, i) => ({
-        label: `${1900 + i}`,
-        value: 1900 + i,
-    }));
-
-
     useEffect(() => {
-        const fetchSaleDataDateRange = async () => {
-            console.log("see selectedMonth and year in the constructor: ", selectedMonth, selectedYear)
-            const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
-            console.log("see startDate and endDate: ", startDate, endDate)
-            const result = await getSaleDataDateRange(startDate, endDate);
-            console.log("see result from BE: ", result)
 
+        const fetchSaleDataDateRange = async () => {
+
+            console.log("use effect ran")
+            const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
+            const result = await getSaleDataDateRange(startDate, endDate);
             setSaleData(result)
-            console.log("see result from BE: ", saleData)
+            setStoredSaleData(result)
+
         }
+
 
         fetchSaleDataDateRange();
 
-        const fetchVendorDate = async () => {
+        const fetchVendorData = async () => {
             const result = await getVendorsData();
             var vendorList = []
             if (result != null) {
@@ -87,129 +90,50 @@ const SaleScreen = () => {
             }
         }
 
-        fetchVendorDate();
+        fetchVendorData();
 
     }, [selectedMonth, selectedYear])
 
+    console.log("see vendorData in useEffect: ", vendorData)
+
+    
     return (
         <View>
-            
-                <View>
-                    <View className="flex-row space-x-4 p-4">
-                        <View className="flex-1">
-                            <RNPickerSelect
-                                onValueChange={(value) => setMonth(value)}
-                                items={monthOptions}
-                                value={month}
-                                style={pickerSelectStyles}
-                                placeholder={{ label: "Select month...", value: null }}
-                            />
-                        </View>
-                        <View className="flex-1">
-                            <RNPickerSelect
-                                onValueChange={(value) => setYear(value)}
-                                items={yearOptions}
-                                value={year}
-                                style={pickerSelectStyles}
-                                placeholder={{ label: "Select year...", value: null }}
-                            />
-                        </View>
-                        <View className="flex-1">
-                            <TouchableOpacity
-                                onPress={handleShowPress}
-                                className="bg-green-500 p-4 rounded-lg"
-                            >
-                                <Text className="text-white font-semibold">Show</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View className="flex-1">
-                            <TouchableOpacity
-                                onPress={() => setCreateSale(true)}
-                                className="bg-green-500 p-4 rounded-lg"
-                            >
-                                <Text className="text-white font-semibold">Download PDF</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+            <SaleList
+                listHeaderComponent={
 
-                    <View className="flex-row space-x-4 p-4">
-
-                        <RNPickerSelect
-                            onValueChange={(value) => setVendorFilter(value)}
-                            items={vendorData}
-                            style={pickerSelectStyles}
-                            placeholder={{ label: "Filter By Vendor...", value: null }}
-                        />
-
-                        <RNPickerSelect
-                            onValueChange={(value) => setPaidFilter(value)}
-                            items={[
-                                { label: 'Yes', value: 'Yes' },
-                                { label: 'No', value: 'No' },
-                            ]}
-                            style={pickerSelectStyles}
-                            placeholder={{ label: "Filter By Paid Status...", value: null }}
-                        />
-                    </View>
-                    {createSale ? (
-                        <CreateSale
-                            onClose={() => setCreateSale(false)}
+                    <View>
+                        <MonthYearSelector setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress}
+                            showVendorAndPaid={true}
                             vendorData={vendorData}
-                        />
-                    ) : (<TouchableOpacity
-                        onPress={() => setCreateSale(true)}
-                        className="bg-blue-500 p-4 rounded-lg mb-2 center self-start w-auto"
-                    >
-                        <Text className="text-white font-bold">Create</Text>
-                    </TouchableOpacity>
-                    )}
-                    {saleData.length > 0 ? (
-                    <SaleList
-                        saleData={saleData}
-                        setSaleData={setSaleData}
-                        vendorData={vendorData}
-                    />) : (<Text>HEHE</Text>)}
-                </View>
+                            setVendorFilter={setVendorFilter}
+                            setPaidFilter={setPaidFilter} />
+
+                        {createSale ? (
+                            <CreateSale
+                                onClose={() => setCreateSale(false)}
+                                vendorData={vendorData}
+                            />
+                        ) : (<TouchableOpacity
+                            onPress={() => setCreateSale(true)}
+                            className="bg-blue-500 p-4 rounded-lg mb-2"
+                            style={{ alignSelf: 'center' }}
+                        >
+                            <Text className="text-white font-bold">Create</Text>
+                        </TouchableOpacity>
+                        )}
+                    </View>
+
+                }
+
+
+                saleData={saleData}
+                setSaleData={setSaleData}
+                vendorData={vendorData} />
+
         </View>
 
     )
 };
 
 export default SaleScreen;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#0d0d0d',
-    },
-    text: {
-        color: 'white',
-        fontSize: 24,
-        textAlign: 'center',
-        fontFamily: 'Roboto-Regular',
-    },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        color: 'black',
-        paddingRight: 30, // to ensure the text is never behind the icon
-    },
-    inputAndroid: {
-        fontSize: 16,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        borderWidth: 0.5,
-        borderColor: 'gray',
-        borderRadius: 8,
-        color: 'black',
-        paddingRight: 30, // to ensure the text is never behind the icon
-    },
-});
-

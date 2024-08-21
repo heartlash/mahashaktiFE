@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import SaleItem from './SaleItem';
 import { groupSalesByDate } from '@/lib/sale';
 
-const SaleList = ({ saleData, setSaleData }) => {
+const SaleList = ({ saleData, setSaleData, listHeaderComponent, vendorData }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
     const groupedSales = groupSalesByDate(saleData);
@@ -14,11 +14,12 @@ const SaleList = ({ saleData, setSaleData }) => {
   
     return (
       <FlatList
+        ListHeaderComponent={listHeaderComponent}
         data={Object.keys(groupedSales)}
         keyExtractor={(date) => date}
         renderItem={({ item: date }) => (
           <View>
-            <Text className="text-xl font-bold mt-4">{date}</Text>
+                <Text className="text-lg font-bold text-gray-800 mb-2 mx-3">{date}</Text>
             {groupedSales[date].map((sale) => (
               <SaleItem
                 key={sale.id}
@@ -28,6 +29,7 @@ const SaleList = ({ saleData, setSaleData }) => {
                 editItem={editItem}
                 setEditItem={setEditItem}
                 setSaleData={setSaleData}
+                vendorData={vendorData}
               />
             ))}
           </View>

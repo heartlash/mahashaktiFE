@@ -7,12 +7,12 @@ import moment from 'moment-timezone';
 
 
 
-const CreateProduction = ({ onClose }) => {
+const CreateProduction = ({ onClose, onRefresh }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [productionDate, setProductionDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
-          const [loading, setLoading] = useState(false)
-    const [newItem, setNewItem] = useState(null);
+    const [loading, setLoading] = useState(false)
+    const [newProduction, setNewProduction] = useState(null);
 
 
     const showDatePicker = () => {
@@ -27,26 +27,26 @@ const CreateProduction = ({ onClose }) => {
         if (date > new Date()) {
             Alert.alert('Invalid Date', 'You cannot select a future date.');
         } else {
-            setProductionDate(date);
+            setProductionDate(moment(date).tz(moment.tz.guess()).format('YYYY-MM-DD'));
         }
         hideDatePicker();
     };
 
 
 
-    const handleNewChange = (field, value) => {
-        setNewItem((prevItem) => ({
+    const handleNewProduction = (field, value) => {
+      setNewProduction((prevItem) => ({
             ...prevItem,
             [field]: value,
         }));
     };
 
-    const saveNewItem = async () => {
+    const saveNewProduction = async () => {
         setLoading(true)
         console.log("see on save: ",  moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'))
         // Make API call to save changes
         const userInfo = await getUserInfo();
-        var temp = newItem
+        var temp = newProduction
         temp.createdBy = userInfo.name
         console.log("See time string:", productionDate)
         temp.productionDate = productionDate
@@ -54,14 +54,14 @@ const CreateProduction = ({ onClose }) => {
         const result = await saveProductionData(temp);
         console.log("see result: ", result)
         if (result.errorMessage == null) {
-            setNewItem(null)
+          setNewProduction(null)
             Alert.alert(
                 "Success",
                 "Date saved",
                 [{ text: "OK" }],
                 { cancelable: false }
             );
-            //setCreateProduction(false)
+            onRefresh();
 
         } else {
             Alert.alert(
@@ -86,7 +86,7 @@ const CreateProduction = ({ onClose }) => {
 
             <TextInput
               className="border border-gray-300 p-2 rounded text-gray-600"
-              onChangeText={(text) => handleNewChange('producedCount', text)}
+              onChangeText={(text) => handleNewProduction('producedCount', text)}
               keyboardType="numeric"
             />
           </View>
@@ -117,7 +117,7 @@ const CreateProduction = ({ onClose }) => {
 
             <TextInput
               className="border border-gray-300 p-2 rounded text-gray-600"
-              onChangeText={(text) => handleNewChange('brokenCount', text)}
+              onChangeText={(text) => handleNewProduction('brokenCount', text)}
               keyboardType="numeric"
             />
 
@@ -127,7 +127,7 @@ const CreateProduction = ({ onClose }) => {
 
             <TextInput
               className="border border-gray-300 p-2 rounded text-gray-600"
-              onChangeText={(text) => handleNewChange('brokenReason', text)}
+              onChangeText={(text) => handleNewProduction('brokenReason', text)}
             />
 
           </View>
@@ -138,7 +138,7 @@ const CreateProduction = ({ onClose }) => {
             <Text className="text-gray-600">Gift:</Text>
             <TextInput
               className="border border-gray-300 p-2 rounded text-gray-600"
-              onChangeText={(text) => handleNewChange('giftCount', text)}
+              onChangeText={(text) => handleNewProduction('giftCount', text)}
               keyboardType="numeric"
             />
           </View>
@@ -147,7 +147,7 @@ const CreateProduction = ({ onClose }) => {
 
             <TextInput
               className="border border-gray-300 p-2 rounded text-gray-600"
-              onChangeText={(text) => handleNewChange('selfUseCount', text)}
+              onChangeText={(text) => handleNewProduction('selfUseCount', text)}
               keyboardType="numeric"
             />
 
@@ -156,7 +156,7 @@ const CreateProduction = ({ onClose }) => {
         <View className="flex-row justify-between mt-4">
 
           <Button title="Cancel" color="red" onPress={onClose}/>
-          <Button title="Save" onPress={saveNewItem} />
+          <Button title="Save" onPress={saveNewProduction} />
 
           {loading && (
             <Modal transparent={true}>

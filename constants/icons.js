@@ -13,12 +13,16 @@ import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export const tabIcons = {
-    home: (props)=> <AntDesign name="home" size={26} {...props} />,
-    profits: (props)=> <Feather name="compass" size={26} {...props} />,
-    admin: (props)=> <AntDesign name="pluscircleo" size={26} {...props} />,
-    profile: (props)=> <AntDesign name="user" size={26} {...props} />,
+    home: (props)=> <AntDesign name="home" size={20} {...props} />,
+    profits: (props)=> <MaterialIcons name="attach-money" size={20} color="black" {...props}/>,
+    admin: (props)=> <AntDesign name="pluscircleo" size={20} {...props} />,
+    profile: (props)=> <Feather name="user" size={20} {...props} />,
+    production: (props)=> <AntDesign name="user" size={20} {...props} />,
+    sale: (props)=> <AntDesign name="user" size={20} {...props} />,
+    materialStock: (props)=> <AntDesign name="user" size={20} {...props} />,
 }
 
 export default {

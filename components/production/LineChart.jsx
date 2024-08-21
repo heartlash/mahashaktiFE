@@ -49,7 +49,7 @@ const LineChart = ({
   const max = Math.max(...data.map(val => val.value));
   const min = Math.min(...data.map(val => val.value));
   // y domain
-  const yDomain = [min, max];
+  const yDomain = [0, max];
 
   // range of the y scale
   const yRange = [chartHeight, 0];

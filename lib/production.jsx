@@ -42,11 +42,17 @@ export const getProductionDataDateRange = async (startDate, endDate) => {
                 data.date = getFormattedDate(data.productionDate)
                 productionDataList.push(data)
             }
-            return productionDataList
+            return { data: productionDataList, errorMessage: null }
+        } else return {
+            data: null,
+            errorMessage: response.data.message
         }
     } catch (error) {
         console.log(error);
-        return null;
+        return {
+            data: null,
+            errorMessage: error.response.data.errorMessage
+        };
     }
 }
 
@@ -62,12 +68,18 @@ export const updateProductionData = async (updatedProductionData) => {
         );
 
         if (response.data.status == 'SUCCESS') {
-            return response.data;
-        } else return null;
+            return { data: response.data, errorMessage: null }
+        } else return {
+            data: null,
+            errorMessage: response.data.message
+        }
 
     } catch (error) {
         console.error('Error updating item:', error);
-        return null;
+        return {
+            data: null,
+            errorMessage: error.response.data.errorMessage
+        };
     }
 };
 
@@ -76,12 +88,18 @@ export const deleteProductionData = async (productionDataId) => {
         const response = await Backend.delete(`/production/${productionDataId}`);
 
         if (response.data.status == 'SUCCESS') {
-            return response.data;
-        } else return null;
+            return { data: response.data, errorMessage: null }
+        } else return {
+            data: null,
+            errorMessage: response.data.message
+        }
 
     } catch (error) {
         console.error('Error updating item:', error);
-        return null;
+        return {
+            data: null,
+            errorMessage: error.response.data.errorMessage
+        };
     }
 };
 

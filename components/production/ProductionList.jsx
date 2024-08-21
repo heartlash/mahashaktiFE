@@ -1,8 +1,8 @@
-import { FlatList } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
 import ProductionItem from '@/components/production/ProductionItem';
 
-const ProductionList = ({ productionData, setProductionData }) => {
+const ProductionList = ({ productionData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
@@ -17,17 +17,24 @@ const ProductionList = ({ productionData, setProductionData }) => {
             onPress={() => handlePress(item.id)}
             editItem={editItem}
             setEditItem={setEditItem}
-            setProductionData={setProductionData}
+            onRefreshOnChange={onRefreshOnChange}
         />
     );
 
     return (
         <FlatList
+            ListHeaderComponent={listHeaderComponent}
             data={productionData}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             extraData={expandedItemId}
-        />
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing} // Make sure refreshing is set correctly
+                    onRefresh={onRefresh}   // Trigger refresh when pulled down
+                />
+            } />
     );
 };
 

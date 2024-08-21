@@ -21,7 +21,7 @@ const AnimatedText = ({selectedValue, font}) => {
 
   return (
     <Canvas style={{height: fontSize.height + MARGIN_VERTICAL}}>
-      <Text text={animatedText} font={font} color={'white'} x={textX} y={fontSize.height + MARGIN_VERTICAL / 2}/>
+      <Text text={animatedText} className="justify-center" font={font} color={'white'} x={textX} y={fontSize.height + MARGIN_VERTICAL / 2}/>
     </Canvas>
   );
 };

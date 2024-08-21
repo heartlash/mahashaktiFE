@@ -43,8 +43,8 @@ export const getSaleDataDateRange = async (startDate, endDate) => {
                 data.vendorId = data.vendor.id
                 data.vendorName = data.vendor.name
                 data.vendor = null
-                if(data.paid === true) data.paid = 'Yes'
-                if(data.paid === false) data.paid = 'No'
+                if(data.paid == true) data.paid = 'Yes'
+                if(data.paid == false) data.paid = 'No'
 
                 saleDataList.push(data)
             }
@@ -94,6 +94,7 @@ export const deleteSaleData = async (saleDataId) => {
 export const saveSaleData = async (saleData) => {
     var response;
     try {
+        console.log("see data is the backend call: ", saleData)
         response = await Backend.post("/sale",
             [saleData]);
 

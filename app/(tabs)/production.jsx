@@ -4,10 +4,10 @@ import ProductionScreen from '@/components/production/ProductionScreen'
 
 const Production = () => {
   return (
-    <SafeAreaView>
-      <ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <ProductionScreen/>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }

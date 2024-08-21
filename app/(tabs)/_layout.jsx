@@ -18,6 +18,34 @@ const TabsLayout = () => {
 
             }}
         />
+
+        <Tabs.Screen
+            name="production"
+            options={{
+                title: "Production",
+                headerShown: false,
+
+            }}
+        />
+
+        <Tabs.Screen
+            name="sale"
+            options={{
+                title: "Sale",
+                headerShown: false,
+
+            }}
+        />
+
+        <Tabs.Screen
+            name="materialStock"
+            options={{
+                title: "Material",
+                headerShown: false,
+
+            }}
+        />
+        
         <Tabs.Screen
             name="profits"
             options={{

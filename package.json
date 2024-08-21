@@ -49,6 +49,7 @@
     "react-native-screens": "3.31.1",
     "react-native-skia": "^0.0.1",
     "react-native-svg": "^15.5.0",
+    "react-native-vector-icons": "^10.1.0",
     "react-native-web": "~0.19.10"
   },
   "devDependencies": {
