@@ -8,7 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleData, vendorData }) => {
+const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleData, vendorData, onRefreshOnChange }) => {
 
   const [edited, setEdited] = useState(item);
   const [loading, setLoading] = useState(false);
@@ -22,8 +22,6 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
 
   const handleEditPress = () => {
     setEditItem(item);
-
-    console.log("see edit item", item)
   };
 
   const handleSavePress = async () => {
@@ -34,9 +32,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
     if (result) {
       setEditItem(null);
       Alert.alert("Success", "Data updated", [{ text: "OK" }]);
-      setSaleData((prevData) =>
-        prevData.map((data) => (data.id === updatedItem.id ? updatedItem : data))
-      );
+      onRefreshOnChange();
     } else {
       Alert.alert("Failure", "Data updation failed", [{ text: "OK" }]);
     }
@@ -57,9 +53,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
             const result = await deleteSaleData(item.id);
             if (result) {
               Alert.alert("Success", "Data deleted", [{ text: "OK" }]);
-              setSaleData((prevData) =>
-                prevData.filter((data) => data.id !== item.id)
-              );
+              onRefreshOnChange();
             } else {
               Alert.alert("Failure", "Data deletion failed", [{ text: "OK" }]);
             }

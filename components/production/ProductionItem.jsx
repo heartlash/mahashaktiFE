@@ -65,7 +65,7 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
 
   return (
     <TouchableOpacity
-      className="bg-white mx-2 p-6 rounded-lg shadow-lg mb-4"
+      className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200"
       onPress={onPress}
     >
       <Text className="text-xl font-bold text-gray-800 mb-4">

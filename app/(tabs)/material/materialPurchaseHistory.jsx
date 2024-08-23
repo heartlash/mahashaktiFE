@@ -1,24 +1,19 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import MaterialConsumptionHistoryList from './MaterialConsumptionHistoryList';
+import MaterialPurchaseHistoryList from '@/components/materialPurchaseHistory/MaterialPurchaseHistoryList';
 import RNPickerSelect from 'react-native-picker-select';
 import { getMonthStartAndEndDate } from '@/lib/util';
-import { getMaterialConsumptionHistory } from '@/lib/materialConsumption';
-
-
-const MaterialConsumptionHistoryScreen = () => {
+import { getMaterialPurchaseHistory } from '@/lib/materialPurchase';
 
 
 
+const MaterialPurchaseHistory = () => {
     const { id } = useLocalSearchParams();
 
-    console.log("see whats the id: ", id)
+    console.log("calls this file")
 
-    console.log("see material id in the purchase history")
-
-
-    const [materialConsumptionHistoryData, setMaterialConsumptionHistoryData] = useState([]);
+    const [materialPurchaseHistoryData, setMaterialPurchaseHistoryData] = useState([]);
 
     /// starts here
 
@@ -50,26 +45,25 @@ const MaterialConsumptionHistoryScreen = () => {
 
 
     useEffect(() => {
-        const fetchMaterialConsumptionHistory = async () => {
+        const fetchMaterialPurchaseHistory = async () => {
             console.log("see selectedMonth and year in the constructor: ", selectedMonth, selectedYear)
             const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
             console.log("see startDate and endDate: ", startDate, endDate)
-            const result = await getMaterialConsumptionHistory(id, startDate, endDate);
+            const result = await getMaterialPurchaseHistory(id, startDate, endDate);
             console.log("see result from BE: ", result)
             if (result.errorMessage == null) {
-                setMaterialConsumptionHistoryData(result.data)
+                setMaterialPurchaseHistoryData(result.data)
             }
-            if (result.data == null)
-                setMaterialConsumptionHistoryData([])
+            if(result.data == null) 
+                setMaterialPurchaseHistoryData([])
         }
 
-        fetchMaterialConsumptionHistory();
+        fetchMaterialPurchaseHistory();
 
     }, [selectedMonth, selectedYear])
 
     return (
         <View>
-
             <View>
                 <View className="flex-row space-x-4 p-4">
                     <View className="flex-1">
@@ -100,21 +94,18 @@ const MaterialConsumptionHistoryScreen = () => {
                     </View>
                 </View>
 
-                {materialConsumptionHistoryData.length > 0 ? (
-                    <MaterialConsumptionHistoryList
-                        materialConsumptionHistoryData={materialConsumptionHistoryData}
-                        setMaterialConsumptionHistoryData={setMaterialConsumptionHistoryData} />
+                {materialPurchaseHistoryData.length > 0 ? (
+                    <MaterialPurchaseHistoryList
+                        materialPurchaseHistoryData={materialPurchaseHistoryData}
+                        setMaterialPurchaseHistoryData={setMaterialPurchaseHistoryData} />
                 ) : (<Text>HEHE</Text>)}
-
             </View>
-
-
         </View>
 
     )
 };
 
-export default MaterialConsumptionHistoryScreen;
+export default MaterialPurchaseHistory;
 
 const styles = StyleSheet.create({
     container: {

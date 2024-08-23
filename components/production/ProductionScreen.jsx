@@ -120,8 +120,8 @@ const ProductionScreen = () => {
           {createProduction ? (
             <CreateProduction
               onClose={() => setCreateProduction(false)}
-              onRefresh={onRefresh}
-            />
+              onRefreshOnChange={onRefreshOnChange}
+              />
           ) : (<View className="flex-1 items-center">
             <TouchableOpacity
               onPress={() => setCreateProduction(true)}

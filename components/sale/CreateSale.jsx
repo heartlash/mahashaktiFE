@@ -5,10 +5,12 @@ import { getUserInfo } from '@/lib/auth';
 import { saveSaleData } from '@/lib/sale';
 import moment from 'moment-timezone';
 import RNPickerSelect from 'react-native-picker-select';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
-const CreateSale = ({ onClose, vendorData }) => {
+const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [saleDate, setSaleDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -28,7 +30,7 @@ const CreateSale = ({ onClose, vendorData }) => {
         if (date > new Date()) {
             Alert.alert('Invalid Date', 'You cannot select a future date.');
         } else {
-            setProductionDate(date);
+            setSaleDate(moment(date).tz(moment.tz.guess()).format('YYYY-MM-DD'));
         }
         hideDatePicker();
     };
@@ -81,19 +83,19 @@ const CreateSale = ({ onClose, vendorData }) => {
 
     }
     return (
-        <View className="bg-white p-4 rounded-lg shadow-md mb-4">
+        <View className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200">
             <View className="flex-row justify-between mb-2 ">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-600">Sold: </Text>
+                    <Text className="text-gray-700 font-semibold">Eggs Sold: </Text>
 
                     <TextInput
-                        className="border border-gray-300 p-2 rounded text-gray-600"
+                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                         onChangeText={(text) => handleNewChange('soldCount', text)}
                         keyboardType="numeric"
                     />
                 </View>
                 <View className="flex-1 pl-2">
-                    <Text className="text-gray-600">Sale Date: </Text>
+                    <Text className="text-gray-700 font-semibold">Sale Date: </Text>
                     <TouchableOpacity
                         onPress={showDatePicker}
                         className="border border-gray-300 p-2 rounded bg-white"
@@ -115,17 +117,17 @@ const CreateSale = ({ onClose, vendorData }) => {
 
             <View className="flex-row justify-between mb-2">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-600">Rate: </Text>
+                    <Text className="text-gray-700 font-semibold">Rate: </Text>
 
                     <TextInput
-                        className="border border-gray-300 p-2 rounded text-gray-600"
+                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                         onChangeText={(text) => handleNewChange('rate', text)}
                         keyboardType="numeric"
                     />
 
                 </View>
                 <View className="flex-1 pl-2">
-                    <Text className="text-gray-600">Amount: </Text>
+                    <Text className="text-gray-700 font-semibold">Amount: </Text>
 
                     <TextInput
                         className="border border-gray-300 p-2 rounded text-gray-600"
@@ -138,19 +140,19 @@ const CreateSale = ({ onClose, vendorData }) => {
             <View className="flex-row justify-between mb-2">
 
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-600">Vendor: </Text>
+                    <Text className="text-gray-700 font-semibold">Vendor: </Text>
                     <View className="border border-gray-300 p-2 rounded bg-white">
                         <RNPickerSelect
                             onValueChange={(value) => handleNewChange('vendor', value)}
                             items={vendorData}
                             placeholder={{ label: 'Choose Vendor', value: null }}
-                            className="text-gray-600" />
+                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700" />
                     </View>
 
                 </View>
 
                 <View className="flex-1 pl-2">
-                    <Text className="text-gray-600 mb-1">Paid:</Text>
+                    <Text className="text-gray-700 font-semibold">Paid:</Text>
                     <View className="border border-gray-300 p-2 rounded bg-white">
                         <RNPickerSelect
                             onValueChange={(value) => handleNewChange('paid', value)}
@@ -159,15 +161,14 @@ const CreateSale = ({ onClose, vendorData }) => {
                                 { label: 'No', value: false },
                             ]}
                             placeholder={{ label: 'Choose Paid Status', value: null }}
-                            className="text-gray-600" />
+                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700" />
                     </View>
                 </View>
 
             </View>
             <View className="flex-row justify-between mt-4">
-
-                <Button title="Cancel" color="red" onPress={onClose} />
-                <Button title="Save" onPress={saveNewItem} />
+                <MaterialIcons name="cancel" size={30} color="black" onPress={onClose}  />
+                <Entypo name="save" size={30} color="black" onPress={saveNewItem} />
 
                 {loading && (
                     <Modal transparent={true}>

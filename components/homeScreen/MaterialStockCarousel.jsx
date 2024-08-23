@@ -52,7 +52,7 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
       {loading ? (
         <ActivityIndicator size="small" color="#0000ff" className="pt-5" />
       ) : (
-        <TouchableOpacity onPress={() => router.push('/materialstock')}>
+        <TouchableOpacity onPress={() => router.push('/material')}>
           <ImageBackground
             source={item.image}
             style={{ height: "100%", width: "100%" }}

@@ -1,5 +1,5 @@
 import { Text, View, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import SaleList from './SaleList';
 import CreateSale from './CreateSale';
 import { getMonthStartAndEndDate } from '@/lib/util';
@@ -29,6 +29,18 @@ const SaleScreen = () => {
     const [vendorFilter, setVendorFilter] = useState(null);
     const [paidFilter, setPaidFilter] = useState(null);
 
+    const [refresh, setRefresh] = useState(false);
+    const onRefreshOnChange = () => {
+        setRefresh(prev => !prev);
+    }
+
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        Promise.all([fetchSaleDataDateRange(), fetchVendorData()])
+            .then(() => setRefreshing(false))
+            .catch(() => setRefreshing(false));
+    }, []);
 
     const filterData = () => {
         var filteredList = []
@@ -63,40 +75,36 @@ const SaleScreen = () => {
         setSaleData(filteredData)
     };
 
+    const fetchSaleDataDateRange = async () => {
+
+        console.log("use effect ran")
+        const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
+        const result = await getSaleDataDateRange(startDate, endDate);
+        setSaleData(result)
+        setStoredSaleData(result)
+
+    }
+
+    const fetchVendorData = async () => {
+        const result = await getVendorsData();
+        var vendorList = []
+        if (result != null) {
+            for (var data of result) {
+                vendorList.push({ label: data.name, value: data.id });
+            }
+            setVendorData(vendorList);
+        }
+    }
 
     useEffect(() => {
 
-        const fetchSaleDataDateRange = async () => {
-
-            console.log("use effect ran")
-            const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
-            const result = await getSaleDataDateRange(startDate, endDate);
-            setSaleData(result)
-            setStoredSaleData(result)
-
-        }
-
-
         fetchSaleDataDateRange();
-
-        const fetchVendorData = async () => {
-            const result = await getVendorsData();
-            var vendorList = []
-            if (result != null) {
-                for (var data of result) {
-                    vendorList.push({ label: data.name, value: data.id });
-                }
-                setVendorData(vendorList);
-            }
-        }
-
         fetchVendorData();
 
-    }, [selectedMonth, selectedYear])
+    }, [selectedMonth, selectedYear, refresh])
 
     console.log("see vendorData in useEffect: ", vendorData)
 
-    
     return (
         <View>
             <SaleList
@@ -129,7 +137,10 @@ const SaleScreen = () => {
 
                 saleData={saleData}
                 setSaleData={setSaleData}
-                vendorData={vendorData} />
+                vendorData={vendorData}
+                onRefreshOnChange={onRefreshOnChange}
+                onRefresh={onRefresh}
+                refreshing={refreshing} />
 
         </View>
 

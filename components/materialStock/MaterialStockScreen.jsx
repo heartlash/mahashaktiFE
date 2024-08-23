@@ -6,6 +6,8 @@ import { PlusCircleIcon } from "react-native-heroicons/solid";
 import { MinusCircleIcon } from "react-native-heroicons/solid";
 import CreateMaterialPurchase from './CreateMaterialPurchase';
 import CreateMaterialConsumption from './CreateMaterialConsumption';
+import { useNavigation } from '@react-navigation/native';
+
 
 
 
@@ -17,6 +19,9 @@ const MaterialStockScreen = () => {
     const [showRecordPurchase, setShowRecordPurchase] = useState(false)
     const [selectedMaterial, setSelectedMaterial] = useState(null)
     const [showRecordButtons, setShowRecordButtons] = useState(true)
+
+    const navigation = useNavigation();
+
 
 
     const handlePressOnMaterial = (item) => {
@@ -84,14 +89,17 @@ const MaterialStockScreen = () => {
                                     <PlusCircleIcon onPress={() => handlePressOnRecordPurchase()} />
                                 </View>
                                 <View className="flex-row justify-between">
-                                    <Button title="Consumption History" color="green" onPress={() => router.push({
-                                        pathname: '/materialconsumptionhistory', 
-                                        params: {id: item.materialId},
-                                    })} />
-                                    <Button title="Purchase History" color="green" onPress={() => router.push({
-                                        pathname: '/materialpurchasehistory',
-                                        params: {id: item.materialId},
-                                    })} />
+
+
+                                    <Button
+                                        title="Consumption History"
+                                        onPress={() => navigation.navigate('materialPurchaseHistory', { id: item.materialId })}
+                                    />
+                                    <Button
+                                        title="Purchase History"
+                                        onPress={() => navigation.navigate('materialPurchaseHistory', { id: item.materialId })}
+                                    />
+                                
                                 </View>
                             </View>
                         )}

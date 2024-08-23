@@ -22,7 +22,7 @@ export const tabIcons = {
     profile: (props)=> <Feather name="user" size={20} {...props} />,
     production: (props)=> <AntDesign name="user" size={20} {...props} />,
     sale: (props)=> <AntDesign name="user" size={20} {...props} />,
-    materialStock: (props)=> <AntDesign name="user" size={20} {...props} />,
+    material: (props)=> <AntDesign name="user" size={20} {...props} />,
 }
 
 export default {

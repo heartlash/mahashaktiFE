@@ -4,10 +4,12 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getUserInfo } from '@/lib/auth';
 import { saveProductionData } from '@/lib/production';
 import moment from 'moment-timezone';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
-const CreateProduction = ({ onClose, onRefresh }) => {
+const CreateProduction = ({ onClose, onRefreshOnChange }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [productionDate, setProductionDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -61,7 +63,7 @@ const CreateProduction = ({ onClose, onRefresh }) => {
                 [{ text: "OK" }],
                 { cancelable: false }
             );
-            onRefresh();
+            onRefreshOnChange();
 
         } else {
             Alert.alert(
@@ -79,19 +81,19 @@ const CreateProduction = ({ onClose, onRefresh }) => {
 
     }
     return (
-        <View className="bg-white p-4 rounded-lg shadow-md mb-4">
+        <View className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200">
         <View className="flex-row justify-between mb-2 ">
           <View className="flex-1 pr-2">
-            <Text className="text-gray-600">Produced:</Text>
+            <Text className="text-gray-700 font-semibold">Produced:</Text>
 
             <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
+              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
               onChangeText={(text) => handleNewProduction('producedCount', text)}
               keyboardType="numeric"
             />
           </View>
           <View className="flex-1 pl-2">
-            <Text className="text-gray-600">Production Date:</Text>
+            <Text className="text-gray-700 font-semibold">Production Date:</Text>
             <TouchableOpacity
               onPress={showDatePicker}
               className="border border-gray-300 p-2 rounded bg-white"
@@ -113,20 +115,20 @@ const CreateProduction = ({ onClose, onRefresh }) => {
 
         <View className="flex-row justify-between mb-2">
           <View className="flex-1 pr-2">
-            <Text className="text-gray-600">Broken:</Text>
+            <Text className="text-gray-700 font-semibold">Broken:</Text>
 
             <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
+              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
               onChangeText={(text) => handleNewProduction('brokenCount', text)}
               keyboardType="numeric"
             />
 
           </View>
           <View className="flex-1 pl-2">
-            <Text className="text-gray-600">Reason:</Text>
+            <Text className="text-gray-700 font-semibold">Reason:</Text>
 
             <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
+              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
               onChangeText={(text) => handleNewProduction('brokenReason', text)}
             />
 
@@ -135,18 +137,18 @@ const CreateProduction = ({ onClose, onRefresh }) => {
 
         <View className="flex-row justify-between mb-2">
           <View className="flex-1 pr-2">
-            <Text className="text-gray-600">Gift:</Text>
+            <Text className="text-gray-700 font-semibold">Gift:</Text>
             <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
+              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
               onChangeText={(text) => handleNewProduction('giftCount', text)}
               keyboardType="numeric"
             />
           </View>
           <View className="flex-1 pl-2">
-            <Text className="text-gray-600">Self Use:</Text>
+            <Text className="text-gray-700 font-semibold">Self Use:</Text>
 
             <TextInput
-              className="border border-gray-300 p-2 rounded text-gray-600"
+              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
               onChangeText={(text) => handleNewProduction('selfUseCount', text)}
               keyboardType="numeric"
             />
@@ -154,9 +156,9 @@ const CreateProduction = ({ onClose, onRefresh }) => {
           </View>
         </View>
         <View className="flex-row justify-between mt-4">
+          <MaterialIcons name="cancel" size={30} color="black" onPress={onClose} />
+          <Entypo name="save" size={30} color="black" onPress={saveNewProduction} />
 
-          <Button title="Cancel" color="red" onPress={onClose}/>
-          <Button title="Save" onPress={saveNewProduction} />
 
           {loading && (
             <Modal transparent={true}>
