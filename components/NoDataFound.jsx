@@ -1,13 +1,12 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { router } from 'expo-router';
 
 const NoDataFound = ({ message = "No data found" }) => {
   const navigation = useNavigation();
 
   return (
-    <View className="flex-1 justify-center items-center bg-gray-100 p-4">
+    <View className="justify-center items-center bg-gray-100 p-4">
       <Text className="text-gray-500 text-lg mb-4">{message}</Text>
       <TouchableOpacity
         onPress={() => navigation.goBack()}

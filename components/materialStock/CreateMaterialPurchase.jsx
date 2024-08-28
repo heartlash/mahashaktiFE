@@ -9,7 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
-const CreateMaterialPurchase = ({ onClose, materialId }) => {
+const CreateMaterialPurchase = ({ onClose, materialId, onRefreshOnChange }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [purchaseDate, setPurchaseDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -62,7 +62,7 @@ const CreateMaterialPurchase = ({ onClose, materialId }) => {
                 [{ text: "OK" }],
                 { cancelable: false }
             );
-            //setCreateProduction(false)
+            onRefreshOnChange();
 
         } else {
             Alert.alert(

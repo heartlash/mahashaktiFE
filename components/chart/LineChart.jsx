@@ -6,16 +6,19 @@ import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Cursor from './Cursor';
 import {getYForX, parse} from 'react-native-redash';
 import Gradient from './Gradient';
+import { useWindowDimensions } from 'react-native';
 
 
 const LineChart = ({
-  chartHeight,
-  chartMargin,
-  chartWidth,
   data,
   setSelectedDate,
   selectedValue,
+  type
 }) => {
+
+  const CHART_MARGIN = 5;
+  const CHART_HEIGHT = 150;
+  const { width: CHART_WIDTH } = useWindowDimensions();
   const [showCursor, setShowCursor] = useState(false);
   const animationLine = useSharedValue(0);
   const animationGradient = useSharedValue({x: 0, y: 0});
@@ -28,7 +31,7 @@ const LineChart = ({
     animationLine.value = withTiming(1, {duration: 1000});
     animationGradient.value = withDelay(
       1000,
-      withTiming({x: 0, y: chartHeight}, {duration: 500}),
+      withTiming({x: 0, y: CHART_HEIGHT}, {duration: 500}),
     );
     selectedValue.value = withTiming(totalValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,7 +41,7 @@ const LineChart = ({
   const xDomain = data.map((dataPoint) => dataPoint.label);
 
   // range of the x scale
-  const xRange = [chartMargin, chartWidth - chartMargin];
+  const xRange = [CHART_MARGIN, CHART_WIDTH - CHART_MARGIN];
 
   // Create the x scale
   const x = scalePoint().domain(xDomain).range(xRange).padding(0);
@@ -52,7 +55,7 @@ const LineChart = ({
   const yDomain = [0, max];
 
   // range of the y scale
-  const yRange = [chartHeight, 0];
+  const yRange = [CHART_HEIGHT, 0];
 
   // Create the y scale
   const y = scaleLinear().domain(yDomain).range(yRange);
@@ -76,9 +79,9 @@ const LineChart = ({
     runOnJS(setSelectedDate)(data[index].date);
     selectedValue.value = withTiming(data[index].value);
     const clampValue = clamp(
-      Math.floor(e.absoluteX / stepX) * stepX + chartMargin,
-      chartMargin,
-      chartWidth - chartMargin,
+      Math.floor(e.absoluteX / stepX) * stepX + CHART_MARGIN,
+      CHART_MARGIN,
+      CHART_WIDTH - CHART_MARGIN,
     );
 
     cx.value = clampValue;
@@ -95,7 +98,7 @@ const LineChart = ({
     .onTouchesUp(() => {
       runOnJS(setShowCursor)(false);
       selectedValue.value = withTiming(totalValue);
-      runOnJS(setSelectedDate)('Total Production');
+      runOnJS(setSelectedDate)('Total ' + type);
     })
     .onBegin(handleGestureEvent)
     .onChange(handleGestureEvent);
@@ -104,18 +107,18 @@ const LineChart = ({
     <GestureDetector gesture={pan}>
       <Canvas
         style={{
-          width: chartWidth,
-          height: chartHeight,
+          width: CHART_WIDTH,
+          height: CHART_HEIGHT,
         }}>
         <Path style="stroke" path={linePath} strokeWidth={4} color="#eaf984" end={animationLine} start={0} 
         strokeCap={'round'}
         />
 
-        <Gradient chartHeight={chartHeight} chartWidth={chartWidth} chartMargin={chartMargin}
+        <Gradient chartHeight={CHART_HEIGHT} chartWidth={CHART_WIDTH} chartMargin={CHART_MARGIN}
           animationGradient={animationGradient} curvedLine={curvedLine}
         />
        
-        {showCursor && <Cursor cx={cx} cy={cy} chartHeight={chartHeight} />}
+        {showCursor && <Cursor cx={cx} cy={cy} chartHeight={CHART_HEIGHT} />}
         
       </Canvas>
     </GestureDetector>

@@ -201,7 +201,7 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
                 editable={false}
               />
             ) : (
-              <Text className="text-gray-700">{item.updatedBy}</Text>
+              <Text className="text-gray-700 ml-2">{item.updatedBy}</Text>
             )}
           </View>
 

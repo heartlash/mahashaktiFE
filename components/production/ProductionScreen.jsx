@@ -1,9 +1,9 @@
-import { StyleSheet, Text, useWindowDimensions, View, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { SystemBars } from 'react-native-bars';
-import LineChart from '@/components/production/LineChart';
+import LineChart from '../chart/LineChart';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import AnimatedText from '@/components/production/AnimatedText';
+import AnimatedText from '../chart/AnimatedText';
 import { useSharedValue } from 'react-native-reanimated';
 import { useFont } from '@shopify/react-native-skia';
 import { getMonthStartAndEndDate } from '@/lib/util';
@@ -11,12 +11,10 @@ import { getProductionDataDateRange } from '@/lib/production';
 import ProductionList from './ProductionList';
 import CreateProduction from './CreateProduction';
 import MonthYearAndFilter from '../MonthYearAndFilter';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const ProductionScreen = () => {
-  const CHART_MARGIN = 5;
-  const CHART_HEIGHT = 150;
-  const { width: CHART_WIDTH } = useWindowDimensions();
   const [selectedDate, setSelectedDate] = useState(null);
   const selectedValue = useSharedValue(0);
   const font = useFont(require('../../assets/fonts/Roboto-Regular.ttf'), 60);
@@ -80,10 +78,6 @@ const ProductionScreen = () => {
   }, [selectedMonth, selectedYear, refresh])
 
 
-
-  if (!font) {
-    return null;
-  }
   const reversedData = [...productionData].reverse();
 
   if (loading) {
@@ -107,11 +101,9 @@ const ProductionScreen = () => {
               <AnimatedText selectedValue={selectedValue} font={font} />
               <LineChart
                 data={productionData}
-                chartHeight={CHART_HEIGHT}
-                chartWidth={CHART_WIDTH}
-                chartMargin={CHART_MARGIN}
                 setSelectedDate={setSelectedDate}
                 selectedValue={selectedValue}
+                type="Production"
               />
             </View>) : (<></>)}
 
@@ -122,14 +114,8 @@ const ProductionScreen = () => {
               onClose={() => setCreateProduction(false)}
               onRefreshOnChange={onRefreshOnChange}
               />
-          ) : (<View className="flex-1 items-center">
-            <TouchableOpacity
-              onPress={() => setCreateProduction(true)}
-              className="bg-blue-500 p-4 rounded-lg mb-3"
-              style={{ alignSelf: 'center' }}
-            >
-              <Text className="text-white font-bold">Create</Text>
-            </TouchableOpacity>
+          ) : (<View className="mb-3">
+            <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black"  onPress={() => setCreateProduction(true)} />
           </View>
           )}
         </View>}

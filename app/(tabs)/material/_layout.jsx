@@ -8,20 +8,20 @@ export default function MaterialLayout() {
       <Stack.Screen 
         name="index"
         options={{
-            title: ""
-            //headerShown: false, // Hides the header
+            title: "",
+            headerShown: false, // Hides the header
           }}
       />
       <Stack.Screen 
         name="materialPurchaseHistory"
         options={{
-          //headerShown: false, // Hides the header
+          headerShown: false, // Hides the header
         }}
       />
       <Stack.Screen 
         name="materialConsumptionHistory"
         options={{
-          //headerShown: false, // Hides the header
+          headerShown: false, // Hides the header
         }}
       />
     </Stack>

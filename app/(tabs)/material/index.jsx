@@ -4,8 +4,8 @@ import MaterialStockScreen from '@/components/materialStock/MaterialStockScreen'
 
 const Material = () => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+    <SafeAreaView>
+      <View>
         <MaterialStockScreen/>
       </View>
     </SafeAreaView>

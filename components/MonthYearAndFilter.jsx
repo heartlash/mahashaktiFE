@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
+import FontsAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
 
 const MonthYearAndFilter = ({
     setMonth,
@@ -77,23 +79,9 @@ const MonthYearAndFilter = ({
             </View>
 
             {/* Buttons */}
-            <View className="flex-row space-x-4">
-                <View className="flex-1">
-                    <TouchableOpacity
-                        onPress={handleShowPress}
-                        className="bg-green-500 p-4 rounded-lg"
-                    >
-                        <Text className="text-white font-semibold">Show Data</Text>
-                    </TouchableOpacity>
-                </View>
-                <View className="flex-1">
-                    <TouchableOpacity
-                        onPress={() => setCreate(true)}
-                        className="bg-green-500 p-4 rounded-lg"
-                    >
-                        <Text className="text-white font-semibold">Download PDF</Text>
-                    </TouchableOpacity>
-                </View>
+            <View className="flex-row space-x-4 justify-evenly">
+                    <FontsAwesome name="search" size={30} color="green" onPress={handleShowPress} />
+                    <Feather name="download" size={30} color="green" onPress={() => setCreate(true)}/>
             </View>
         </View>
     );

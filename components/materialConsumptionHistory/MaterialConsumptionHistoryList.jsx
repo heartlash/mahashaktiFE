@@ -1,8 +1,8 @@
-import { FlatList } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
 import MaterialConsumptionHistoryItem from './MaterialConsumptionHistoryItem';
 
-const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, setMaterialConsumptionHistoryData }) => {
+const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
@@ -17,16 +17,24 @@ const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, setMat
             onPress={() => handlePress(item.id)}
             editItem={editItem}
             setEditItem={setEditItem}
-            setMaterialConsumptionHistoryData={setMaterialConsumptionHistoryData}
+            onRefreshOnChange={onRefreshOnChange}
         />
     );
 
     return (
         <FlatList
-            data={materialConsumptionHistoryData}
+            ListHeaderComponent={listHeaderComponent}
+            data={materialConsumptionHistoryData.sort((a, b) => new Date(b.consumptionDate) - new Date(a.consumptionDate))}
+
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             extraData={expandedItemId}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing} // Make sure refreshing is set correctly
+                    onRefresh={onRefresh}   // Trigger refresh when pulled down
+                />
+            }
         />
     );
 };

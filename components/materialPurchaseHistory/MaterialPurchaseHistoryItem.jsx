@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, Modal, ActivityIndicator, Alert } from 'react-native';
 import { updateMaterialPurchaseData, deleteMaterialPurchaseData } from '@/lib/materialPurchase';
 import { getUserInfo } from '@/lib/auth';
+import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const MaterialPurchaseHistoryItem = ({ item, isExpanded, onPress, editItem, setEditItem, setMaterialPurchaseHistoryData }) => {
+const MaterialPurchaseHistoryItem = ({ item, isExpanded, onRefreshOnChange, onPress, editItem, setEditItem }) => {
 
     const [edited, setEdited] = useState(item);
     const [loading, setLoading] = useState(false);
@@ -29,9 +32,7 @@ const MaterialPurchaseHistoryItem = ({ item, isExpanded, onPress, editItem, setE
         if (result) {
             setEditItem(null);
             Alert.alert("Success", "Data updated", [{ text: "OK" }]);
-            setMaterialPurchaseHistoryData((prevData) =>
-                prevData.map((data) => (data.id === updatedItem.id ? updatedItem : data))
-            );
+            onRefreshOnChange();
         } else {
             Alert.alert("Failure", "Data updation failed", [{ text: "OK" }]);
         }
@@ -52,9 +53,7 @@ const MaterialPurchaseHistoryItem = ({ item, isExpanded, onPress, editItem, setE
                         const result = await deleteMaterialPurchaseData(item.id);
                         if (result) {
                             Alert.alert("Success", "Data deleted", [{ text: "OK" }]);
-                            setMaterialPurchaseHistoryData((prevData) =>
-                                prevData.filter((data) => data.id !== item.id)
-                            );
+                            onRefreshOnChange();
                         } else {
                             Alert.alert("Failure", "Data deletion failed", [{ text: "OK" }]);
                         }
@@ -67,40 +66,40 @@ const MaterialPurchaseHistoryItem = ({ item, isExpanded, onPress, editItem, setE
 
     return (
         <TouchableOpacity
-            className="bg-white p-4 rounded-lg shadow-md mb-4"
+            className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200"
             onPress={onPress}
         >
-
-            <Text className="text-lg font-bold mb-2">
+            <Text className="text-xl font-bold text-gray-800 mb-4">
                 {new Date(item.purchaseDate).toDateString()}
             </Text>
 
+
             {/* First Row */}
-            <View className="flex-row justify-between mb-2">
-                <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
-                    <Text className="text-gray-600">Material: </Text>
+            <View className="flex-row justify-between mb-3">
+                <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                    <Text className="text-gray-700 font-semibold">Material: </Text>
                     {editItem === item ? (
                         <TextInput
-                            className="border border-gray-300 p-2 rounded text-gray-600"
+                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                             value={edited.materialName.toString()}
                             onChangeText={(text) => handleEditChange('material', text)}
                             keyboardType="numeric"
                             editable={false}
                         />
                     ) : (
-                        <Text className="text-gray-600">{item.materialName}</Text>
+                        <Text className="text-gray-700">{item.materialName}</Text>
                     )}
                 </View>
-                <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row'}`}>
-                    <Text className="text-gray-600">Rate: </Text>
+                <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                    <Text className="text-gray-700 font-semibold">Rate: </Text>
                     {editItem === item ? (
                         <TextInput
-                            className="border border-gray-300 p-2 rounded text-gray-600"
+                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                             value={edited.rate.toString()}
                             onChangeText={(text) => handleEditChange('material', text)}
                         />
                     ) : (
-                        <Text className="text-gray-600">{item.rate}</Text>
+                        <Text className="text-gray-700">{item.rate}</Text>
                     )}
 
                 </View>
@@ -108,82 +107,87 @@ const MaterialPurchaseHistoryItem = ({ item, isExpanded, onPress, editItem, setE
 
             {/* Second Row */}
             <View className="flex-row justify-between mb-2">
-                <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
-                    <Text className="text-gray-600">Quantity:</Text>
+                <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                    <Text className="text-gray-700 font-semibold">Quantity: </Text>
                     {editItem === item ? (
                         <TextInput
-                            className="border border-gray-300 p-2 rounded text-gray-600"
+                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                             value={edited.quantity.toString()}
                             onChangeText={(text) => handleEditChange('quantity', text)}
                             keyboardType="numeric"
                         />
                     ) : (
-                        <Text className="text-gray-600">{item.quantity}</Text>
+                        <Text className="text-gray-700">{item.quantity} {item.unitSymbol}</Text>
                     )}
                 </View>
-                <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row'}`}>
-                    <Text className="text-gray-600">Amount: </Text>
+                <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                    <Text className="text-gray-700 font-semibold">Amount: </Text>
                     {editItem === item ? (
                         <TextInput
-                            className="border border-gray-300 p-2 rounded text-gray-600"
+                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                             value={edited.amount}
                             onChangeText={(text) => handleEditChange('amount', text)}
                         />
                     ) : (
-                        <Text className="text-gray-600">{item.amount}</Text>
+                        <Text className="text-gray-700">{item.amount}</Text>
                     )}
-                </View>
-            </View>
-
-            {/* Third Row */}
-            <View className="flex-row justify-between mb-2">
-
-                <View className="flex-1 pl-2">
-                    <Text className="text-gray-600">Created By: </Text>
-                    <Text className="text-gray-600">{item.createdBy}</Text>
-                </View>
-                <View className="flex-row justify-between mb-2">
-                    <View className="flex-row mb-2">
-                        <Text className="text-gray-600">Updated By: </Text>
-                        <Text className="text-gray-600">{item.updatedBy}</Text>
-                    </View>
                 </View>
             </View>
 
             {isExpanded && (
                 <View>
-                    {/* Fourth Row */}
+                    <View className="flex-row justify-between mb-2">
+
+                        <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                            <Text className="text-gray-700 font-semibold">Created By: </Text>
+                            {editItem === item ? (
+                                <TextInput
+                                    className="border border-gray-300 px-3 py-2 rounded-md text-gray-700 bg-gray-200"
+                                    value={item.createdBy}
+                                    editable={false}
+                                />
+                            ) : (
+                                <Text className="text-gray-700 ml-2">{item.createdBy}</Text>
+                            )}
+                        </View>
+                        <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                            <Text className="text-gray-700 font-semibold">Updated By: </Text>
+                            {editItem === item ? (
+                                <TextInput
+                                    className="border border-gray-300 px-3 py-2 rounded-md text-gray-700 bg-gray-200"
+                                    value={item.updatedBy
+                                    }
+                                    editable={false}
+                                />
+                            ) : (
+                                <Text className="text-gray-700 ml-2">{item.updatedBy}</Text>
+                            )}
+                        </View>
+                    </View>
 
 
-
-
-                    {/* Edit and Delete Buttons */}
-                    <View className="flex-row justify-between mt-4">
-
+                    <View className="flex-row justify-between">
                         {editItem === item ? (
-                            <View className="flex-1 pr-2 flex-row">
-                                <Button title="Cancel" onPress={() => setEditItem(null)} />
+                            <View className="flex-1 flex-row justify-between">
+                                <MaterialIcons name="cancel" size={30} color="black" onPress={() => setEditItem(null)} />
+                                <Entypo name="save" size={30} color="black" onPress={handleSavePress} />
 
-                                <Button title="Save" onPress={handleSavePress} />
                             </View>
                         ) : (
-                            <View className="flex-1 pr-2 flex-row">
-                                <Button title="Delete" color="red" onPress={handleDeletePress} />
-
-                                <Button title="Edit" onPress={() => handleEditPress(item)} />
+                            <View className="flex-1 flex-row justify-between">
+                                <TrashIcon size={24} color="#FF0000" onPress={handleDeletePress} />
+                                <PencilSquareIcon size={24} color="#4A90E2" onPress={() => handleEditPress(item)} />
                             </View>
-
                         )}
 
                         {loading && (
                             <Modal transparent={true}>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <View className="flex-1 justify-center items-center">
                                     <ActivityIndicator size="large" color="#0000ff" />
                                     <Text>Loading...</Text>
                                 </View>
                             </Modal>
                         )}
-
                     </View>
                 </View>
             )}

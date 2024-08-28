@@ -4,10 +4,11 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getUserInfo } from '@/lib/auth';
 import { saveMaterialConsumption } from '@/lib/materialConsumption';
 import moment from 'moment-timezone';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-
-const CreateMaterialConsumption = ({ onClose, materialId }) => {
+const CreateMaterialConsumption = ({ onClose, materialId, onRefreshOnChange }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [consumptionDate, setConsumptionDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -59,7 +60,7 @@ const CreateMaterialConsumption = ({ onClose, materialId }) => {
                 [{ text: "OK" }],
                 { cancelable: false }
             );
-            //setCreateProduction(false)
+            onRefreshOnChange();
 
         } else {
             Alert.alert(
@@ -77,22 +78,22 @@ const CreateMaterialConsumption = ({ onClose, materialId }) => {
     }
 
     return (
-        <View className="bg-white p-4 rounded-lg shadow-md mb-4">
+        <View className="bg-white p-4 mx-2 rounded-lg shadow-lg my-4 border border-gray-200">
             <View className="flex-row justify-between mb-2 ">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-600">Quantity: </Text>
+                    <Text className="text-gray-700 font-semibold">Quantity: </Text>
 
                     <TextInput
-                        className="border border-gray-300 p-2 rounded text-gray-600"
+                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                         onChangeText={(text) => handleNewChange('quantity', text)}
                         keyboardType="numeric"
                     />
                 </View>
                 <View className="flex-1 pl-2">
-                    <Text className="text-gray-600">Consumption Date: </Text>
+                    <Text className="text-gray-700 font-semibold">Consumption Date: </Text>
                     <TouchableOpacity
                         onPress={showDatePicker}
-                        className="border border-gray-300 p-2 rounded bg-white"
+                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                     >
                         <Text className="text-gray-600">
                             {consumptionDate}
@@ -111,8 +112,8 @@ const CreateMaterialConsumption = ({ onClose, materialId }) => {
 
             <View className="flex-row justify-between mt-4">
 
-                <Button title="Cancel" color="red" onPress={onClose} />
-                <Button title="Save" onPress={saveNewMaterialConsumption} />
+                <MaterialIcons name="cancel" size={30} color="black" onPress={onClose} />
+                <Entypo name="save" size={30} color="black" onPress={saveNewMaterialConsumption} />
 
                 {loading && (
                     <Modal transparent={true}>
@@ -122,7 +123,6 @@ const CreateMaterialConsumption = ({ onClose, materialId }) => {
                         </View>
                     </Modal>
                 )}
-
             </View>
         </View>
     )
