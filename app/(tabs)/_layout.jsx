@@ -46,9 +46,9 @@ const TabsLayout = () => {
             />
 
             <Tabs.Screen
-                name="profits"
+                name="money"
                 options={{
-                    title: "Profits",
+                    title: "Money",
                     headerShown: false,
 
                 }}

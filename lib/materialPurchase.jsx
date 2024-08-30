@@ -24,12 +24,24 @@ export const saveMaterialPurchase = async (materialPurchase) => {
 
 export const getMaterialPurchaseHistory = async (materialId, startDate, endDate) => {
     try {
-        const response = await Backend.get(`/material/purchase/materialId/${materialId}`, {
-            params: {
-                startDate,
-                endDate,
-            },
-        });
+        var response;
+        if (materialId != null) {
+            response = await Backend.get(`/material/purchase/materialId/${materialId}`, {
+                params: {
+                    startDate,
+                    endDate,
+                },
+            });
+        }
+
+        else {
+            response = await Backend.get("/material/purchase", {
+                params: {
+                    startDate,
+                    endDate,
+                },
+            });
+        }
 
         console.log("see response: ", response.data)
         if (response.data.status == 'SUCCESS') {

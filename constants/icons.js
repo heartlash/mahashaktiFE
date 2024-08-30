@@ -17,7 +17,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export const tabIcons = {
     home: (props)=> <AntDesign name="home" size={20} {...props} />,
-    profits: (props)=> <MaterialIcons name="attach-money" size={20} color="black" {...props}/>,
+    money: (props)=> <MaterialIcons name="attach-money" size={20} color="black" {...props}/>,
     admin: (props)=> <AntDesign name="pluscircleo" size={20} {...props} />,
     profile: (props)=> <Feather name="user" size={20} {...props} />,
     production: (props)=> <AntDesign name="user" size={20} {...props} />,

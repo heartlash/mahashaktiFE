@@ -7,7 +7,7 @@ export const USER_INFO_KEY = "userInfo"
 // Create an Axios instance
 
 const Backend = axios.create({
-  baseURL: 'http://192.168.1.11:8080/mahashakti',
+  baseURL: 'http://192.168.1.15:8080/mahashakti',
 });
 
 // Function to set the Authorization header

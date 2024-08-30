@@ -81,7 +81,7 @@ const MonthYearAndFilter = ({
             {/* Buttons */}
             <View className="flex-row space-x-4 justify-evenly">
                     <FontsAwesome name="search" size={30} color="green" onPress={handleShowPress} />
-                    <Feather name="download" size={30} color="green" onPress={() => setCreate(true)}/>
+                    <Feather name="download" size={30} color="green" />
             </View>
         </View>
     );
