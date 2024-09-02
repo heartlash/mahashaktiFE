@@ -8,7 +8,7 @@ import ActivityGrid from '@/components/homeScreen/ActivityGrid';
 import MaterialStockCarousel from '@/components/homeScreen/MaterialStockCarousel';
 
 
-const home = () => {
+const index = () => {
 
   const [refreshing, setRefreshing] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
@@ -39,4 +39,4 @@ const home = () => {
   )
 }
 
-export default home
+export default index

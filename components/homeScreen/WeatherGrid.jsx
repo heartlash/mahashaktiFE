@@ -64,7 +64,7 @@ const WeatherGrid = ({refreshTrigger}) => {
         contentContainerStyle={{ flexGrow: 1 }}
         renderItem={({ item }) => (
           <TouchableOpacity 
-            className="bg-secondary rounded-2xl flex-none mx-1"
+            className="rounded-3xl flex-none px-2"
             activeOpacity={0.7}
             style={{ width: screenWidth }}
           >

@@ -6,7 +6,7 @@ import {Canvas, Text} from '@shopify/react-native-skia';
 
 const AnimatedText = ({selectedValue, font}) => {
   const {width} = useWindowDimensions();
-  const MARGIN_VERTICAL = 50;
+  const MARGIN_VERTICAL = 25;
 
   const animatedText = useDerivedValue(() => {
     return `${Math.round(selectedValue.value)}`;
@@ -21,7 +21,7 @@ const AnimatedText = ({selectedValue, font}) => {
 
   return (
     <Canvas style={{height: fontSize.height + MARGIN_VERTICAL}}>
-      <Text text={animatedText} className="justify-center" font={font} color={'white'} x={textX} y={fontSize.height + MARGIN_VERTICAL / 2}/>
+      <Text text={animatedText} className="justify-center" font={font} color={'black'} x={textX} y={fontSize.height + MARGIN_VERTICAL / 2}/>
     </Canvas>
   );
 };

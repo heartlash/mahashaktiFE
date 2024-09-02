@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { FlatList, View, Dimensions, ImageBackground, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { getMaterialStock } from "@/lib/materialStock";
 import { router } from 'expo-router';
-
+import { getUserInfo } from "@/lib/auth";
 
 const MaterialStockCarousel = ({ refreshTrigger }) => {
   const flatlistRef = useRef();
@@ -11,6 +11,7 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [materialStockData, setMaterialStockData] = useState(null);
   const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchMaterialStock = async () => {
@@ -24,7 +25,7 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
     };
 
     fetchMaterialStock();
-  }, [refreshTrigger]); // Empty dependency array to run this effect only once on mount
+  }, [refreshTrigger]);
 
   useEffect(() => {
     if (!materialStockData || materialStockData.length === 0) {
@@ -37,7 +38,7 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
         return newIndex;
       });
     }, 2000);
-  
+
     return () => clearInterval(interval);
   }, [materialStockData, refreshTrigger]);
 
@@ -48,29 +49,21 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
   });
 
   const renderItem = ({ item }) => (
-    <View style={{ width: itemWidth, height: "100%" }}>
-      {loading ? (
-        <ActivityIndicator size="small" color="#0000ff" className="pt-5" />
-      ) : (
-        <TouchableOpacity onPress={() => router.push('/material')}>
-          <ImageBackground
-            source={item.image}
-            style={{ height: "100%", width: "100%" }}
-            imageStyle={{ borderRadius: 10 }}
-          >
-            <View className="flex-none h-full flex-row">
-              <View className="basis-1/2 pl-3">
-                <Text className="text-left font-bold text-black text-xl pt-3 pb-2">{item.material}</Text>
-                <Text className="text-left font-psemibold text-black">Stock</Text>
-              </View>
-              <View className="basis-1/2 pr-3">
-                <Text className="text-black text-xl font-bold text-right pt-3 pb-2">{item.quantity} {item.unit}</Text>
-                <Text className="text-black font-bold text-right">10 Days</Text>
-              </View>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
-      )}
+    <View style={{ width: itemWidth, height: "100%" }} className="px-2">
+
+      <TouchableOpacity onPress={() => router.push('/material')} className="bg-cyan-200 rounded-3xl">
+        <View className="flex-none h-full flex-row">
+          <View className="basis-1/2 pl-5">
+            <Text className="text-left font-bold text-black text-xl pt-7 pb-3">{item.material}</Text>
+            <Text className="text-left font-bold text-black">Stock</Text>
+          </View>
+          <View className="basis-1/2 pr-5">
+            <Text className="text-black text-xl font-bold text-right pt-7 pb-3">{item.quantity} {item.unit}</Text>
+            <Text className="text-black font-bold text-right">{item.wouldLastFor} Days</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
     </View>
   );
 
@@ -83,8 +76,12 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
     setActiveIndex(index);
   };
 
+  if (loading) {
+    return <View className="pt-12"><ActivityIndicator size="small" color="#0000ff" /></View>
+  }
+
   return (
-    <View className="mx-2" style={{ height: '25%', width: '100%' }}>
+    <View style={{ height: '25%', width: '100%' }}>
       <FlatList
         data={materialStockData}
         ref={flatlistRef}

@@ -6,7 +6,7 @@ import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import RNPickerSelect from 'react-native-picker-select';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onPress, editItem, setEditItem, onRefreshOnChange }) => {
 
@@ -63,6 +63,9 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
             ]
         );
     };
+
+    if(loading) 
+        return <AnimatedActivityIndicator/>
 
     return (
         <TouchableOpacity
@@ -148,18 +151,9 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
                             </View>
                         ) : (
                             <View className="flex-1 flex-row justify-between">
-                                <TrashIcon size={24} color="#FF0000" onPress={handleDeletePress} />
-                                <PencilSquareIcon size={24} color="#4A90E2" onPress={() => handleEditPress(item)} />
+                                <TrashIcon size={24} color="black" onPress={handleDeletePress} />
+                                <PencilSquareIcon size={24} color="black" onPress={() => handleEditPress(item)} />
                             </View>
-                        )}
-
-                        {loading && (
-                            <Modal transparent={true}>
-                                <View className="flex-1 justify-center items-center">
-                                    <ActivityIndicator size="large" color="#0000ff" />
-                                    <Text>Loading...</Text>
-                                </View>
-                            </Modal>
                         )}
                     </View></View>)}
 

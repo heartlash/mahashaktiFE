@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { ScrollView, StyleSheet, Text, View, SafeAreaView, RefreshControl, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DonutChart from '../donut/DonutChart';
 import { useFont } from '@shopify/react-native-skia';
@@ -28,6 +28,11 @@ export const MaterialExpensesChart = () => {
     const colors = ['#fe769c', '#46a0f8', '#c3f439', '#88dabc', '#e43433', '#ff9cb1', '#5ab0ff', '#d5f97a',
         '#a2ebd2', '#f75a59', '#ffa3c3', '#71b8ff', '#e1ff8c', '#b8eed9', '#ff7b7a'];
 
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchMaterialPurchaseHistory().then(() => setRefreshing(false));
+    }, []);
 
     const fetchMaterialPurchaseHistory = async () => {
         const { startDate, endDate } = getMonthStartAndEndDate(month, year)
@@ -44,7 +49,6 @@ export const MaterialExpensesChart = () => {
 
             setMaterialToAmountExpense(materialToAmountMapped);
             generateData(materialToAmountMapped);
-            console.log("see here chart data: ", materialToAmountMapped);
 
         }
         if (result.data == null)
@@ -103,7 +107,6 @@ export const MaterialExpensesChart = () => {
 
         return <View />
     }
-    console.log("just before return all good")
     return (
         <View>
             <View className="mx-2 my-1">
@@ -111,7 +114,13 @@ export const MaterialExpensesChart = () => {
             </View>
             <ScrollView
                 contentContainerStyle={{ alignItems: 'center' }}
-                showsVerticalScrollIndicator={false}>
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }>
                 <View style={styles.chartContainer}>
                     <DonutChart
                         radius={RADIUS}
@@ -125,7 +134,7 @@ export const MaterialExpensesChart = () => {
                     />
                 </View>
                 {data.map((item, index) => {
-                    return <RenderItem item={item} key={index} index={index} goTo={"/material"}/>;
+                    return <RenderItem item={item} key={index} index={index} goTo={"/material"} />;
                 })}
 
 
@@ -136,7 +145,6 @@ export const MaterialExpensesChart = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: 'white',
     },
     chartContainer: {

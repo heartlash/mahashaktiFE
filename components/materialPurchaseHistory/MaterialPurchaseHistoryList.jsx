@@ -2,7 +2,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
 import MaterialPurchaseHistoryItem from './MaterialPurchaseHistoryItem';
 
-const MaterialPurchaseHistoryList = ({ materialPurchaseHistoryData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing }) => {
+const MaterialPurchaseHistoryList = ({ materialPurchaseHistoryData, onRefreshOnChange, onRefresh, refreshing }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
@@ -23,7 +23,6 @@ const MaterialPurchaseHistoryList = ({ materialPurchaseHistoryData, listHeaderCo
 
     return (
         <FlatList
-            ListHeaderComponent={listHeaderComponent}
             data={materialPurchaseHistoryData.sort((a, b) => new Date(a.purchaseDate) - new Date(b.purchaseDate))}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}

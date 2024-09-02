@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, FlatList, Button, Text, Animated } from 'react-native';
 import FlockItem from './FlockItem';
 
-const FLockChangePaginatedList = ({ data, setFlockChangeData, scrollY }) => {
+const FLockChangePaginatedList = ({ listHeaderComponent, data, setFlockChangeData, scrollY }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
 
@@ -37,6 +37,7 @@ const FLockChangePaginatedList = ({ data, setFlockChangeData, scrollY }) => {
         return (
             <View style={{ flex: 1 }}>
                 <FlatList
+                    ListHeaderComponent={listHeaderComponent}
                     data={currentPageData}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id.toString()}

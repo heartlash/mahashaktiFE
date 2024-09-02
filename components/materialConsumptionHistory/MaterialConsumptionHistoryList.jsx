@@ -2,7 +2,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
 import MaterialConsumptionHistoryItem from './MaterialConsumptionHistoryItem';
 
-const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing }) => {
+const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, onRefreshOnChange, onRefresh, refreshing }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
@@ -23,9 +23,7 @@ const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, listHe
 
     return (
         <FlatList
-            ListHeaderComponent={listHeaderComponent}
             data={materialConsumptionHistoryData.sort((a, b) => new Date(b.consumptionDate) - new Date(a.consumptionDate))}
-
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             extraData={expandedItemId}

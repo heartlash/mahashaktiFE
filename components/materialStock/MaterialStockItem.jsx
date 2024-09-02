@@ -8,19 +8,13 @@ import CreateMaterialPurchase from './CreateMaterialPurchase'
 import { useNavigation } from '@react-navigation/native';
 
 
-const MaterialStockItem = ({ item, onRefreshOnChange }) => {
+const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress }) => {
 
   const [showRecordConsumption, setShowRecordConsumption] = useState(false)
   const [showRecordPurchase, setShowRecordPurchase] = useState(false)
-  const [selectedMaterial, setSelectedMaterial] = useState(null)
   const [showRecordButtons, setShowRecordButtons] = useState(true)
 
   const navigation = useNavigation();
-
-  const handlePressOnMaterial = (item) => {
-    if (selectedMaterial == null) setSelectedMaterial(item)
-    else setSelectedMaterial(null)
-  }
 
   const handlePressOnRecordPurchase = () => {
     setShowRecordButtons(false)
@@ -57,8 +51,8 @@ const MaterialStockItem = ({ item, onRefreshOnChange }) => {
 
   return (
     <TouchableOpacity
-      onPress={() => handlePressOnMaterial(item)}
-      className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200"
+      onPress={onPress}
+      className="bg-white p-4 mx-2 rounded-lg shadow-sm mb-4 border border-gray-200"
     >
       <View>
         <View className="flex-row justify-between mb-3">
@@ -84,11 +78,11 @@ const MaterialStockItem = ({ item, onRefreshOnChange }) => {
         </View>
         <View className="flex-row justify-between mb-3">
           <Text className="text-gray-700 font-semibold">Last Purchase Rate</Text>
-          <Text className="text-gray-700">{item.lastPurchaseRate} per {item.unit}</Text>
+          <Text className="text-gray-700">₹{item.lastPurchaseRate} per {item.unit}</Text>
         </View>
 
         {/* Conditionally render the CreateMaterialPurchase component only for the selected item */}
-        {selectedMaterial === item && (
+        {isExpanded && (
           <>
             {showRecordButtons && (
               <View>

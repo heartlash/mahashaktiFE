@@ -8,12 +8,15 @@ export const getSaleHomeData = async () => {
 
         if(response.data.status == 'SUCCESS') {
             var saleCount = 0;
-
+            var averageSaleRate = 0;
             for(var saleData of response.data.data) {
                 saleCount+=saleData.soldCount;
+                averageSaleRate+=saleData.rate;
             }
+            averageSaleRate=parseFloat(averageSaleRate/response.data.data.length).toFixed(2);
             return {
                 saleCount,
+                averageSaleRate,
                 saleDate: getFormattedDate(response.data.data[0].saleDate)
             }
         }

@@ -36,12 +36,13 @@ export const getVendorsCredits = async () => {
 
 export const settleVendorCredit = async (vendorId, amount) => {
     try {
-        const response = await Backend.post('/sale/credits/settle', {
+        const response = await Backend.post('/sale/credits/settle', null, {
             params: {
                 vendorId: vendorId,
                 amount: amount
             }
         });
+     
 
         console.log(response.data);
 

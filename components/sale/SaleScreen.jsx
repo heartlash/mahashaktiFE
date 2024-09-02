@@ -14,17 +14,23 @@ import { getVendorsData } from '@/lib/vendor';
 import MonthYearSelector from '../MonthYearAndFilter';
 import { getFormattedDate } from '@/lib/util';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
 const SaleScreen = () => {
 
     const [selectedDate, setSelectedDate] = useState(null);
     const selectedValue = useSharedValue(0);
-    const font = useFont(require('../../assets/fonts/Roboto-Regular.ttf'), 60);
+    const font = useFont(require('../../assets/fonts/Roboto-Regular.ttf'), 50);
+
+    const [loading, setLoading] = useState(true);
 
     const [saleData, setSaleData] = useState([]);
     const [storedSaleData, setStoredSaleData] = useState([]);
+    const [averageRatePerCarton, setAverageRatePerCarton] = useState(0);
+    const [averageDailySaleCount, setAverageDailySaleCount] = useState(0);
+
+
 
     const [createSale, setCreateSale] = useState(false)
     const [vendorData, setVendorData] = useState([]);
@@ -74,29 +80,21 @@ const SaleScreen = () => {
     }
 
     const consolidateSalesData = (saleData) => {
-        // Create an empty map to store aggregated data
         const aggregatedData = new Map();
 
-        // Loop through each item in the data
         saleData.forEach(({ saleDate, soldCount }) => {
             if (aggregatedData.has(saleDate)) {
-                // If the date already exists in the map, add to the existing soldCount
                 aggregatedData.set(saleDate, aggregatedData.get(saleDate) + soldCount);
             } else {
-                // Otherwise, set the initial soldCount for the new date
                 aggregatedData.set(saleDate, soldCount);
             }
         });
 
-        // Convert the map back to an array of objects
         const result = Array.from(aggregatedData, ([saleDate, soldCount]) => ({
             value: soldCount,
             label: saleDate,
             date: getFormattedDate(saleDate)
         }));
-
-        console.log("works till here: ", result)
-        console.log("saleData till here: ", saleData)
 
         return result.reverse();
     };
@@ -107,20 +105,32 @@ const SaleScreen = () => {
         setSelectedYear(year);
         setUpdateComponent(!updateComponent);
 
-        console.log("see current filters: ", vendorFilter, paidFilter)
-
         const filteredData = filterData()
         setSaleData(filteredData)
     };
 
     const fetchSaleDataDateRange = async () => {
 
-        console.log("use effect ran")
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
         const result = await getSaleDataDateRange(startDate, endDate);
-        console.log("see result in sale screen: ", result)
-        setSaleData(result)
-        setStoredSaleData(result)
+
+        if (result != null) {
+            setSaleData(result)
+            setStoredSaleData(result)
+            var count = 0
+            var sumOfRatePerCarton = 0
+            var sumOfDailySold = 0
+            for(var data of result) {
+                count++
+                sumOfRatePerCarton+=data.rate
+                sumOfDailySold+=data.soldCount
+            }
+            setAverageRatePerCarton(parseFloat(sumOfRatePerCarton/count).toFixed(2))
+            setAverageDailySaleCount(parseFloat(sumOfDailySold/count).toFixed(2))
+
+            setLoading(false)
+
+        } else setLoading(true)
 
     }
 
@@ -132,17 +142,19 @@ const SaleScreen = () => {
                 vendorList.push({ label: data.name, value: data.id });
             }
             setVendorData(vendorList);
-        }
+            setLoading(false)
+        } else setLoading(true)
     }
 
     useEffect(() => {
-
         fetchSaleDataDateRange();
         fetchVendorData();
 
     }, [selectedMonth, selectedYear, refresh])
 
-    console.log("see vendorData in useEffect: ", vendorData)
+    if (loading) {
+        return <AnimatedActivityIndicator />
+    }
 
     return (
         <GestureHandlerRootView>
@@ -151,7 +163,7 @@ const SaleScreen = () => {
                     {saleData.length > 0 && storedSaleData.length > 0 ? (
                         <View style={styles.container}>
                             <SystemBars animated={true} barStyle={'light-content'} />
-                            {selectedDate ? (<Text style={styles.text}>{selectedDate}</Text>) : <Text style={styles.text}>{selectedDate} Production</Text>}
+                            {selectedDate ? (<Text style={styles.text}>{selectedDate}</Text>) : <Text style={styles.text}>{selectedDate} Sale</Text>}
                             <AnimatedText selectedValue={selectedValue} font={font} />
                             <LineChart
                                 data={consolidateSalesData(storedSaleData)}
@@ -159,6 +171,15 @@ const SaleScreen = () => {
                                 selectedValue={selectedValue}
                                 type="Sale"
                             />
+                            <View className="flex flex-row">
+                                <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Rate Per Carton</Text>
+                                <Text className="text-right text-gray-700 font-semibold  mb-2">{averageRatePerCarton}</Text>
+                            </View>
+                            <View className="flex flex-row">
+                                <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Daily Sold</Text>
+                                <Text className="text-right text-gray-700 font-semibold  mb-2">{averageDailySaleCount}</Text>
+
+                            </View>
                         </View>) : (<></>)}
 
                     <MonthYearSelector setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress}
@@ -199,11 +220,12 @@ export default SaleScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0d0d0d',
+        backgroundColor: '#FFFDD0',
     },
     text: {
-        color: 'white',
+        color: 'black',
         fontSize: 24,
+        paddingTop: 10,
         textAlign: 'center',
         fontFamily: 'Roboto-Regular',
     },

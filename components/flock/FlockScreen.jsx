@@ -1,13 +1,17 @@
-import { View, Text, FlatList, Dimensions, Button, TouchableOpacity, Animated } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
+import { View, Text, StyleSheet, RefreshControl, Animated, ScrollView } from 'react-native'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { getFlockCount, getFlockChange, saveFlockChange, updateFlockChange, deleteFlockChange } from '@/lib/flock';
 import FLockChangePaginatedList from './FlockChangePaginatedList';
 import CreateFlockChange from './CreateFlockChange';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
 
 
 const FlockScreen = () => {
 
+    const navigation = useNavigation()
     const [flockCount, setFlockCount] = useState(0)
     const [flockChangeData, setFlockChangeData] = useState([])
     const [showFlockChangeHistory, setShowFlockChangeHistory] = useState(false)
@@ -15,6 +19,11 @@ const FlockScreen = () => {
 
     const [loading, setLoading] = useState(true)
 
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchFlockData().then(() => setRefreshing(false));
+    }, []);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -31,76 +40,62 @@ const FlockScreen = () => {
         extrapolate: 'clamp',
     });
 
+    const fetchFlockData = async () => {
+        const count = await getFlockCount();
+        if (count != null) {
+            setFlockCount(count);
+            setLoading(false);
+        } else {
+            setLoading(true);
+        }
+
+        const resultFlockChange = await getFlockChange();
+        if (resultFlockChange.errorMessage == null) {
+            setFlockChangeData(resultFlockChange.data);
+            setLoading(false);
+        } else {
+            setLoading(true);
+        }
+    };
+
     useEffect(() => {
-        const fetchFlockData = async () => {
-            const count = await getFlockCount();
-            if (count != null) {
-                setFlockCount(count);
-                console.log("value is set: ", flockCount)
-                setLoading(false);
-            } else {
-                setLoading(true);
-            }
-
-            const resultFlockChange = await getFlockChange();
-            if (resultFlockChange.errorMessage == null) {
-                setFlockChangeData(resultFlockChange.data);
-                console.log("value is set: ", flockChangeData)
-                setLoading(false);
-            } else {
-                setLoading(true);
-            }
-        };
-
         fetchFlockData();
     }, []);
 
 
     return (
-        <View className="flex-1">
-            {/* First View (Animated) */}
-            <Animated.View
-                style={{
-                    height: headerHeight,
-                    opacity: headerOpacity,
-                    overflow: 'hidden', // Ensure the view collapses correctly
-                }}
-                className="bg-blue-500 p-4 justify-center items-center"
-            >
-                <Text className="text-2xl font-bold text-white">Total Flock: {flockCount}</Text>
-                <Text className="text-lg text-white mt-2">Total Sales: $12345</Text>
-            </Animated.View>
+        <FLockChangePaginatedList
+            listHeaderComponent={<>
+              <View className="mx-2 my-1">
+                    <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+                </View>
+                <View style={styles.container} className="p-10 justify-center items-center mb-4">
+                    <Text className="text-xl font-bold text-black">Total Flock: {flockCount} </Text>
+                </View>
 
-
-            {createNewFlockChange ? (
-                <CreateFlockChange
-                    onClose={() => setCreateNewFlockChange(false)}
-                />
-            ) : (<TouchableOpacity
-                onPress={() => setCreateNewFlockChange(true)}
-                className="bg-blue-500 p-4 rounded-lg mb-2 center self-start w-auto"
-            >
-                <Text className="text-white font-bold">Create</Text>
-            </TouchableOpacity>
-            )}
-
-
-            <TouchableOpacity
-                onPress={() => setShowFlockChangeHistory(!showFlockChangeHistory)}
-                className="bg-blue-500 p-4 rounded-lg mb-2"
-            >
-                <Text className="text-white font-bold">{showFlockChangeHistory ? 'Hide History' : 'Show History'}</Text>
-            </TouchableOpacity>
-
-            {showFlockChangeHistory ? (
-                <FLockChangePaginatedList data={flockChangeData.sort((a, b) => a.date.localeCompare(b.date))}
-                    onClose={() => setShowFlockChangeHistory(false)} setFlockChangeData={setFlockChangeData} scrollY={scrollY}
-                />
-            ) : (<></>)}
-        </View>
+                {createNewFlockChange ? (
+                    <CreateFlockChange
+                        onClose={() => setCreateNewFlockChange(false)}
+                    />
+                ) : (<View className="mb-3">
+                    <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateNewFlockChange(true)} />
+                </View>
+                )}
+            </>
+            }
+            data={flockChangeData.sort((a, b) => a.date.localeCompare(b.date))}
+            onClose={() => setShowFlockChangeHistory(false)} setFlockChangeData={setFlockChangeData} scrollY={scrollY}
+        />
     );
 }
 
 
 
 export default FlockScreen
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FFFDD0',
+    }
+});

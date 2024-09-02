@@ -34,7 +34,7 @@ const Gradient = ({
   return (
     <Path path={getGradientArea(curvedLine, chartWidth, chartHeight)}>
       <LinearGradient start={{x: 0, y: 0}} end={animationGradient} 
-      colors={['rgba(234, 249, 132, 0.2)', 'rgba(234, 249, 132, 0)']}
+      colors={['rgba(0, 255, 0, 0.2)', 'rgba(0, 255, 0, 0)']}
       />
     </Path>
   );

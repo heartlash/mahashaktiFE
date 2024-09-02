@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState, useCallback } from 'react'
 import { getMaterialStock } from '@/lib/materialStock';
 import MaterialStockList from './MaterialStockList';
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
 
@@ -54,13 +55,16 @@ const MaterialStockScreen = () => {
         fetchMaterialStock();
     }, [refresh]);
 
+    if (loading) {
+        return <AnimatedActivityIndicator />
+    }
 
     return (
         <MaterialStockList
             listHeaderComponent=
             {materialStockData.length > 0 ? (
-                <View
-                    className="bg-white-50 p-10 justify-center items-center mb-4"
+                <View style={styles.container}
+                    className="p-10 justify-center items-center mb-4"
                 >
                     <Text className="text-xl font-bold text-black">Total Materials: {materialStockData.length}</Text>
                     <Text className="text-lg text-black mt-2">Out of Stock: {outOfStock}</Text>
@@ -81,13 +85,7 @@ export default MaterialStockScreen
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#0d0d0d',
-    },
-    text: {
-      color: 'white',
-      fontSize: 24,
-      textAlign: 'center',
-      fontFamily: 'Roboto-Regular',
-    },
-  });
+        flex: 1,
+        backgroundColor: '#FFFDD0',
+    }
+});

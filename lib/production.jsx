@@ -33,8 +33,6 @@ export const getProductionDataDateRange = async (startDate, endDate) => {
             }
         });
 
-        console.log(response.data);
-
         if (response.data.status == 'SUCCESS') {
             for (var data of response.data.data) {
                 data.value = data.producedCount
@@ -51,8 +49,8 @@ export const getProductionDataDateRange = async (startDate, endDate) => {
         console.log(error);
         return {
             data: null,
-            errorMessage: error.response.data.errorMessage
-        };
+            errorMessage: error
+        }
     }
 }
 

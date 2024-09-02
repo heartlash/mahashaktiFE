@@ -1,14 +1,12 @@
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, SafeAreaView } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import MaterialConsumptionHistoryList from '@/components/materialConsumptionHistory/MaterialConsumptionHistoryList';
-import RNPickerSelect from 'react-native-picker-select';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import { getMaterialConsumptionHistory } from '@/lib/materialConsumption';
 import MonthYearAndFilter from '@/components/MonthYearAndFilter';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import NoDataFound from '@/components/NoDataFound';
 
 
 const MaterialConsumptionHistory = () => {
@@ -67,25 +65,21 @@ const MaterialConsumptionHistory = () => {
 
     return (
         <SafeAreaView>
-
+            <View>
+                <View className="mx-2 my-1">
+                    <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+                </View>
+                <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />
+            </View>
             {materialConsumptionHistoryData.length > 0 ? (
                 <MaterialConsumptionHistoryList
-                    listHeaderComponent={
-                        <View>
-                            <View className="mx-2 my-1">
-                                <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
-                            </View>
-
-                            <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />
-                        </View>
-                    }
                     materialConsumptionHistoryData={materialConsumptionHistoryData.reverse()}
                     setMaterialConsumptionHistoryData={setMaterialConsumptionHistoryData}
                     onRefreshOnChange={onRefreshOnChange}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                 />
-            ) : (<NoDataFound/>)}
+            ) : (<></>)}
 
 
 

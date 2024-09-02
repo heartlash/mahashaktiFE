@@ -6,6 +6,7 @@ import { saveProductionData } from '@/lib/production';
 import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
 
@@ -161,12 +162,7 @@ const CreateProduction = ({ onClose, onRefreshOnChange }) => {
 
 
           {loading && (
-            <Modal transparent={true}>
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Loading...</Text>
-              </View>
-            </Modal>
+            <AnimatedActivityIndicator/>
           )}
 
         </View>

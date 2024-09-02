@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {Canvas, Path, Skia} from '@shopify/react-native-skia';
-import {curveBasis, line, scaleLinear, scalePoint} from 'd3';
-import { haredValue, clamp, runOnJS, useSharedValue, withDelay, withTiming} from 'react-native-reanimated';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import { Canvas, Path, Skia } from '@shopify/react-native-skia';
+import { curveBasis, line, scaleLinear, scalePoint } from 'd3';
+import { haredValue, clamp, runOnJS, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Cursor from './Cursor';
-import {getYForX, parse} from 'react-native-redash';
+import { getYForX, parse } from 'react-native-redash';
 import Gradient from './Gradient';
 import { useWindowDimensions } from 'react-native';
 
@@ -21,21 +21,21 @@ const LineChart = ({
   const { width: CHART_WIDTH } = useWindowDimensions();
   const [showCursor, setShowCursor] = useState(false);
   const animationLine = useSharedValue(0);
-  const animationGradient = useSharedValue({x: 0, y: 0});
+  const animationGradient = useSharedValue({ x: 0, y: 0 });
   const cx = useSharedValue(20);
   const cy = useSharedValue(0);
   const totalValue = data.reduce((acc, cur) => acc + cur.value, 0);
 
   useEffect(() => {
     // Animate the line and the gradient
-    animationLine.value = withTiming(1, {duration: 1000});
+    animationLine.value = withTiming(1, { duration: 1000 });
     animationGradient.value = withDelay(
       1000,
-      withTiming({x: 0, y: CHART_HEIGHT}, {duration: 500}),
+      withTiming({ x: 0, y: CHART_HEIGHT }, { duration: 500 }),
     );
     selectedValue.value = withTiming(totalValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
 
   // x domain
   const xDomain = data.map((dataPoint) => dataPoint.label);
@@ -49,7 +49,8 @@ const LineChart = ({
   const stepX = x.step();
 
   // Find the max and min values of the data
-  const max = Math.max(...data.map(val => val.value));
+  var max = Math.max(...data.map(val => val.value));
+  max = max + 0.1*max
   const min = Math.min(...data.map(val => val.value));
   // y domain
   const yDomain = [0, max];
@@ -110,15 +111,18 @@ const LineChart = ({
           width: CHART_WIDTH,
           height: CHART_HEIGHT,
         }}>
-        <Path style="stroke" path={linePath} strokeWidth={4} color="#eaf984" end={animationLine} start={0} 
-        strokeCap={'round'}
+        <Path style="stroke" path={linePath} strokeWidth={4} color="black" end={animationLine} start={0}
+          strokeCap={'round'}
         />
 
         <Gradient chartHeight={CHART_HEIGHT} chartWidth={CHART_WIDTH} chartMargin={CHART_MARGIN}
           animationGradient={animationGradient} curvedLine={curvedLine}
         />
-       
-        {showCursor && <Cursor cx={cx} cy={cy} chartHeight={CHART_HEIGHT} />}
+        {data.length > 1 && showCursor ?
+          (
+            <Cursor cx={cx} cy={cy} chartHeight={CHART_HEIGHT} />
+          ) : (<></>)
+        }
         
       </Canvas>
     </GestureDetector>

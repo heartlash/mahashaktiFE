@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, Modal, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Button, Modal, ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { deleteSaleData, updateSaleData, groupSalesByDate } from '@/lib/sale';
 import { getUserInfo } from '@/lib/auth';
 import { PencilIcon, PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
-const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleData, vendorData, onRefreshOnChange }) => {
+const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData, onRefreshOnChange }) => {
 
   const [edited, setEdited] = useState(item);
   const [loading, setLoading] = useState(false);
@@ -64,11 +66,13 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
     );
   };
 
+  if(loading) 
+    return <AnimatedActivityIndicator/>
 
   return (
 
     <TouchableOpacity
-      className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200"
+      className="bg-white p-4 mx-2 rounded-lg shadow-sm mb-4 border border-gray-200"
       onPress={onPress}
     >
       {/* First Row */}
@@ -87,7 +91,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
           )}
         </View>
         <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-          <Text className="text-gray-700 font-semibold">Rate: </Text>
+          <Text className="text-gray-700 font-semibold">Rate Per Carton: </Text>
           {editItem === item ? (
             <TextInput
               className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
@@ -205,21 +209,11 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
               </View>
             ) : (
               <View className="flex-1 flex-row justify-between">
-                <TrashIcon size={24} color="#FF0000" onPress={handleDeletePress} />
-                <PencilSquareIcon size={24} color="#4A90E2" onPress={() => handleEditPress(item)} />
+                <TrashIcon size={24} color="black" onPress={handleDeletePress} />
+                <PencilSquareIcon size={24} color="black" onPress={() => handleEditPress(item)} />
               </View>
             )}
-          </View>
-
-          {/* Loading Indicator */}
-          {loading && (
-            <Modal transparent={true}>
-              <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-                <ActivityIndicator size="large" color="#ffffff" />
-                <Text className="text-white mt-4">Loading...</Text>
-              </View>
-            </Modal>
-          )}
+          </View>         
         </View>
       )}
     </TouchableOpacity>
@@ -229,3 +223,13 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, setSaleDat
 };
 
 export default SaleItem;
+
+
+
+
+const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      backgroundColor: 'white',
+  }
+});

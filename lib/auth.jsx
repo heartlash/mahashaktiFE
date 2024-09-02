@@ -9,7 +9,7 @@ export const USER_INFO_KEY = "userInfo"
 export const login = async (username, password) => {
   try {
     console.log("login is called");
-    const response = await axios.post("http://192.168.1.15:8080/mahashakti/users/login", {
+    const response = await Backend.post("/users/login", {
       username,
       password
     }, {
@@ -27,7 +27,7 @@ export const login = async (username, password) => {
         name,
         role
       }));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.data.accessToken}`;
+      Backend.defaults.headers.common['Authorization'] = `Bearer ${response.data.data.accessToken}`;
 
     }
     return response.data.status;
@@ -39,7 +39,7 @@ export const login = async (username, password) => {
 export const signup = async (name, phoneNumber, email, password) => {
   try {
     console.log("login is called");
-    const response = await axios.post("http://localhost:8080/mahashakti/users/signup", {
+    const response = await Backend.post("/mahashakti/users/signup", {
       name, phoneNumber, email, password
     }, {
       headers: {
@@ -58,7 +58,7 @@ export const logout = async () => {
   await SecureStore.deleteItemAsync(TOKEN_KEY);
   await SecureStore.deleteItemAsync(USER_INFO_KEY);
 
-  delete axios.defaults.headers.common['Authorization'];
+  delete Backend.defaults.headers.common['Authorization'];
 }
 
 export const getUserInfo = async () => {

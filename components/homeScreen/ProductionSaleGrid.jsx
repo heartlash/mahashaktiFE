@@ -5,7 +5,7 @@ import { getSaleHomeData } from '@/lib/sale';
 import { router } from 'expo-router';
 
 
-const ProductionSaleGrid = ({refreshTrigger}) => {
+const ProductionSaleGrid = ({ refreshTrigger }) => {
 
   const [productionDate, setProductionDate] = useState(null);
   const [productionCount, setProductionCount] = useState(null);
@@ -14,18 +14,18 @@ const ProductionSaleGrid = ({refreshTrigger}) => {
 
   const [saleDate, setSaleDate] = useState(null);
   const [saleCount, setSaleCount] = useState(null);
+  const [averageSaleRate, setAverageSaleRate] = useState(null);
 
   const [loadingProduction, setLoadingProduction] = useState(true);
   const [loadingSale, setLoadingSale] = useState(true);
 
 
   useEffect(() => {
-    const fetchProductionHomeData = async() => {
-    
+    const fetchProductionHomeData = async () => {
+
       const result = await getProductionHomeData();
-      console.log("see refresh control now: ", refreshTrigger)
-      
-      if(result !=null) {
+
+      if (result != null) {
         setProductionDate(result.productionDate)
         setProductionCount(result.productionCount)
         setProductionPercentage(result.productionPercentage)
@@ -41,14 +41,15 @@ const ProductionSaleGrid = ({refreshTrigger}) => {
 
     fetchProductionHomeData();
 
-    const fetchSaleHomeData = async() => {
-    
+    const fetchSaleHomeData = async () => {
+
       const result = await getSaleHomeData();
       console.log("see value returned: ", result)
-      
-      if(result !=null) {
+
+      if (result != null) {
         setSaleDate(result.saleDate)
         setSaleCount(result.saleCount)
+        setAverageSaleRate(result.averageSaleRate)
         setLoadingSale(false);
       } else {
         setSaleDate(null)
@@ -65,51 +66,52 @@ const ProductionSaleGrid = ({refreshTrigger}) => {
 
 
   return (
-    <View className="flex flex-row pb-2" style={{height: '25%' }}>
-      
-            <View className="basis-1/2">
-            <TouchableOpacity 
-            className="bg-amber-300 rounded-2xl flex-1 mx-1"
-            activeOpacity={0.7}
-            onPress={() => router.push('/production')}
-            >
-                <View className="flex-none h-full items-center">
+    <View className="flex flex-row pb-2 px-2" style={{ height: '25%' }}>
+      <View className="basis-1/2 pr-1">
+        <TouchableOpacity
+          className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
+          activeOpacity={0.7}
+          onPress={() => router.push('/production')}
+        >
+          <View className="flex-none h-full items-center">
+            <Text className="text-center font-pmedium text-black text-xl pt-7">PROD</Text>
+            {loadingProduction ? (
+              <ActivityIndicator size="small" color="#0000ff" className="pt-5" />
+            ) : (
+              <View>
+                <Text className="text-center font-pregular text-black text-lg pt-2">{productionDate}</Text>
+                <Text className="text-center font-bold text-lime-950 border border-gray-600 text-xl pt-2">{productionCount}</Text>
+                <Text className="text-center font-pregular text-lime-950 text-lg pt-2">{productionPercentage}%</Text>
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+      </View>
+  
+      <View className="basis-1/2 pl-1">
+        <TouchableOpacity
+          className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
+          activeOpacity={0.7}
+          onPress={() => router.push('/sale')}
+        >
+          <View className="flex-none h-full items-center">
+            <Text className="text-center font-pmedium text-black text-xl pt-7">SALE</Text>
+            {loadingSale ? (
+              <ActivityIndicator size="small" color="#0000ff" className="pt-5" />
+            ) : (
+              <View>
+                <Text className="text-center font-pregular text-black text-lg pt-2">{saleDate}</Text>
+                <Text className="text-center font-bold text-lime-950 text-xl pt-2">{saleCount}</Text>
+                <Text className="text-center font-pregular text-lime-950 text-lg pt-2">@ ₹{averageSaleRate}</Text>
 
-                  <Text className = "text-center font-bold text-white text-2xl pt-7">Production</Text>
-                  { loadingProduction ? ( <ActivityIndicator size="small" color="#0000ff" className="pt-5"/>) : (
-                    <View>
-                  <Text className="text-center font-bold text-white text-xl pt-2">{productionDate}</Text>
-                  <Text className="text-center font-bold text-white text-xl pt-2">{productionCount}</Text>
-                  <Text className="text-center font-bold text-white text-xl pt-2">{productionPercentage}%</Text>
-                  </View>
-                  )}
-                </View>
-            </TouchableOpacity>
-            </View>
-
-            <View className="basis-1/2">
-            <TouchableOpacity 
-            className="bg-amber-300 rounded-2xl flex-1 mx-1"
-            activeOpacity={0.7}
-            onPress={() => router.push('/sale')}
-            >
-                <View className="flex-none h-full items-center">
-
-                  <Text className = "text-center font-bold text-white text-2xl pt-7">Sale</Text>
-                  {loadingSale ? (<ActivityIndicator size="small" color="#0000ff" className="pt-5"/>) : (
-                    <View>
-                      <Text className="text-center font-bold text-white text-xl pt-2">{saleDate}</Text>
-                      <Text className="text-center font-bold text-white text-xl pt-2">{saleCount}</Text>
-                    </View>
-                  )}
-                  
-                </View>
-            </TouchableOpacity>
-            </View>
-         
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
-
-  )
+  );
+  
 }
 
 export default ProductionSaleGrid

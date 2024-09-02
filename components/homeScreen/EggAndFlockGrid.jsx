@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { getFlockCount } from '@/lib/flock';
 import { getEggCount } from '@/lib/egg';
 import { router } from 'expo-router';
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 const EggAndFlockGrid = ({refreshTrigger}) => {
 
@@ -15,11 +16,9 @@ const EggAndFlockGrid = ({refreshTrigger}) => {
 
   useEffect(() => {
     const fetchFlockCount = async() => {
-    
       const count = await getFlockCount();
-      console.log("see value returned: ", count)
       
-      if(typeof count !=='undefined') {
+      if(count != null) {
         setFlockCount(count)
         setLoadingFlock(false);
       } else {
@@ -32,11 +31,9 @@ const EggAndFlockGrid = ({refreshTrigger}) => {
     fetchFlockCount();
 
     const fetchEggCount = async() => {
-    
       const count = await getEggCount();
-      console.log("see value returned: ", count)
-      
-      if(typeof count !=='undefined') {
+    
+      if(count != null) {
         setEggCount(count)
         setLoadingEgg(false);
       } else {
@@ -54,30 +51,30 @@ const EggAndFlockGrid = ({refreshTrigger}) => {
 
 
   return (
-    <View className="flex flex-row pb-2" style={{height: '20%' }}>
+    <View className="flex flex-row pb-2 px-2" style={{height: '20%' }}>
 
-      <View className="basis-1/2">
+      <View className="basis-1/2 pr-1">
         <TouchableOpacity 
-        className="bg-amber-300 rounded-2xl flex-1 mx-1"
+        className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
         activeOpacity={0.7}>
           <View className="flex-none h-full items-center">
-            <Text className = "text-center font-bold text-white text-2xl pt-5">Eggs In Stock</Text>
+            <Text className = "text-center font-pmedium text-black text-xl pt-7">EGG STOCK</Text>
             {loadingEgg ? ( <ActivityIndicator size="small" color="#0000ff" className="pt-5"/>) : (
-              <Text className = "text-center font-bold text-white text-2xl pt-5">{eggCount}</Text>
+              <Text className = "text-center font-bold text-lime-950 text-xl pt-5">{eggCount}</Text>
             )} 
             </View>
         </TouchableOpacity>
       </View>
 
-      <View className="basis-1/2">
+      <View className="basis-1/2 pl-1">
         <TouchableOpacity 
-        className="bg-amber-300 rounded-2xl flex-1 mx-1"
+        className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
         activeOpacity={0.7}
-        onPress={() => router.push('/flock')}>
+        onPress={() => router.push('/home/flock')}>
           <View className="flex-none h-full items-center">
-            <Text className = "text-center font-bold text-white text-2xl pt-5">Flocks</Text>
+            <Text className = "text-center font-pmedium text-black text-xl pt-7">FLOCK</Text>
             {loadingFlock ? ( <ActivityIndicator size="small" color="#0000ff" className="pt-5"/>) : (
-              <Text className = "text-center font-bold text-white text-2xl pt-5">{flockCount}</Text>
+              <Text className = "text-center font-bold text-lime-950 text-xl pt-5">{flockCount}</Text>
             )}             
           </View>
         </TouchableOpacity>

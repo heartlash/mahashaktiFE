@@ -3,6 +3,10 @@ import { View, Text, TouchableOpacity, TextInput, Button, Modal, ActivityIndicat
 import RNPickerSelect from 'react-native-picker-select';
 import { updateFlockChange, deleteFlockChange } from '@/lib/flock';
 import { getUserInfo } from '@/lib/auth';
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
+import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, setFlockChangeData }) => {
@@ -69,11 +73,13 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, setFlockC
         );
     };
 
+    if (loading)
+        return <AnimatedActivityIndicator />
 
     return (
 
         <TouchableOpacity
-            className="bg-white p-4 rounded-lg shadow-md mb-4"
+            className="bg-white p-4 mx-2 rounded-lg shadow-sm mb-4 border border-gray-200"
             onPress={onPress}
         >
 
@@ -150,32 +156,19 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, setFlockC
                         </View>
                     </View>
                     {/* Edit and Delete Buttons */}
-                    <View className="flex-row justify-between mt-4">
-
+                    <View className="flex-row justify-between">
                         {editItem === item ? (
-                            <View className="flex-1 pr-2 flex-row">
-                                <Button title="Cancel" onPress={() => setEditItem(null)} />
+                            <View className="flex-1 flex-row justify-between">
+                                <MaterialIcons name="cancel" size={30} color="black" onPress={() => setEditItem(null)} />
+                                <Entypo name="save" size={30} color="black" onPress={handleSavePress} />
 
-                                <Button title="Save" onPress={handleSavePress} />
                             </View>
                         ) : (
-                            <View className="flex-1 pr-2 flex-row">
-                                <Button title="Delete" color="red" onPress={handleDeletePress} />
-
-                                <Button title="Edit" onPress={() => handleEditPress(item)} />
+                            <View className="flex-1 flex-row justify-between">
+                                <TrashIcon size={24} color="black" onPress={handleDeletePress} />
+                                <PencilSquareIcon size={24} color="black" onPress={() => handleEditPress(item)} />
                             </View>
-
                         )}
-
-                        {loading && (
-                            <Modal transparent={true}>
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                    <ActivityIndicator size="large" color="#0000ff" />
-                                    <Text>Loading...</Text>
-                                </View>
-                            </Modal>
-                        )}
-
                     </View>
                 </View>
             )}

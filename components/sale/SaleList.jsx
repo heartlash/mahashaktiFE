@@ -17,6 +17,7 @@ const SaleList = ({ saleData, setSaleData, listHeaderComponent, vendorData, onRe
         ListHeaderComponent={listHeaderComponent}
         data={Object.keys(groupedSales)}
         keyExtractor={(date) => date}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item: date }) => (
           <View>
                 <Text className="text-lg font-bold text-gray-800 mb-2 mx-3">{date}</Text>

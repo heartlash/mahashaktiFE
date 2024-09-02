@@ -5,10 +5,7 @@ import { getFormattedDate } from "./util";
 export const getMaterialStock = async () => {
     try {
         var materialStockDataList = []
-        console.log("comes here to material stock")
         const response = await Backend.get("/analytics/material-stock");
-        console.log("after here to material stock")
-        //console.log("see material stock: ", response.data);
 
         if (response.data.status == 'SUCCESS') {
             var index = 1
@@ -25,6 +22,6 @@ export const getMaterialStock = async () => {
         };
     } catch (error) {
         console.log(error);
-        return { data: null, errorMessage: error.response.data.errorMessage }
+        return { data: null, errorMessage: error }
     }
 }

@@ -5,7 +5,7 @@ import { getUserInfo } from '@/lib/auth';
 import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefreshOnChange }) => {
 
@@ -63,9 +63,12 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
     );
   };
 
+  if(loading) 
+    return <AnimatedActivityIndicator/>
+
   return (
     <TouchableOpacity
-      className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200"
+      className="bg-white p-4 mx-2 rounded-lg shadow-sm mb-4 border border-gray-200"
       onPress={onPress}
     >
       <Text className="text-xl font-bold text-gray-800 mb-4">
@@ -215,18 +218,9 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
               </View>
             ) : (
               <View className="flex-1 flex-row justify-between">
-                <TrashIcon size={24} color="#FF0000" onPress={handleDeletePress} />
-                <PencilSquareIcon size={24} color="#4A90E2" onPress={() => handleEditPress(item)} />
+                <TrashIcon size={24} color="black" onPress={handleDeletePress} />
+                <PencilSquareIcon size={24} color="black" onPress={() => handleEditPress(item)} />
               </View>
-            )}
-
-            {loading && (
-              <Modal transparent={true}>
-                <View className="flex-1 justify-center items-center">
-                  <ActivityIndicator size="large" color="#0000ff" />
-                  <Text>Loading...</Text>
-                </View>
-              </Modal>
             )}
           </View>
         </View>
