@@ -9,6 +9,7 @@ import { useGlobalSearchParams } from 'expo-router';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import { getOperationalExpenses } from '@/lib/operationalExpense';
 import { useNavigation } from '@react-navigation/native';
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
 const RADIUS = 160;
@@ -105,8 +106,7 @@ export const OperationalExpensesChart = () => {
     const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 25);
 
     if (!font || !smallFont) {
-        console.log("they are null")
-        return <SafeAreaView><Text>HUHHH</Text></SafeAreaView>
+        return <AnimatedActivityIndicator/>
     }
     console.log("just before return all good")
     return (

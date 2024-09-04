@@ -129,7 +129,6 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, setFlockC
                             className="border border-gray-300 p-2 rounded text-gray-600"
                             value={edited.remarks.toString()}
                             onChangeText={(text) => handleEditChange('remarks', text)}
-                            keyboardType="numeric"
                         />
                     ) : (
                         <Text className="text-gray-600">{item.remarks}</Text>

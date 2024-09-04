@@ -192,6 +192,7 @@ const SaleScreen = () => {
                         <CreateSale
                             onClose={() => setCreateSale(false)}
                             vendorData={vendorData}
+                            onRefreshOnChange={onRefreshOnChange}
                         />
                     ) : (
                         <View className="mb-3">

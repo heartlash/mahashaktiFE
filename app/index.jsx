@@ -50,7 +50,7 @@ export default function Welcome() {
           </Text>
           <CustomButton
             title="Get Started"
-            handlePress={() => router.push('sign-in')}
+            handlePress={() => router.push('login')}
             containerStyles="w-full mt-7"
             />
         </View>

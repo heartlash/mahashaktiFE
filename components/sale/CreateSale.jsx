@@ -17,6 +17,8 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
     const [loading, setLoading] = useState(false)
     const [newItem, setNewItem] = useState(null);
 
+    const [amount, setAmount] = useState('');
+
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -38,10 +40,29 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
 
 
     const handleNewChange = (field, value) => {
-        setNewItem((prevItem) => ({
-            ...prevItem,
-            [field]: value,
-        }));
+        setNewItem((prevItem) => {
+            const updatedItem = {
+                ...prevItem,
+                [field]: value,
+            };
+
+            // Check if the field is either 'soldCount' or 'rate' and update the 'amount' accordingly
+            if (field === 'soldCount' || field === 'rate') {
+                const soldCount = field === 'soldCount' ? parseFloat(value) : parseFloat(updatedItem.soldCount);
+                const rate = field === 'rate' ? parseFloat(value) : parseFloat(updatedItem.rate);
+
+                // Calculate the amount only if both soldCount and rate are valid numbers
+                if (!isNaN(soldCount) && !isNaN(rate)) {
+                    updatedItem.amount = (soldCount * rate).toFixed(2);
+                    setAmount(updatedItem.amount)
+                } else {
+                    updatedItem.amount = ''; // Clear the amount if the inputs are invalid
+                    setAmount('')
+
+                }
+            }
+            return updatedItem;
+        });
     };
 
     const saveNewItem = async () => {
@@ -65,7 +86,7 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
                 [{ text: "OK" }],
                 { cancelable: false }
             );
-            //setCreateProduction(false)
+            onRefreshOnChange()
 
         } else {
             Alert.alert(
@@ -128,10 +149,10 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
                 </View>
                 <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Amount: </Text>
-
                     <TextInput
                         className="border border-gray-300 p-2 rounded text-gray-600"
-                        onChangeText={(text) => handleNewChange('amount', text)}
+                        value={amount}
+                        editable={false} // Make the field non-editable
                     />
 
                 </View>
@@ -146,7 +167,20 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
                             onValueChange={(value) => handleNewChange('vendor', value)}
                             items={vendorData}
                             placeholder={{ label: 'Choose Vendor', value: null }}
-                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700" />
+                            style={{
+                                inputIOS: {
+                                    borderColor: '#D1D5DB', // Tailwind gray-300
+                                    padding: 8,
+                                    borderRadius: 8,
+                                    color: '#4B5563', // Tailwind gray-700
+                                },
+                                inputAndroid: {
+                                    borderColor: '#D1D5DB',
+                                    padding: 8,
+                                    borderRadius: 8,
+                                    color: '#4B5563',
+                                }
+                            }} />
                     </View>
 
                 </View>
@@ -161,13 +195,26 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
                                 { label: 'No', value: false },
                             ]}
                             placeholder={{ label: 'Choose Paid Status', value: null }}
-                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700" />
+                            style={{
+                                inputIOS: {
+                                    borderColor: '#D1D5DB', // Tailwind gray-300
+                                    padding: 8,
+                                    borderRadius: 8,
+                                    color: '#4B5563', // Tailwind gray-700
+                                },
+                                inputAndroid: {
+                                    borderColor: '#D1D5DB',
+                                    padding: 8,
+                                    borderRadius: 8,
+                                    color: '#4B5563',
+                                }
+                            }} />
                     </View>
                 </View>
 
             </View>
             <View className="flex-row justify-between mt-4">
-                <MaterialIcons name="cancel" size={30} color="black" onPress={onClose}  />
+                <MaterialIcons name="cancel" size={30} color="black" onPress={onClose} />
                 <Entypo name="save" size={30} color="black" onPress={saveNewItem} />
 
                 {loading && (

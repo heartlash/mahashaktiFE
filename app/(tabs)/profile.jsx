@@ -7,7 +7,7 @@ const Profile = () => {
 
   const onPress = async() => {
     await logout();
-    router.push('/sign-in');
+    router.push('/login');
   }
 
   return (

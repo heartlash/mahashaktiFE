@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import React from 'react'
 import OperationalExpensesScreen from '@/components/operationalExpenses/OperationalExpensesScreen'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 
 const operationalExpensesScreen = () => {
