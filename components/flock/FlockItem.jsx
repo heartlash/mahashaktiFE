@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, Modal, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { updateFlockChange, deleteFlockChange } from '@/lib/flock';
 import { getUserInfo } from '@/lib/auth';
@@ -9,7 +9,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, setFlockChangeData }) => {
+const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [edited, setEdited] = useState(item);
     const [loading, setLoading] = useState(false);
@@ -28,22 +28,27 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, setFlockC
     };
 
     const handleSavePress = async () => {
-        setLoading(true);
+        setSubmitModalVisible(true);
         const userInfo = await getUserInfo();
         var updatedItem = { ...edited, updatedBy: userInfo.name };
         updatedItem.count = Math.abs(updatedItem.count)
         console.log("see updated item:", updatedItem)
         const result = await updateFlockChange(updatedItem);
-        if (result) {
+        setSubmitModalVisible(false);
+        if (result.errorMessage == null) {
             setEditItem(null);
-            Alert.alert("Success", "Data updated", [{ text: "OK" }]);
-            setFlockChangeData((prevData) =>
-                prevData.map((data) => (data.id === updatedItem.id ? updatedItem : data))
-            );
+            setSuccessModalVisible(true)
+            setTimeout(() => {
+                onRefreshOnChange()
+                setSuccessModalVisible(false);
+            }, 2000);
+
         } else {
-            Alert.alert("Failure", "Data updation failed", [{ text: "OK" }]);
+            setFailureModalVisible(true)
+            setTimeout(() => {
+                setFailureModalVisible(false);
+            }, 2000);
         }
-        setLoading(false);
     };
 
     const handleDeletePress = async () => {
@@ -56,17 +61,22 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, setFlockC
                     text: "Delete",
                     style: "destructive",
                     onPress: async () => {
-                        setLoading(true);
+                        setSubmitModalVisible(true);
                         const result = await deleteFlockChange(item.id);
-                        if (result) {
-                            Alert.alert("Success", "Data deleted", [{ text: "OK" }]);
-                            setFlockChangeData((prevData) =>
-                                prevData.filter((data) => data.id !== item.id)
-                            );
+                        setSubmitModalVisible(false);
+                        if (result.errorMessage == null) {
+                            setSuccessModalVisible(true)
+                            setTimeout(() => {
+                                onRefreshOnChange()
+                                setSuccessModalVisible(false);
+                            }, 2000);
+
                         } else {
-                            Alert.alert("Failure", "Data deletion failed", [{ text: "OK" }]);
+                            setFailureModalVisible(true)
+                            setTimeout(() => {
+                                setFailureModalVisible(false);
+                            }, 2000);
                         }
-                        setLoading(false);
                     },
                 },
             ]

@@ -5,13 +5,14 @@ export const getVendorsData = async () => {
     try {
         const response = await Backend.get("/data/vendors");
 
-        if (response.data.status == 'SUCCESS') {
-            return response.data.data;
-        }
-        else return null;
+        return { data: response.data.data, errorMessage: null }
+
     } catch (error) {
         console.log(error);
-        return null;
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }
 
@@ -19,18 +20,14 @@ export const getVendorsCredits = async () => {
 
     try {
         const response = await Backend.get("/sale/credits");
+        return { data: response.data.data, errorMessage: null }
 
-        if (response.data.status == 'SUCCESS') {
-
-            return { data: response.data.data, errorMessage: null }
-        }
-        else return {
-            data: null,
-            errorMessage: response.data.message
-        };
     } catch (error) {
         console.log(error);
-        return { data: null, errorMessage: error.response.data.errorMessage }
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }
 
@@ -42,20 +39,13 @@ export const settleVendorCredit = async (vendorId, amount) => {
                 amount: amount
             }
         });
-     
 
-        console.log(response.data);
+        return { data: response.data.data, errorMessage: null }
 
-        if (response.data.status == 'SUCCESS') {
-
-            return { data: response.data.data, errorMessage: null }
-        }
-        else return {
-            data: null,
-            errorMessage: response.data.message
-        };
     } catch (error) {
-        console.log(error);
-        return { data: null, errorMessage: error.response.data.errorMessage }
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }

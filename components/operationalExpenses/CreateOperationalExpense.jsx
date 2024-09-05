@@ -10,11 +10,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
-const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefreshOnChange }) => {
+const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [expenseDate, setExpenseDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
-    const [loading, setLoading] = useState(false)
     const [newOperationalExpense, setNewOperationalExpense] = useState(null);
 
 
@@ -45,38 +44,29 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
     };
 
     const saveNewOperationalExpense = async () => {
-        setLoading(true)
-        console.log("see on save: ", moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'))
+        setSubmitModalVisible(true)
         // Make API call to save changes
         const userInfo = await getUserInfo();
         var temp = newOperationalExpense
         temp.createdBy = userInfo.name
         temp.expenseDate = expenseDate
-        console.log("see temp:", temp)
         const result = await saveOperationalExpense(temp);
-        console.log("see result: ", result)
+        setSubmitModalVisible(false)
         if (result.errorMessage == null) {
             setNewOperationalExpense(null)
-            Alert.alert(
-                "Success",
-                "Date saved",
-                [{ text: "OK" }],
-                { cancelable: false }
-            );
-            onRefreshOnChange();
+            setSuccessModalVisible(true)
+            setTimeout(() => {
+                onRefreshOnChange()
+                setSuccessModalVisible(false);
+            }, 2000);
 
         } else {
-            Alert.alert(
-                "Failure",
-                result.errorMessage,
-                [{ text: "OK" }],
-                { cancelable: false }
-            );
+            setFailureModalVisible(true)
+            setTimeout(() => {
+                setFailureModalVisible(false);
+            }, 2000);
+
         }
-
-        setLoading(false)
-
-        onClose();
     }
 
 
@@ -126,24 +116,13 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
                     />
 
                 </View>
-              
+
             </View>
 
-            
+
             <View className="flex-row justify-between mt-4">
                 <MaterialIcons name="cancel" size={30} color="black" onPress={onClose} />
                 <Entypo name="save" size={30} color="black" onPress={saveNewOperationalExpense} />
-
-
-                {loading && (
-                    <Modal transparent={true}>
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size="large" color="#0000ff" />
-                            <Text>Loading...</Text>
-                        </View>
-                    </Modal>
-                )}
-
             </View>
         </View>
     )

@@ -8,7 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-const CreateMaterialConsumption = ({ onClose, materialId, onRefreshOnChange }) => {
+const CreateMaterialConsumption = ({ onClose, materialId, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [consumptionDate, setConsumptionDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -41,39 +41,31 @@ const CreateMaterialConsumption = ({ onClose, materialId, onRefreshOnChange }) =
     };
 
     const saveNewMaterialConsumption = async () => {
-        setLoading(true)
+        setSubmitModalVisible(true)
         // Make API call to save changes
         const userInfo = await getUserInfo();
         var temp = newMaterialConsumption
         temp.createdBy = userInfo.name
         temp.materialId = materialId
         temp.consumptionDate = consumptionDate
-        console.log("see temp:", temp)
 
         const result = await saveMaterialConsumption(temp);
-        console.log("see result: ", result)
+        setSubmitModalVisible(false)
         if (result.errorMessage == null) {
             setNewMaterialConsumption(null)
-            Alert.alert(
-                "Success",
-                "Date saved",
-                [{ text: "OK" }],
-                { cancelable: false }
-            );
-            onRefreshOnChange();
+            setSuccessModalVisible(true)
+            setTimeout(() => {
+                onRefreshOnChange()
+                setSuccessModalVisible(false);
+            }, 2000);
 
         } else {
-            Alert.alert(
-                "Failure",
-                result.errorMessage,
-                [{ text: "OK" }],
-                { cancelable: false }
-            );
+            setFailureModalVisible(true)
+            setTimeout(() => {
+                setFailureModalVisible(false);
+            }, 2000);
+
         }
-
-        setLoading(false)
-
-        onClose();
 
     }
 

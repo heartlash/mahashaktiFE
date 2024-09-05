@@ -2,7 +2,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
 import MaterialStockItem from './MaterialStockItem'
 
-const MaterialStockList = ({ materialStockData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing }) => {
+const MaterialStockList = ({ materialStockData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
 
     const handlePress = (itemId) => {
@@ -15,6 +15,9 @@ const MaterialStockList = ({ materialStockData, listHeaderComponent, onRefreshOn
             isExpanded={expandedItemId === item.id}
             onPress={() => handlePress(item.id)}
             onRefreshOnChange={onRefreshOnChange}
+            setSuccessModalVisible={setSuccessModalVisible}
+            setFailureModalVisible={setFailureModalVisible}
+            setSubmitModalVisible={setSubmitModalVisible}
         />
     );
 

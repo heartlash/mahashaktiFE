@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Alert, TouchableOpacity, Button, ActivityIndicator, Modal, StyleSheet } from 'react-native'
+import { View, Text, TextInput, Alert, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getUserInfo } from '@/lib/auth';
@@ -7,14 +7,12 @@ import { saveFlockChange } from '@/lib/flock';
 import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
-const CreateFlockChange = ({ onClose }) => {
+const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [changeDate, setChangeDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
-    const [loading, setLoading] = useState(false)
     const [newMaterialConsumption, setNewMaterialConsumption] = useState(null);
 
 
@@ -43,38 +41,29 @@ const CreateFlockChange = ({ onClose }) => {
     };
 
     const saveNewFlockChange = async () => {
-        setLoading(true)
-        // Make API call to save changes
+        setSubmitModalVisible(true)
+
         const userInfo = await getUserInfo();
         var temp = newMaterialConsumption
         temp.createdBy = userInfo.name
         temp.date = changeDate
-        console.log("see temp:", temp)
 
         const result = await saveFlockChange(temp);
-        console.log("see result: ", result)
+        setSubmitModalVisible(false)
         if (result.errorMessage == null) {
             setNewMaterialConsumption(null)
-            Alert.alert(
-                "Success",
-                "Date saved",
-                [{ text: "OK" }],
-                { cancelable: false }
-            );
-            //setCreateProduction(false)
+            setSuccessModalVisible(true)
+            setTimeout(() => {
+                onRefreshOnChange()
+                setSuccessModalVisible(false);
+            }, 2000);
 
         } else {
-            Alert.alert(
-                "Failure",
-                result.errorMessage,
-                [{ text: "OK" }],
-                { cancelable: false }
-            );
+            setFailureModalVisible(true)
+            setTimeout(() => {
+                setFailureModalVisible(false);
+            }, 2000);
         }
-
-        setLoading(false)
-
-        onClose();
 
     }
 
@@ -137,10 +126,6 @@ const CreateFlockChange = ({ onClose }) => {
             <View className="flex-row justify-between mt-4">
                 <MaterialIcons name="cancel" size={30} color="black" onPress={onClose} />
                 <Entypo name="save" size={30} color="black" onPress={saveNewFlockChange} />
-
-                {loading && (
-                    <AnimatedActivityIndicator />
-                )}
 
             </View>
         </View>

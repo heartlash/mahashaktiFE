@@ -1,4 +1,4 @@
-import { Text, View, useWindowDimensions, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { SystemBars } from 'react-native-bars';
 import LineChart from '../chart/LineChart';
@@ -15,6 +15,7 @@ import MonthYearSelector from '../MonthYearAndFilter';
 import { getFormattedDate } from '@/lib/util';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
+import CustomModal from '../CustomModal';
 
 
 const SaleScreen = () => {
@@ -34,6 +35,11 @@ const SaleScreen = () => {
 
     const [createSale, setCreateSale] = useState(false)
     const [vendorData, setVendorData] = useState([]);
+
+    const [successModalVisible, setSuccessModalVisible] = useState(false)
+    const [failureModalVisible, setFailureModalVisible] = useState(false)
+    const [submitModalVisible, setSubmitModalVisible] = useState(false)
+
 
 
     const [updateComponent, setUpdateComponent] = useState(false);
@@ -114,19 +120,19 @@ const SaleScreen = () => {
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
         const result = await getSaleDataDateRange(startDate, endDate);
 
-        if (result != null) {
-            setSaleData(result)
-            setStoredSaleData(result)
+        if (result.errorMessage == null) {
+            setSaleData(result.data)
+            setStoredSaleData(result.data)
             var count = 0
             var sumOfRatePerCarton = 0
             var sumOfDailySold = 0
-            for(var data of result) {
+            for (var data of result.data) {
                 count++
-                sumOfRatePerCarton+=data.rate
-                sumOfDailySold+=data.soldCount
+                sumOfRatePerCarton += data.rate
+                sumOfDailySold += data.soldCount
             }
-            setAverageRatePerCarton(parseFloat(sumOfRatePerCarton/count).toFixed(2))
-            setAverageDailySaleCount(parseFloat(sumOfDailySold/count).toFixed(2))
+            setAverageRatePerCarton(parseFloat(sumOfRatePerCarton / count).toFixed(2))
+            setAverageDailySaleCount(parseFloat(sumOfDailySold / count).toFixed(2))
 
             setLoading(false)
 
@@ -137,8 +143,8 @@ const SaleScreen = () => {
     const fetchVendorData = async () => {
         const result = await getVendorsData();
         var vendorList = []
-        if (result != null) {
-            for (var data of result) {
+        if (result.errorMessage == null) {
+            for (var data of result.data) {
                 vendorList.push({ label: data.name, value: data.id });
             }
             setVendorData(vendorList);
@@ -158,6 +164,10 @@ const SaleScreen = () => {
 
     return (
         <GestureHandlerRootView>
+            <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
+            <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
+            <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
+
             <SaleList
                 listHeaderComponent={<View>
                     {saleData.length > 0 && storedSaleData.length > 0 ? (
@@ -172,7 +182,7 @@ const SaleScreen = () => {
                                 type="Sale"
                             />
                             <View className="flex flex-row">
-                                <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Rate Per Carton</Text>
+                                <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Rate Per Egg</Text>
                                 <Text className="text-right text-gray-700 font-semibold  mb-2">{averageRatePerCarton}</Text>
                             </View>
                             <View className="flex flex-row">
@@ -193,6 +203,9 @@ const SaleScreen = () => {
                             onClose={() => setCreateSale(false)}
                             vendorData={vendorData}
                             onRefreshOnChange={onRefreshOnChange}
+                            setSuccessModalVisible={setSuccessModalVisible}
+                            setFailureModalVisible={setFailureModalVisible}
+                            setSubmitModalVisible={setSubmitModalVisible}
                         />
                     ) : (
                         <View className="mb-3">
@@ -209,7 +222,11 @@ const SaleScreen = () => {
                 vendorData={vendorData}
                 onRefreshOnChange={onRefreshOnChange}
                 onRefresh={onRefresh}
-                refreshing={refreshing} />
+                refreshing={refreshing}
+                setSuccessModalVisible={setSuccessModalVisible}
+                setFailureModalVisible={setFailureModalVisible}
+                setSubmitModalVisible={setSubmitModalVisible}
+            />
 
         </GestureHandlerRootView>
 

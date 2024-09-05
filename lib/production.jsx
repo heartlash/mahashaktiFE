@@ -6,19 +6,23 @@ export const getProductionHomeData = async () => {
     try {
         const response = await Backend.get("/production/latest");
 
-        if (response.data.status == 'SUCCESS') {
 
-            return {
+        return {
+            data: {
                 productionDate: getFormattedDate(response.data.data.productionDate),
                 productionCount: response.data.data.producedCount,
-                productionPercentage: response.data.data.productionPercentage,
-            }
+                productionPercentage: response.data.data.productionPercentage
+            },
+            errorMessage: null
 
         }
-        else return null;
+
     } catch (error) {
         console.log(error);
-        return null;
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }
 
@@ -33,23 +37,19 @@ export const getProductionDataDateRange = async (startDate, endDate) => {
             }
         });
 
-        if (response.data.status == 'SUCCESS') {
-            for (var data of response.data.data) {
-                data.value = data.producedCount
-                data.label = data.productionDate
-                data.date = getFormattedDate(data.productionDate)
-                productionDataList.push(data)
-            }
-            return { data: productionDataList, errorMessage: null }
-        } else return {
-            data: null,
-            errorMessage: response.data.message
+        for (var data of response.data.data) {
+            data.value = data.producedCount
+            data.label = data.productionDate
+            data.date = getFormattedDate(data.productionDate)
+            productionDataList.push(data)
         }
+        return { data: productionDataList, errorMessage: null }
+
     } catch (error) {
         console.log(error);
         return {
             data: null,
-            errorMessage: error
+            errorMessage: error.response?.data?.errorMessage || error.message || error
         }
     }
 }
@@ -65,18 +65,12 @@ export const updateProductionData = async (updatedProductionData) => {
             }
         );
 
-        if (response.data.status == 'SUCCESS') {
-            return { data: response.data, errorMessage: null }
-        } else return {
-            data: null,
-            errorMessage: response.data.message
-        }
+        return { data: response.data, errorMessage: null }
 
     } catch (error) {
-        console.error('Error updating item:', error);
         return {
             data: null,
-            errorMessage: error.response.data.errorMessage
+            errorMessage: error.response?.data?.errorMessage || error.message || error
         };
     }
 };
@@ -85,18 +79,13 @@ export const deleteProductionData = async (productionDataId) => {
     try {
         const response = await Backend.delete(`/production/${productionDataId}`);
 
-        if (response.data.status == 'SUCCESS') {
-            return { data: response.data, errorMessage: null }
-        } else return {
-            data: null,
-            errorMessage: response.data.message
-        }
+        return { data: response.data, errorMessage: null }
 
     } catch (error) {
         console.error('Error updating item:', error);
         return {
             data: null,
-            errorMessage: error.response.data.errorMessage
+            errorMessage: error.response?.data?.errorMessage || error.message || error
         };
     }
 };
@@ -112,23 +101,17 @@ export const saveProductionData = async (productionData) => {
                 },
             });
 
-        console.log("see response: ", response)
-        if (response.data.status == 'SUCCESS') {
-            return {
-                data: response.data,
-                errorMessage: null
-            }
-        } else return {
-            data: null,
-            errorMessage: response.data.message
-        };
+
+        return {
+            data: response.data,
+            errorMessage: null
+        }
 
     } catch (error) {
-        console.error('Error updating item:', error);
-        console.error('see response', response);
+
         return {
             data: null,
-            errorMessage: error.response.data.errorMessage
+            errorMessage: error.response?.data?.errorMessage || error.message || error
         };
     }
 };

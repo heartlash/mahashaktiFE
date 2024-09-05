@@ -77,7 +77,6 @@ export const OperationalExpensesChart = () => {
 
     const generateData = (operationExpenseItemToAmountExpense) => {
 
-        console.log("see this is called")
         const generateNumbers = Object.values(operationExpenseItemToAmountExpense)
         const materialNames = Object.keys(operationExpenseItemToAmountExpense)
 
@@ -106,7 +105,7 @@ export const OperationalExpensesChart = () => {
     const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 25);
 
     if (!font || !smallFont) {
-        return <AnimatedActivityIndicator/>
+        return <AnimatedActivityIndicator />
     }
     console.log("just before return all good")
     return (

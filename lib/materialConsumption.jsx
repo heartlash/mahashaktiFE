@@ -7,17 +7,14 @@ export const saveMaterialConsumption = async (materialConsumption) => {
         const response = await Backend.post("/material/consumption", [materialConsumption]);
         console.log("after here to material stock")
 
-        if (response.data.status == 'SUCCESS') {           
-    
-            return { data: response.data.data, errorMessage: null }
-        }
-        else return {
-            data: null,
-            errorMessage: response.data.message
-        };
+        return { data: response.data.data, errorMessage: null }
+
     } catch (error) {
         console.log(error);
-        return { data: null, errorMessage: error.response.data.errorMessage }
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }
 
@@ -32,31 +29,28 @@ export const getMaterialConsumptionHistory = async (materialId, startDate, endDa
             },
         });
 
-        console.log("see response: ", response.data)
-        if (response.data.status == 'SUCCESS') {
-            var materialPurchaseHistoryData = []
+        var materialPurchaseHistoryData = []
 
-            for (var data of response.data.data) {
-                data.materialName = data.material.name;
-                data.materialId = data.material.id;
-                data.unitName = data.material.unit.name;
-                data.unitId = data.material.unit.id;
-                data.unitSymbol = data.material.unit.symbol;
-                data.material = null
+        for (var data of response.data.data) {
+            data.materialName = data.material.name;
+            data.materialId = data.material.id;
+            data.unitName = data.material.unit.name;
+            data.unitId = data.material.unit.id;
+            data.unitSymbol = data.material.unit.symbol;
+            data.material = null
 
-                materialPurchaseHistoryData.push(data)
-            }
-
-
-            return { data: materialPurchaseHistoryData, errorMessage: null }
+            materialPurchaseHistoryData.push(data)
         }
-        else return {
-            data: null,
-            errorMessage: response.data.message
-        };
+
+
+        return { data: materialPurchaseHistoryData, errorMessage: null }
+
     } catch (error) {
         console.log(error);
-        return { data: null, errorMessage: error.response.data.errorMessage }
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }
 
@@ -71,13 +65,14 @@ export const updateMaterialConsumptionData = async (updatedMaterialConsumptionDa
             }
         );
 
-        if (response.data.status == 'SUCCESS') {
-            return response.data;
-        } else return null;
+        return { data: response.data, errorMessage: null }
 
     } catch (error) {
-        console.error('Error updating item:', error);
-        return null;
+        console.log(error);
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 };
 
@@ -85,12 +80,14 @@ export const deleteMaterialConsumptionData = async (materialConsumptionDataId) =
     try {
         const response = await Backend.delete(`/material/consumption/${materialConsumptionDataId}`);
 
-        if (response.data.status == 'SUCCESS') {
-            return response.data;
-        } else return null;
+        return { data: response.data, errorMessage: null }
+
 
     } catch (error) {
-        console.error('Error updating item:', error);
-        return null;
+        console.log(error);
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 };

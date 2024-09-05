@@ -1,44 +1,73 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, Modal, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { deleteSaleData, updateSaleData, groupSalesByDate } from '@/lib/sale';
+import { deleteSaleData, updateSaleData } from '@/lib/sale';
 import { getUserInfo } from '@/lib/auth';
-import { PencilIcon, PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
+import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
-const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData, onRefreshOnChange }) => {
+const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
   const [edited, setEdited] = useState(item);
   const [loading, setLoading] = useState(false);
 
   const handleEditChange = (field, value) => {
-    setEdited((prevItem) => ({
-      ...prevItem,
-      [field]: value,
-    }));
+
+    setEdited((prevItem) => {
+      const updatedItem = {
+        ...prevItem,
+        [field]: value,
+      };
+
+      // Check if the field is either 'soldCount' or 'rate' and update the 'amount' accordingly
+      if (field === 'soldCount' || field === 'rate') {
+        const soldCount = field === 'soldCount' ? parseFloat(value) : parseFloat(updatedItem.soldCount);
+        const rate = field === 'rate' ? parseFloat(value) : parseFloat(updatedItem.rate);
+
+        // Calculate the amount only if both soldCount and rate are valid numbers
+        if (!isNaN(soldCount) && !isNaN(rate)) {
+          updatedItem.amount = (soldCount * rate).toFixed(2);
+          edited.amount = updatedItem.amount
+        } else {
+          updatedItem.amount = ''; // Clear the amount if the inputs are invalid
+          edited.amount = 0
+
+        }
+      }
+      return updatedItem;
+    });
   };
 
-  const handleEditPress = () => {
+  const handleEditPress = (item) => {
     setEditItem(item);
   };
 
   const handleSavePress = async () => {
-    setLoading(true);
+    setSubmitModalVisible(true);
     const userInfo = await getUserInfo();
     const updatedItem = { ...edited, updatedBy: userInfo.name };
+
     const result = await updateSaleData(updatedItem);
-    if (result) {
+    setSubmitModalVisible(false);
+    if (result.errorMessage == null) {
       setEditItem(null);
-      Alert.alert("Success", "Data updated", [{ text: "OK" }]);
-      onRefreshOnChange();
+      setSuccessModalVisible(true)
+      setTimeout(() => {
+        onRefreshOnChange()
+        setSuccessModalVisible(false);
+      }, 2000);
+
     } else {
-      Alert.alert("Failure", "Data updation failed", [{ text: "OK" }]);
+      setFailureModalVisible(true)
+      setTimeout(() => {
+        setFailureModalVisible(false);
+      }, 2000);
     }
-    setLoading(false);
+
   };
 
   const handleDeletePress = async () => {
@@ -51,23 +80,30 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            setLoading(true);
+            setSubmitModalVisible(true);
             const result = await deleteSaleData(item.id);
-            if (result) {
-              Alert.alert("Success", "Data deleted", [{ text: "OK" }]);
-              onRefreshOnChange();
+            setSubmitModalVisible(false);
+            if (result.errorMessage == null) {
+              setSuccessModalVisible(true)
+              setTimeout(() => {
+                onRefreshOnChange()
+                setSuccessModalVisible(false);
+              }, 2000);
+
             } else {
-              Alert.alert("Failure", "Data deletion failed", [{ text: "OK" }]);
+              setFailureModalVisible(true)
+              setTimeout(() => {
+                setFailureModalVisible(false);
+              }, 2000);
             }
-            setLoading(false);
           },
         },
       ]
     );
   };
 
-  if(loading) 
-    return <AnimatedActivityIndicator/>
+  if (loading)
+    return <AnimatedActivityIndicator />
 
   return (
 
@@ -75,147 +111,152 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
       className="bg-white p-4 mx-2 rounded-lg shadow-sm mb-4 border border-gray-200"
       onPress={onPress}
     >
-      {/* First Row */}
-      <View className="flex-row justify-between mb-3">
-        <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-          <Text className="text-gray-700 font-semibold">Eggs Sold: </Text>
-          {editItem === item ? (
-            <TextInput
-              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
-              value={edited.soldCount.toString()}
-              onChangeText={(text) => handleEditChange('soldCount', text)}
-              keyboardType="numeric"
-            />
-          ) : (
-            <Text className="text-gray-700">{item.soldCount}</Text>
-          )}
-        </View>
-        <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-          <Text className="text-gray-700 font-semibold">Rate Per Carton: </Text>
-          {editItem === item ? (
-            <TextInput
-              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
-              value={edited.rate.toString()}
-              onChangeText={(text) => handleEditChange('rate', text)}
-              keyboardType="numeric"
-            />
-          ) : (
-            <Text className="text-gray-700">{item.rate}</Text>
-          )}
-        </View>
-      </View>
-
-      {/* Second Row */}
-      <View className="flex-row justify-between mb-3">
-        <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-          <Text className="text-gray-700 font-semibold">Amount: </Text>
-          {editItem === item ? (
-            <TextInput
-              className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
-              value={edited.amount.toString()}
-              onChangeText={(text) => handleEditChange('amount', text)}
-              keyboardType="numeric"
-            />
-          ) : (
-            <Text className="text-gray-700">{item.amount}</Text>
-          )}
-        </View>
-        <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-          <Text className="text-gray-700 font-semibold">Paid: </Text>
-          {editItem === item ? (
-            <View className="border border-gray-300 px-3 py-2 rounded-lg bg-white">
-              <RNPickerSelect
-                onValueChange={(value) => handleEditChange('paid', value)}
-                items={[
-                  { label: 'Yes', value: true },
-                  { label: 'No', value: false },
-                ]}
-                placeholder={{
-                  label: item.paid,
-                  value: item.paid,
-                }}
-                className="text-gray-700"
-              />
-            </View>
-          ) : (
-            <Text className="text-gray-700">{item.paid}</Text>
-          )}
-        </View>
-      </View>
-
-      {/* Third Row */}
-      <View className="flex-row justify-between mb-3">
-        <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-          <Text className="text-gray-700 font-semibold">Vendor: </Text>
-          {editItem === item ? (
-            <View className="border border-gray-300 px-3 py-2 rounded-lg bg-white">
-              <RNPickerSelect
-                onValueChange={(value) => handleEditChange('paid', value)}
-                items={vendorData}
-                placeholder={{
-                  label: item.vendorName && vendorData.find(v => v.label === item.vendorName)
-                    ? item.vendorName
-                    : 'Select Vendor...',
-                  value: item.vendorName,
-                }} className="text-gray-700"
-              />
-            </View>
-          ) : (
-            <Text className="text-gray-700">{item.vendorName}</Text>
-          )}
-        </View>
-        {isExpanded && (
-          <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-            <Text className="text-gray-700 font-semibold">Created By: </Text>
+      <Animated.View
+        entering={FadeInDown.duration(1000).springify()}>
+        {/* First Row */}
+        <View className="flex-row justify-between mb-3">
+          <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Eggs Sold: </Text>
             {editItem === item ? (
               <TextInput
-                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 bg-gray-200"
-                value={item.createdBy}
-                editable={false}
+                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                value={edited.soldCount.toString()}
+                onChangeText={(text) => handleEditChange('soldCount', text)}
+                keyboardType="numeric"
               />
             ) : (
-              <Text className="text-gray-700">{item.createdBy}</Text>
+              <Text className="text-gray-700">{item.soldCount}</Text>
             )}
           </View>
-        )}
-      </View>
+          <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Rate: </Text>
+            {editItem === item ? (
+              <TextInput
+                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                value={edited.rate.toString()}
+                onChangeText={(text) => handleEditChange('rate', text)}
+                keyboardType="numeric"
+              />
+            ) : (
+              <Text className="text-gray-700">{item.rate}</Text>
+            )}
+          </View>
+        </View>
 
-      {/* Conditionally render additional content */}
-      {isExpanded && (
-        <View>
-          {/* Fourth Row */}
-          <View>
-            <View className={`flex-1 pr-4 w-1/2 ${editItem === item ? '' : 'flex-row items-center'}`}>
-              <Text className="text-gray-700 font-semibold">Updated By: </Text>
+        {/* Second Row */}
+        <View className="flex-row justify-between mb-3">
+          <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Amount: </Text>
+            {editItem === item ? (
+              <TextInput
+                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                value={edited.amount.toString()}
+                editable={false} // Make the field non-editable
+              />
+            ) : (
+              <Text className="text-gray-700">{item.amount}</Text>
+            )}
+          </View>
+          <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Paid: </Text>
+            {editItem === item ? (
+              <View className="border border-gray-300 px-3 py-2 rounded-lg bg-white">
+                <RNPickerSelect
+                  onValueChange={(value) => handleEditChange('paid', value)}
+                  items={[
+                    { label: 'Yes', value: true },
+                    { label: 'No', value: false },
+                  ]}
+                  placeholder={{
+                    label: item.paid,
+                    value: item.paid,
+                  }}
+                />
+              </View>
+            ) : (
+              <Text className="text-gray-700">{item.paid}</Text>
+            )}
+          </View>
+        </View>
+
+        {/* Third Row */}
+        <View className="flex-row justify-between mb-3">
+          <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Vendor: </Text>
+            {editItem === item ? (
+              <View className="border border-gray-300 px-3 py-2 rounded-lg bg-white">
+                <RNPickerSelect
+                  onValueChange={(value) => handleEditChange('paid', value)}
+                  items={vendorData}
+                  placeholder={{
+                    label: item.vendorName && vendorData.find(v => v.label === item.vendorName)
+                      ? item.vendorName
+                      : 'Select Vendor...',
+                    value: item.vendorName,
+                  }}
+                />
+              </View>
+            ) : (
+              <Text className="text-gray-700">{item.vendorName}</Text>
+            )}
+          </View>
+          {isExpanded && (
+            <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+              <Text className="text-gray-700 font-semibold">Created By: </Text>
               {editItem === item ? (
                 <TextInput
                   className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 bg-gray-200"
-                  value={item.updatedBy}
+                  value={item.createdBy}
                   editable={false}
                 />
               ) : (
-                <Text className="text-gray-700">{item.updatedBy}</Text>
+                <Text className="text-gray-700">{item.createdBy}</Text>
+              )}
+            </View>
+          )}
+        </View>
+
+        {/* Conditionally render additional content */}
+        {isExpanded && (
+          <View>
+            {/* Fourth Row */}
+            <View>
+              <View className={`flex-1 pr-4 w-1/2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                <Text className="text-gray-700 font-semibold">Updated By: </Text>
+                {editItem === item ? (
+                  <TextInput
+                    className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 bg-gray-200"
+                    value={item.updatedBy}
+                    editable={false}
+                  />
+                ) : (
+                  <Text className="text-gray-700">{item.updatedBy}</Text>
+                )}
+              </View>
+            </View>
+
+            {/* Edit and Delete Buttons */}
+            <View className="flex-row justify-end mt-7 mb-5">
+              {editItem === item ? (
+                <View className="flex-1 flex-row justify-between">
+                  <MaterialIcons name="cancel" size={30} color="black" onPress={() => { setEditItem(null) }} />
+                  <Entypo name="save" size={30} color="black" onPress={handleSavePress} />
+                </View>
+              ) : (
+                <View className="flex-1 flex-row justify-between">
+
+                  <TrashIcon size={28} color="black" onPress={handleDeletePress} />
+
+                  <TouchableOpacity onPress={() => handleEditPress(item)}>
+                    <PencilSquareIcon size={28} color="black" />
+                  </TouchableOpacity>
+
+                </View>
               )}
             </View>
           </View>
-
-          {/* Edit and Delete Buttons */}
-          <View className="flex-row justify-end mt-4">
-            {editItem === item ? (
-              <View className="flex-1 flex-row justify-between">
-                <MaterialIcons name="cancel" size={30} color="black" onPress={() => setEditItem(null)} />
-                <Entypo name="save" size={30} color="black" onPress={handleSavePress} />
-
-              </View>
-            ) : (
-              <View className="flex-1 flex-row justify-between">
-                <TrashIcon size={24} color="black" onPress={handleDeletePress} />
-                <PencilSquareIcon size={24} color="black" onPress={() => handleEditPress(item)} />
-              </View>
-            )}
-          </View>         
-        </View>
-      )}
+        )}
+      </Animated.View>
     </TouchableOpacity>
 
 
@@ -229,7 +270,7 @@ export default SaleItem;
 
 const styles = StyleSheet.create({
   container: {
-      flex: 1,
-      backgroundColor: 'white',
+    flex: 1,
+    backgroundColor: 'white',
   }
 });

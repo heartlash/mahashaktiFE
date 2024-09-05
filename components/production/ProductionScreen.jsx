@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { SystemBars } from 'react-native-bars';
 import LineChart from '../chart/LineChart';
@@ -13,6 +13,7 @@ import CreateProduction from './CreateProduction';
 import MonthYearAndFilter from '../MonthYearAndFilter';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
+import CustomModal from '../CustomModal';
 
 
 const ProductionScreen = () => {
@@ -24,11 +25,15 @@ const ProductionScreen = () => {
   const [averageDailyProduction, setAverageDailyProduction] = useState(0);
 
   const [averageProductionPercentage, setAverageProductionPercentage] = useState(0);
+  const [averageBrokenCount, setAverageBrokenCount] = useState(0);
 
   const [createProduction, setCreateProduction] = useState(false)
 
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false)
+  const [failureModalVisible, setFailureModalVisible] = useState(false)
+  const [submitModalVisible, setSubmitModalVisible] = useState(false)
   const [chartRefresh, setChartRefresh] = useState(false);
 
   const onRefreshOnChange = () => {
@@ -55,19 +60,24 @@ const ProductionScreen = () => {
   const fetchProductionDataDateRange = async () => {
     const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
     const result = await getProductionDataDateRange(startDate, endDate);
-    if (result.data != null) {
+    if (result.errorMessage == null) {
       var count = 0
       var sumOfPercentages = 0
       var sumOfProduction = 0
+      var sumOfBrokenCount = 0
+
 
       setProductionData(result.data)
       for (var data of result.data) {
         count++
         sumOfPercentages += parseFloat(data.productionPercentage)
         sumOfProduction += data.producedCount
+        sumOfBrokenCount += data.brokenCount
       }
       setAverageProductionPercentage(parseFloat(sumOfPercentages / count).toFixed(2))
       setAverageDailyProduction(parseFloat(sumOfProduction / count).toFixed(2))
+      setAverageBrokenCount(parseFloat(sumOfBrokenCount / count).toFixed(2))
+
       setLoading(false);
     }
     else {
@@ -75,6 +85,22 @@ const ProductionScreen = () => {
     }
   }
 
+  const [currentView, setCurrentView] = useState(0);
+
+  const views = [
+    {
+      title: 'Average Percentage',
+      value: averageProductionPercentage,
+    },
+    {
+      title: 'Average Production',
+      value: averageDailyProduction,
+    },
+    {
+      title: 'Average Broken Count',
+      value: averageBrokenCount,
+    },
+  ];
 
   useEffect(() => {
 
@@ -86,11 +112,23 @@ const ProductionScreen = () => {
     fetchProductionDataDateRange();
     setChartRefresh(!chartRefresh);
 
+    const interval = setInterval(() => {
+      setCurrentView((prevView) => (prevView + 1) % views.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+
   }, [])
 
   useEffect(() => {
     fetchProductionDataDateRange();
     setChartRefresh(!chartRefresh);
+
+    const interval = setInterval(() => {
+      setCurrentView((prevView) => (prevView + 1) % views.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
   }, [selectedMonth, selectedYear, refresh])
 
 
@@ -102,6 +140,10 @@ const ProductionScreen = () => {
 
   return (
     <GestureHandlerRootView>
+      <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
+      <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
+      <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
+
       <ProductionList
         listHeaderComponent={<View>
           {productionData.length > 0 ? (
@@ -117,16 +159,20 @@ const ProductionScreen = () => {
                 type="Production"
                 chartRefresh={chartRefresh}
               />
-              <View className="flex flex-row">
-                <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Percentage</Text>
-                <Text className="text-right text-gray-700 font-semibold  mb-2">{averageProductionPercentage}</Text>
 
-              </View>
-              <View className="flex flex-row">
-                <Text className="text-gray-700 font-semibold mx-5 mb-2">Average Production </Text>
-                <Text className="text-right text-gray-700 font-semibold  mb-2">{ averageDailyProduction }</Text>
-
-              </View>
+              {views.map((view, index) => (
+                <View
+                  className="flex flex-row"
+                  key={index}
+                  style={[
+                    styles.view,
+                    { opacity: currentView === index ? 1 : 0 },
+                  ]}
+                >
+                  <Text className="text-left text-gray-700 font-semibold mx-5 mb-3">{view.title}</Text>
+                  <Text className="text-right text-gray-700 font-semibold mb-3">{view.value}</Text>
+                </View>
+              ))}
 
             </View>) : (<></>)}
 
@@ -136,7 +182,9 @@ const ProductionScreen = () => {
             <CreateProduction
               onClose={() => setCreateProduction(false)}
               onRefreshOnChange={onRefreshOnChange}
-            />
+              setSuccessModalVisible={setSuccessModalVisible}
+              setFailureModalVisible={setFailureModalVisible}
+              setSubmitModalVisible={setSubmitModalVisible} />
           ) : (<View className="mb-3">
             <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateProduction(true)} />
           </View>
@@ -146,6 +194,9 @@ const ProductionScreen = () => {
         onRefreshOnChange={onRefreshOnChange}
         refreshing={refreshing}
         onRefresh={onRefresh}
+        setSuccessModalVisible={setSuccessModalVisible}
+        setFailureModalVisible={setFailureModalVisible}
+        setSubmitModalVisible={setSubmitModalVisible}
       />
     </GestureHandlerRootView>
   );
@@ -157,6 +208,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFDD0',
+    justifyContent: 'flex-end',
   },
   text: {
     color: 'black',
@@ -165,6 +217,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Roboto-Regular',
   },
+  view: {
+    position: 'absolute',
+  }
 });
 
 

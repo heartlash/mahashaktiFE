@@ -7,21 +7,19 @@ export const getMaterialStock = async () => {
         var materialStockDataList = []
         const response = await Backend.get("/analytics/material-stock");
 
-        if (response.data.status == 'SUCCESS') {
-            var index = 1
-            for (var data of response.data.data) {
-                data.id = index++
-                data.lastPurchaseDate = getFormattedDate(data.lastPurchaseDate)
-                materialStockDataList.push(data);
-            }
-            return { data: materialStockDataList, errorMessage: null }
+        var index = 1
+        for (var data of response.data.data) {
+            data.id = index++
+            data.lastPurchaseDate = getFormattedDate(data.lastPurchaseDate)
+            materialStockDataList.push(data);
         }
-        else return {
-            data: null,
-            errorMessage: response.data.message
-        };
+        return { data: materialStockDataList, errorMessage: null }
+
     } catch (error) {
         console.log(error);
-        return { data: null, errorMessage: error }
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }

@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { getMaterialStock } from '@/lib/materialStock';
 import MaterialStockList from './MaterialStockList';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
-
+import CustomModal from '../CustomModal';
 
 
 const MaterialStockScreen = () => {
@@ -14,6 +14,9 @@ const MaterialStockScreen = () => {
 
 
     const [loading, setLoading] = useState(true)
+    const [successModalVisible, setSuccessModalVisible] = useState(false)
+    const [failureModalVisible, setFailureModalVisible] = useState(false)
+    const [submitModalVisible, setSubmitModalVisible] = useState(false)
 
     const [refresh, setRefresh] = useState(false);
 
@@ -60,22 +63,30 @@ const MaterialStockScreen = () => {
     }
 
     return (
-        <MaterialStockList
-            listHeaderComponent=
-            {materialStockData.length > 0 ? (
-                <View style={styles.container}
-                    className="p-10 justify-center items-center mb-4"
-                >
-                    <Text className="text-xl font-bold text-black">Total Materials: {materialStockData.length}</Text>
-                    <Text className="text-lg text-black mt-2">Out of Stock: {outOfStock}</Text>
-                    <Text className="text-lg text-black mt-2">Low Stock: {toBeOutOfStock}</Text>
-                </View>) : (<></>)}
+        <>
+            <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
+            <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
+            <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
+            <MaterialStockList
+                listHeaderComponent=
+                {materialStockData.length > 0 ? (
+                    <View style={styles.container}
+                        className="p-10 justify-center items-center mb-4"
+                    >
+                        <Text className="text-xl font-bold text-black">Total Materials: {materialStockData.length}</Text>
+                        <Text className="text-lg text-black mt-2">Out of Stock: {outOfStock}</Text>
+                        <Text className="text-lg text-black mt-2">Low Stock: {toBeOutOfStock}</Text>
+                    </View>) : (<></>)}
 
-            materialStockData={materialStockData.sort((a, b) => a.material.localeCompare(b.material))}
-            onRefreshOnChange={onRefreshOnChange}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-        />
+                materialStockData={materialStockData.sort((a, b) => a.material.localeCompare(b.material))}
+                onRefreshOnChange={onRefreshOnChange}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                setSuccessModalVisible={setSuccessModalVisible}
+                setFailureModalVisible={setFailureModalVisible}
+                setSubmitModalVisible={setSubmitModalVisible}
+            />
+        </>
     );
 }
 

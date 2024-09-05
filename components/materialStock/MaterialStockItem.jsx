@@ -8,7 +8,7 @@ import CreateMaterialPurchase from './CreateMaterialPurchase'
 import { useNavigation } from '@react-navigation/native';
 
 
-const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress }) => {
+const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
   const [showRecordConsumption, setShowRecordConsumption] = useState(false)
   const [showRecordPurchase, setShowRecordPurchase] = useState(false)
@@ -99,10 +99,16 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress }) => 
             )}
 
             {showRecordConsumption && (
-              <CreateMaterialConsumption materialId={item.materialId} onClose={() => handleOnCloseRecordConsumption()} onRefreshOnChange={onRefreshOnChange} />
+              <CreateMaterialConsumption materialId={item.materialId} onClose={() => handleOnCloseRecordConsumption()} onRefreshOnChange={onRefreshOnChange}
+                setSuccessModalVisible={setSuccessModalVisible}
+                setFailureModalVisible={setFailureModalVisible}
+                setSubmitModalVisible={setSubmitModalVisible} />
             )}
             {showRecordPurchase && (
-              <CreateMaterialPurchase materialId={item.materialId} onClose={() => handleOnCloseRecordPurchase()} onRefreshOnChange={onRefreshOnChange} />
+              <CreateMaterialPurchase materialId={item.materialId} onClose={() => handleOnCloseRecordPurchase()} onRefreshOnChange={onRefreshOnChange}
+                setSuccessModalVisible={setSuccessModalVisible}
+                setFailureModalVisible={setFailureModalVisible}
+                setSubmitModalVisible={setSubmitModalVisible} />
             )}
           </>
         )}

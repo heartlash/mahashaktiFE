@@ -47,12 +47,10 @@ const MoneyScreen = () => {
 
 
     const fetchProfitData = async () => {
-        console.log("is this even called: ")
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
         const result = await getProfitData(startDate, endDate);
         if (result.data != null) {
             setProfitData(result.data)
-            console.log("see profit data: ", result.data)
             setLoading(false);
         }
         else {
@@ -96,7 +94,7 @@ const MoneyScreen = () => {
                     Total Expenses: ₹{profitData.materialPurchaseExpenses + profitData.operationalExpenses}
                 </Text>
                 <Text className="text-lg text-black mt-2">{profitData.profit === 0 ? 'Profit' : profitData.profit > 0
-                ? 'Profit' : 'Loss'} : ₹{Math.abs(parseInt(profitData.profit))}</Text>           
+                    ? 'Profit' : 'Loss'} : ₹{Math.abs(parseInt(profitData.profit))}</Text>
             </View>
 
             <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />

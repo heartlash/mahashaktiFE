@@ -6,26 +6,28 @@ export const getSaleHomeData = async () => {
     try {
         const response = await Backend.get("/sale/latest");
 
-        if(response.data.status == 'SUCCESS') {
-            var saleCount = 0;
-            var averageSaleRate = 0;
-            for(var saleData of response.data.data) {
-                saleCount+=saleData.soldCount;
-                averageSaleRate+=saleData.rate;
-            }
-            averageSaleRate=parseFloat(averageSaleRate/response.data.data.length).toFixed(2);
-            return {
+        var saleCount = 0;
+        var averageSaleRate = 0;
+        for (var saleData of response.data.data) {
+            saleCount += saleData.soldCount;
+            averageSaleRate += saleData.rate;
+        }
+        averageSaleRate = parseFloat(averageSaleRate / response.data.data.length).toFixed(2);
+        return {
+            data: {
                 saleCount,
                 averageSaleRate,
                 saleDate: getFormattedDate(response.data.data[0].saleDate)
-            }
+            },
+            errorMessage: null
         }
-        
-        else return null;
-        
-    } catch(error) {
+
+    } catch (error) {
         console.log(error);
-        return null;
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }
 
@@ -39,28 +41,30 @@ export const getSaleDataDateRange = async (startDate, endDate) => {
             }
         });
 
-        console.log(response.data);
+        for (var data of response.data.data) {
+            data.vendorId = data.vendor.id
+            data.vendorName = data.vendor.name
+            data.vendor = null
+            if (data.paid == true) data.paid = 'Yes'
+            if (data.paid == false) data.paid = 'No'
 
-        if (response.data.status == 'SUCCESS') {
-            for (var data of response.data.data) {
-                data.vendorId = data.vendor.id
-                data.vendorName = data.vendor.name
-                data.vendor = null
-                if(data.paid == true) data.paid = 'Yes'
-                if(data.paid == false) data.paid = 'No'
-
-                saleDataList.push(data)
-            }
-            return saleDataList.reverse()
+            saleDataList.push(data)
         }
+        return { data: saleDataList.reverse(), errorMessage: null }
+
     } catch (error) {
         console.log(error);
-        return null;
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }
 
 export const updateSaleData = async (updatedSaleData) => {
     try {
+        if (updatedSaleData.paid == 'Yes') updatedSaleData.paid = true
+        else if (updatedSaleData.paid == 'No') updatedSaleData.paid = false
         const response = await Backend.put(`/sale/${updatedSaleData.id}`,
             updatedSaleData,
             {
@@ -70,65 +74,57 @@ export const updateSaleData = async (updatedSaleData) => {
             }
         );
 
-        if (response.data.status == 'SUCCESS') {
-            return response.data;
-        } else return null;
+        return { data: response.data, errorMessage: null }
 
     } catch (error) {
-        console.error('Error updating item:', error);
-        return null;
+        console.log(error);
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 };
 
 export const deleteSaleData = async (saleDataId) => {
     try {
         const response = await Backend.delete(`/sale/${saleDataId}`);
-
-        if (response.data.status == 'SUCCESS') {
-            return response.data;
-        } else return null;
+        return { data: response.data, errorMessage: null }
 
     } catch (error) {
-        console.error('Error updating item:', error);
-        return null;
+        console.log(error);
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 };
 
 export const saveSaleData = async (saleData) => {
     var response;
     try {
-        console.log("see data is the backend call: ", saleData)
-        response = await Backend.post("/sale",
-            [saleData]);
+        response = await Backend.post("/sale", [saleData]);
 
-        console.log("see response: ", response)
-        if (response.data.status == 'SUCCESS') {
-            return {
-                data: response.data,
-                errorMessage: null
-            }
-        } else return {
-            data: null,
-            errorMessage: response.data.message
-        };
+        return {
+            data: response.data,
+            errorMessage: null
+        }
 
     } catch (error) {
-        console.error('Error updating item:', error);
-        console.error('see response', response);
+        console.log(error);
         return {
             data: null,
-            errorMessage: error.response.data.errorMessage
-        };
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 };
 
 export const groupSalesByDate = (sales) => {
     return sales.reduce((groups, sale) => {
-      const date = new Date(sale.saleDate).toDateString();
-      if (!groups[date]) {
-        groups[date] = [];
-      }
-      groups[date].push(sale);
-      return groups;
+        const date = new Date(sale.saleDate).toDateString();
+        if (!groups[date]) {
+            groups[date] = [];
+        }
+        groups[date].push(sale);
+        return groups;
     }, {});
-  };
+};

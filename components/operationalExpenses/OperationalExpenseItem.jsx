@@ -8,10 +8,11 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
-const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onPress, editItem, setEditItem, onRefreshOnChange }) => {
+const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onPress, editItem, setEditItem, onRefreshOnChange,
+    setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible
+}) => {
 
     const [edited, setEdited] = useState(item);
-    const [loading, setLoading] = useState(false);
 
     const handleEditChange = (field, value) => {
         setEdited((prevItem) => ({
@@ -25,18 +26,25 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
     };
 
     const handleSavePress = async () => {
-        setLoading(true);
+        setSubmitModalVisible(true);
         const userInfo = await getUserInfo();
         const updatedItem = { ...edited, updatedBy: userInfo.name };
         const result = await updateOperationalExpenses(updatedItem);
-        if (result.data != null) {
+        setSubmitModalVisible(true)
+        if (result.errorMessage == null) {
             setEditItem(null);
-            Alert.alert("Success", "Data updated", [{ text: "OK" }]);
-            onRefreshOnChange();
+            setSuccessModalVisible(true)
+            setTimeout(() => {
+                onRefreshOnChange()
+                setSuccessModalVisible(false);
+            }, 2000);
+
         } else {
-            Alert.alert("Failure", "Data updation failed", [{ text: "OK" }]);
+            setFailureModalVisible(true)
+            setTimeout(() => {
+                setFailureModalVisible(false);
+            }, 2000);
         }
-        setLoading(false);
     };
 
     const handleDeletePress = async () => {
@@ -49,23 +57,28 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
                     text: "Delete",
                     style: "destructive",
                     onPress: async () => {
-                        setLoading(true);
+                        setSubmitModalVisible(true);
                         const result = await deleteOperationalExpenses(item.id);
-                        if (result != null) {
-                            Alert.alert("Success", "Data deleted", [{ text: "OK" }]);
-                            onRefreshOnChange();
+                        setSubmitModalVisible(false)
+                        if (result.errorMessage == null) {
+                            setEditItem(null);
+                            setSuccessModalVisible(true)
+                            setTimeout(() => {
+                                onRefreshOnChange()
+                                setSuccessModalVisible(false);
+                            }, 2000);
+
                         } else {
-                            Alert.alert("Failure", "Data deletion failed", [{ text: "OK" }]);
+                            setFailureModalVisible(true)
+                            setTimeout(() => {
+                                setFailureModalVisible(false);
+                            }, 2000);
                         }
-                        setLoading(false);
                     },
                 },
             ]
         );
     };
-
-    if(loading) 
-        return <AnimatedActivityIndicator/>
 
     return (
         <TouchableOpacity

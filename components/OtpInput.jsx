@@ -26,7 +26,7 @@ const OTPInput = ({ onOtpChange }) => {
     return (
         <View style={styles.otpContainer}>
             {otp.map((digit, index) => (
-                
+
                 <TextInput
                     key={index}
                     ref={(ref) => inputRefs.current[index] = ref}
@@ -37,6 +37,7 @@ const OTPInput = ({ onOtpChange }) => {
                             handleBackspace(digit, index);
                         }
                     }}
+                    keyboardType='numeric'
                     style={styles.input}
                     maxLength={1}
                 />

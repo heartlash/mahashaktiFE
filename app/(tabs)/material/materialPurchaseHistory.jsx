@@ -7,6 +7,7 @@ import { getMonthStartAndEndDate } from '@/lib/util';
 import { getMaterialPurchaseHistory } from '@/lib/materialPurchase';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import CustomModal from '@/components/CustomModal';
 
 
 
@@ -16,6 +17,10 @@ const MaterialPurchaseHistory = () => {
 
 
     const [materialPurchaseHistoryData, setMaterialPurchaseHistoryData] = useState([]);
+
+    const [successModalVisible, setSuccessModalVisible] = useState(false)
+    const [failureModalVisible, setFailureModalVisible] = useState(false)
+    const [submitModalVisible, setSubmitModalVisible] = useState(false)
 
     /// starts here
 
@@ -63,6 +68,9 @@ const MaterialPurchaseHistory = () => {
 
     return (
         <SafeAreaView>
+            <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
+            <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
+            <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
             <View>
                 <View className="mx-2 my-1">
                     <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
@@ -76,6 +84,9 @@ const MaterialPurchaseHistory = () => {
                     onRefreshOnChange={onRefreshOnChange}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
+                    setSuccessModalVisible={setSuccessModalVisible}
+                    setFailureModalVisible={setFailureModalVisible}
+                    setSubmitModalVisible={setSubmitModalVisible}
                 />
             ) : (<></>)}
         </SafeAreaView>

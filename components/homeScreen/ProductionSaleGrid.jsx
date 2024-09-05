@@ -25,10 +25,10 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
 
       const result = await getProductionHomeData();
 
-      if (result != null) {
-        setProductionDate(result.productionDate)
-        setProductionCount(result.productionCount)
-        setProductionPercentage(result.productionPercentage)
+      if (result.errorMessage == null) {
+        setProductionDate(result.data.productionDate)
+        setProductionCount(result.data.productionCount)
+        setProductionPercentage(result.data.productionPercentage)
         setLoadingProduction(false);
       } else {
         setProductionDate(null)
@@ -44,12 +44,11 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
     const fetchSaleHomeData = async () => {
 
       const result = await getSaleHomeData();
-      console.log("see value returned: ", result)
 
-      if (result != null) {
-        setSaleDate(result.saleDate)
-        setSaleCount(result.saleCount)
-        setAverageSaleRate(result.averageSaleRate)
+      if (result.errorMessage == null) {
+        setSaleDate(result.data.saleDate)
+        setSaleCount(result.data.saleCount)
+        setAverageSaleRate(result.data.averageSaleRate)
         setLoadingSale(false);
       } else {
         setSaleDate(null)
@@ -87,7 +86,7 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
           </View>
         </TouchableOpacity>
       </View>
-  
+
       <View className="basis-1/2 pl-1">
         <TouchableOpacity
           className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
@@ -111,7 +110,7 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
       </View>
     </View>
   );
-  
+
 }
 
 export default ProductionSaleGrid

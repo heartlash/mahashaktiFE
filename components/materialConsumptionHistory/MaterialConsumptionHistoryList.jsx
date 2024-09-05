@@ -2,7 +2,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
 import MaterialConsumptionHistoryItem from './MaterialConsumptionHistoryItem';
 
-const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, onRefreshOnChange, onRefresh, refreshing }) => {
+const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
@@ -18,6 +18,9 @@ const MaterialConsumptionHistoryList = ({ materialConsumptionHistoryData, onRefr
             editItem={editItem}
             setEditItem={setEditItem}
             onRefreshOnChange={onRefreshOnChange}
+            setSuccessModalVisible={setSuccessModalVisible}
+            setFailureModalVisible={setFailureModalVisible}
+            setSubmitModalVisible={setSubmitModalVisible}
         />
     );
 

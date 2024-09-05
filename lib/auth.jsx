@@ -17,22 +17,25 @@ export const login = async (username, password) => {
         'Content-Type': 'application/json'
       }
     });
-    if (response.data.status == 'SUCCESS') {
 
-      await SecureStore.setItemAsync(TOKEN_KEY, response.data.data.accessToken);
-      var name = response.data.data.name;
-      var role = response.data.data.role;
-      await SecureStore.setItemAsync(USER_INFO_KEY, JSON.stringify({
-        username,
-        name,
-        role
-      }));
-      Backend.defaults.headers.common['Authorization'] = `Bearer ${response.data.data.accessToken}`;
+    await SecureStore.setItemAsync(TOKEN_KEY, response.data.data.accessToken);
+    var name = response.data.data.name;
+    var role = response.data.data.role;
+    await SecureStore.setItemAsync(USER_INFO_KEY, JSON.stringify({
+      username,
+      name,
+      role
+    }));
+    Backend.defaults.headers.common['Authorization'] = `Bearer ${response.data.data.accessToken}`;
 
-    }
-    return response.data.status;
+    return { data: response.data.status, errorMessage: null }
+
   } catch (error) {
-    return 'FAILURE'
+    console.log(error);
+    return {
+      data: null,
+      errorMessage: error.response?.data?.errorMessage || error.message || error
+    }
   }
 }
 
@@ -46,9 +49,14 @@ export const signup = async (name, phoneNumber, email, password) => {
         'Content-Type': 'application/json'
       }
     });
-    return response.data.status;
+    return { data: response.data.status, errorMessage: null }
+
   } catch (error) {
-    return 'FAILURE'
+    console.log(error);
+    return {
+      data: null,
+      errorMessage: error.response?.data?.errorMessage || error.message || error
+    }
   }
 }
 
@@ -62,16 +70,13 @@ export const userVerification = async (email, phoneNumber) => {
         'Content-Type': 'application/json'
       }
     });
-    if (response.data.status == 'SUCCESS')
-      return { data: response.data.data, errorMessage: null }
-    else return {
-      data: null,
-      errorMessage: response.data.message
-    }
+    return { data: response.data.data, errorMessage: null }
+
   } catch (error) {
+    console.log(error);
     return {
       data: null,
-      errorMessage: error
+      errorMessage: error.response?.data?.errorMessage || error.message || error
     }
   }
 }
@@ -86,17 +91,13 @@ export const getUserDetails = async (email) => {
       },
     });
 
-    if (response.data.status == 'SUCCESS')
-      return { data: response.data.data, errorMessage: null }
-    else return {
-      data: null,
-      errorMessage: response.data.message
-    }
+    return { data: response.data.data, errorMessage: null }
+
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return {
       data: null,
-      errorMessage: error
+      errorMessage: error.response?.data?.errorMessage || error.message || error
     }
   }
 };
@@ -106,21 +107,17 @@ export const resetPassword = async (email, password) => {
   try {
     delete Backend.defaults.headers.common['Authorization'];
     const response = await Backend.put("/users/resetPassword", {
-        username: email.toLowerCase(),
-        password: password
- 
+      username: email.toLowerCase(),
+      password: password
+
     });
 
-    if (response.data.status == 'SUCCESS')
-      return { data: response.data.data, errorMessage: null }
-    else return {
-      data: null,
-      errorMessage: response.data.message
-    }
+    return { data: response.data.data, errorMessage: null }
   } catch (error) {
+    console.log(error);
     return {
       data: null,
-      errorMessage: error
+      errorMessage: error.response?.data?.errorMessage || error.message || error
     }
   }
 };

@@ -10,11 +10,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
-const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
+const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [saleDate, setSaleDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
-    const [loading, setLoading] = useState(false)
     const [newItem, setNewItem] = useState(null);
 
     const [amount, setAmount] = useState('');
@@ -66,43 +65,33 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
     };
 
     const saveNewItem = async () => {
-        setLoading(true)
+        setSubmitModalVisible(true)
         console.log("see on save: ", moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'))
         // Make API call to save changes
         const userInfo = await getUserInfo();
         var temp = newItem
         temp.createdBy = userInfo.name
-        console.log("See time string:", saleDate)
         temp.saleDate = saleDate
         temp.vendorId = temp.vendor
-        console.log("see temp:", temp)
         const result = await saveSaleData(temp);
-        console.log("see result: ", result)
+        setSubmitModalVisible(false)
         if (result.errorMessage == null) {
             setNewItem(null)
-            Alert.alert(
-                "Success",
-                "Date saved",
-                [{ text: "OK" }],
-                { cancelable: false }
-            );
-            onRefreshOnChange()
+            setSuccessModalVisible(true)
+            setTimeout(() => {
+                onRefreshOnChange()
+                setSuccessModalVisible(false);
+            }, 2000);
 
         } else {
-            Alert.alert(
-                "Failure",
-                result.errorMessage,
-                [{ text: "OK" }],
-                { cancelable: false }
-            );
+            setFailureModalVisible(true)
+            setTimeout(() => {
+                setFailureModalVisible(false);
+            }, 2000);
         }
 
-        setLoading(false)
-
-        onClose();
-
-
     }
+
     return (
         <View className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200">
             <View className="flex-row justify-between mb-2 ">
@@ -217,14 +206,6 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange }) => {
                 <MaterialIcons name="cancel" size={30} color="black" onPress={onClose} />
                 <Entypo name="save" size={30} color="black" onPress={saveNewItem} />
 
-                {loading && (
-                    <Modal transparent={true}>
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                            <ActivityIndicator size="large" color="#0000ff" />
-                            <Text>Loading...</Text>
-                        </View>
-                    </Modal>
-                )}
 
             </View>
         </View>

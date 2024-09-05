@@ -5,14 +5,10 @@ import { getUserInfo } from '@/lib/auth';
 import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
-const MaterialConsumptionHistoryItem = ({ item, isExpanded, onRefreshOnChange, onPress, editItem, setEditItem }) => {
+const MaterialConsumptionHistoryItem = ({ item, isExpanded, onRefreshOnChange, onPress, editItem, setEditItem, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [edited, setEdited] = useState(item);
-    const [loading, setLoading] = useState(false);
-
-    console.log("see item: ", item)
 
     const handleEditChange = (field, value) => {
         setEdited((prevItem) => ({
@@ -26,18 +22,25 @@ const MaterialConsumptionHistoryItem = ({ item, isExpanded, onRefreshOnChange, o
     };
 
     const handleSavePress = async () => {
-        setLoading(true);
+        setSubmitModalVisible(true);
         const userInfo = await getUserInfo();
         const updatedItem = { ...edited, updatedBy: userInfo.name };
         const result = await updateMaterialConsumptionData(updatedItem);
-        if (result) {
+        setSubmitModalVisible(false);
+        if (result.errorMessage == null) {
             setEditItem(null);
-            Alert.alert("Success", "Data updated", [{ text: "OK" }]);
-            onRefreshOnChange();
+            setSuccessModalVisible(true)
+            setTimeout(() => {
+                onRefreshOnChange()
+                setSuccessModalVisible(false);
+            }, 2000);
+
         } else {
-            Alert.alert("Failure", "Data updation failed", [{ text: "OK" }]);
+            setFailureModalVisible(true)
+            setTimeout(() => {
+                setFailureModalVisible(false);
+            }, 2000);
         }
-        setLoading(false);
     };
 
     const handleDeletePress = async () => {
@@ -50,23 +53,28 @@ const MaterialConsumptionHistoryItem = ({ item, isExpanded, onRefreshOnChange, o
                     text: "Delete",
                     style: "destructive",
                     onPress: async () => {
-                        setLoading(true);
+                        setSubmitModalVisible(true);
                         const result = await deleteMaterialConsumptionData(item.id);
-                        if (result) {
-                            Alert.alert("Success", "Data deleted", [{ text: "OK" }]);
-                            onRefreshOnChange();
+                        setSubmitModalVisible(false);
+                        if (result.errorMessage == null) {
+                            setEditItem(null);
+                            setSuccessModalVisible(true)
+                            setTimeout(() => {
+                                onRefreshOnChange()
+                                setSuccessModalVisible(false);
+                            }, 2000);
+
                         } else {
-                            Alert.alert("Failure", "Data deletion failed", [{ text: "OK" }]);
+                            setFailureModalVisible(true)
+                            setTimeout(() => {
+                                setFailureModalVisible(false);
+                            }, 2000);
                         }
-                        setLoading(false);
                     },
                 },
             ]
         );
     };
-
-    if(loading) 
-        return <AnimatedActivityIndicator/>
 
     return (
         <TouchableOpacity

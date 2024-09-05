@@ -4,13 +4,15 @@ import Backend from "@/config/backend";
 export const getEggCount = async () => {
 
     try {
-    const response = await Backend.get("/analytics/egg-stock");
+        const response = await Backend.get("/analytics/egg-stock");
 
-    if(response.data.status == 'SUCCESS') 
-        return response.data.data.count;
-    else return null;
-    } catch(error) {
+        return { data: response.data.data.count, errorMessage: null }
+
+    } catch (error) {
         console.log(error);
-        return null;
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
     }
 }

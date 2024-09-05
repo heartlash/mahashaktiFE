@@ -2,7 +2,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
 import OperationalExpenseItem from './OperationalExpenseItem';
 
-const OperationalExpenseList = ({ operationalExpensesData, operationalExpenseItems, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing }) => {
+const OperationalExpenseList = ({ operationalExpensesData, operationalExpenseItems, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
@@ -19,6 +19,9 @@ const OperationalExpenseList = ({ operationalExpensesData, operationalExpenseIte
             setEditItem={setEditItem}
             onRefreshOnChange={onRefreshOnChange}
             operationalExpenseItems={operationalExpenseItems}
+            setSuccessModalVisible={setSuccessModalVisible}
+            setFailureModalVisible={setFailureModalVisible}
+            setSubmitModalVisible={setSubmitModalVisible}
         />
     );
 

@@ -8,6 +8,7 @@ import MonthYearAndFilter from '../MonthYearAndFilter';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import CustomModal from '../CustomModal';
 
 
 const OperationalExpensesScreen = () => {
@@ -23,6 +24,9 @@ const OperationalExpensesScreen = () => {
 
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
+    const [successModalVisible, setSuccessModalVisible] = useState(false)
+    const [failureModalVisible, setFailureModalVisible] = useState(false)
+    const [submitModalVisible, setSubmitModalVisible] = useState(false)
 
     const onRefreshOnChange = () => {
         setRefresh(prev => !prev);
@@ -51,7 +55,7 @@ const OperationalExpensesScreen = () => {
     const fetchOperationalExpensesDateRange = async () => {
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
         const result = await getOperationalExpenses(startDate, endDate);
-        if (result.data != null) {
+        if (result.errorMessage == null) {
             setOperationalExpensesData(result.data)
             setLoading(false);
         }
@@ -63,7 +67,7 @@ const OperationalExpensesScreen = () => {
 
     const fetchOperationalExpenseItems = async () => {
         const result = await getOperationalExpenseItems();
-        if (result.data != null) {
+        if (result.errorMessage == null) {
             var expenseItems = []
             for (var data of result.data) {
                 expenseItems.push({ label: data.item, value: data.id });
@@ -112,6 +116,9 @@ const OperationalExpensesScreen = () => {
             <View className="mx-2 my-1">
                 <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
             </View>
+            <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
+            <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
+            <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
             <OperationalExpenseList
                 listHeaderComponent={<View>
 
@@ -123,6 +130,9 @@ const OperationalExpensesScreen = () => {
                             onClose={() => setCreateOperationalExpense(false)}
                             onRefreshOnChange={onRefreshOnChange}
                             operationalExpenseItems={operationalExpenseItems}
+                            setSuccessModalVisible={setSuccessModalVisible}
+                            setFailureModalVisible={setFailureModalVisible}
+                            setSubmitModalVisible={setSubmitModalVisible}
                         />
                     ) : (<View className="mb-3">
                         <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateOperationalExpense(true)} />
@@ -134,6 +144,10 @@ const OperationalExpensesScreen = () => {
                 onRefreshOnChange={onRefreshOnChange}
                 refreshing={refreshing}
                 onRefresh={onRefresh}
+                setSuccessModalVisible={setSuccessModalVisible}
+                setFailureModalVisible={setFailureModalVisible}
+                setSubmitModalVisible={setSubmitModalVisible}
+
             />
         </View>
     );
