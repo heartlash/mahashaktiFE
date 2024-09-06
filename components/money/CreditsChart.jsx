@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
-const RADIUS = 160;
+const RADIUS = 120;
 
 
 const CreditsChart = () => {
@@ -81,8 +81,8 @@ const CreditsChart = () => {
         setData(arrayOfObjects);
     };
 
-    const font = useFont(require('../../assets/fonts/Roboto-Bold.ttf'), 60);
-    const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 25);
+    const font = useFont(require('../../assets/fonts/Roboto-Bold.ttf'), 30);
+    const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 20);
 
     const [expandedItemId, setExpandedItemId] = useState(null);
 

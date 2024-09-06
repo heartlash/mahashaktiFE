@@ -1,23 +1,35 @@
 import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { logout } from '@/lib/auth'
 import { router } from 'expo-router'
+import { AntDesign } from "@expo/vector-icons";
+import { getUserInfo } from '@/lib/auth';
 
 const Profile = () => {
 
-  const onPress = async() => {
+  const [name, setName] = useState('')
+
+  const fetchUserInfo = async () => {
+    const userInfo = await getUserInfo();
+    setName(userInfo.name)
+  }
+
+  useEffect(() => {
+    fetchUserInfo();
+
+  }, [])
+
+  const onPress = async () => {
     await logout();
     router.push('/login');
   }
 
   return (
-    <View className="flex-1 items center justify-center bg-blue">
-      <TouchableOpacity
-                    onPress={() => onPress()}
-                    className="bg-yellow-300 p-3 rounded-lg mx-10 my-3"
-                >
-                    <Text className="text-black font-semibold justify-center p-3">Logout</Text>
-                </TouchableOpacity>
+    <View className="flex-1 items-center justify-center bg-blue">
+      <Text className="font-bold mb-10">Hi, {name}</Text>
+      <TouchableOpacity className="bg-orange-200 p-10 rounded-3xl" onPress={() => onPress()} >
+        <AntDesign name="logout" size={30} color="green" />
+      </TouchableOpacity>
     </View>
   )
 }

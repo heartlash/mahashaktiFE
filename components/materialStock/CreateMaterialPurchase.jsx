@@ -58,7 +58,7 @@ const CreateMaterialPurchase = ({ onClose, materialId, onRefreshOnChange, setSuc
                 onRefreshOnChange()
                 setSuccessModalVisible(false);
             }, 2000);
-
+            onClose()
         } else {
             setFailureModalVisible(true)
             setTimeout(() => {

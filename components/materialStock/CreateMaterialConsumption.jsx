@@ -58,7 +58,7 @@ const CreateMaterialConsumption = ({ onClose, materialId, onRefreshOnChange, set
                 onRefreshOnChange()
                 setSuccessModalVisible(false);
             }, 2000);
-
+            onClose()
         } else {
             setFailureModalVisible(true)
             setTimeout(() => {

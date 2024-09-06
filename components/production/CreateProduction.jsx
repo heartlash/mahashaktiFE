@@ -56,6 +56,7 @@ const CreateProduction = ({ onClose, onRefreshOnChange, setSuccessModalVisible, 
         onRefreshOnChange()
         setSuccessModalVisible(false);
       }, 2000);
+      onClose()
 
     } else {
       setFailureModalVisible(true)

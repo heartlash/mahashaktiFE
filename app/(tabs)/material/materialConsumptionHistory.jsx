@@ -1,4 +1,4 @@
-import { View, SafeAreaView } from 'react-native';
+import { View, SafeAreaView, StyleSheet } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import MaterialConsumptionHistoryList from '@/components/materialConsumptionHistory/MaterialConsumptionHistoryList';
@@ -69,7 +69,7 @@ const MaterialConsumptionHistory = () => {
     }, [selectedMonth, selectedYear, refresh])
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
             <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
             <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
@@ -100,3 +100,11 @@ const MaterialConsumptionHistory = () => {
 };
 
 export default MaterialConsumptionHistory;
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: 'white', // Your global background color
+      paddingBottom: 30
+    },
+  });

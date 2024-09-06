@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList, SafeAreaView, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { getProductionHomeData } from '@/lib/production';
 import { getSaleHomeData } from '@/lib/sale';
@@ -68,9 +68,15 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
     <View className="flex flex-row pb-2 px-2" style={{ height: '25%' }}>
       <View className="basis-1/2 pr-1">
         <TouchableOpacity
-          className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
+          className="bg-amber-200 rounded-3xl flex-1"
           activeOpacity={0.7}
           onPress={() => router.push('/production')}
+        >
+          <ImageBackground
+          source={require('../../assets/images/yellow.jpeg')} 
+          resizeMode="cover" 
+          className="flex-1 rounded-3xl"
+          imageStyle={{ borderRadius: 20 }} 
         >
           <View className="flex-none h-full items-center">
             <Text className="text-center font-pmedium text-black text-xl pt-7">PROD</Text>
@@ -84,14 +90,21 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
               </View>
             )}
           </View>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
 
       <View className="basis-1/2 pl-1">
         <TouchableOpacity
-          className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
+          className="bg-amber-200 rounded-3xl flex-1"
           activeOpacity={0.7}
           onPress={() => router.push('/sale')}
+        >
+           <ImageBackground
+          source={require('../../assets/images/yellow.jpeg')} 
+          resizeMode="cover" 
+          className="flex-1 rounded-3xl"
+          imageStyle={{ borderRadius: 20 }} 
         >
           <View className="flex-none h-full items-center">
             <Text className="text-center font-pmedium text-black text-xl pt-7">SALE</Text>
@@ -106,6 +119,7 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
               </View>
             )}
           </View>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
     </View>

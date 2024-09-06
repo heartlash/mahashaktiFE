@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, View, SafeAreaView, RefreshControl, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DonutChart from '../donut/DonutChart';
 import { useFont } from '@shopify/react-native-skia';
@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
-const RADIUS = 160;
+const RADIUS = 120;
 
 
 export const OperationalExpensesChart = () => {
@@ -101,13 +101,12 @@ export const OperationalExpensesChart = () => {
         setData(arrayOfObjects);
     };
 
-    const font = useFont(require('../../assets/fonts/Roboto-Bold.ttf'), 60);
-    const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 25);
+    const font = useFont(require('../../assets/fonts/Roboto-Bold.ttf'), 40);
+    const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 20);
 
     if (!font || !smallFont) {
         return <AnimatedActivityIndicator />
     }
-    console.log("just before return all good")
     return (
         <View>
             <View className="mx-2 my-1">

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, Modal, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { MinusCircleIcon } from "react-native-heroicons/solid";
 import CreateMaterialConsumption from './CreateMaterialConsumption'
 import CreateMaterialPurchase from './CreateMaterialPurchase'
 import { useNavigation } from '@react-navigation/native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 
 const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
@@ -54,7 +55,10 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
       onPress={onPress}
       className="bg-white p-4 mx-2 rounded-lg shadow-sm mb-4 border border-gray-200"
     >
-      <View>
+
+      <Animated.View
+        entering={FadeInDown.duration(1000).springify()}
+      >
         <View className="flex-row justify-between mb-3">
           <Text className="text-xl font-semibold text-gray-800">{item.material}</Text>
           <Text className="text-xl font-medium text-gray-800">{item.quantity} {item.unit}</Text>
@@ -112,7 +116,7 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
             )}
           </>
         )}
-      </View>
+      </Animated.View>
     </TouchableOpacity>
 
   );

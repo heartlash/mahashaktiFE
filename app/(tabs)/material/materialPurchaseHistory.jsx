@@ -1,4 +1,4 @@
-import { View, SafeAreaView } from 'react-native';
+import { View, SafeAreaView, StyleSheet } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import MaterialPurchaseHistoryList from '@/components/materialPurchaseHistory/MaterialPurchaseHistoryList';
@@ -67,7 +67,7 @@ const MaterialPurchaseHistory = () => {
     }, [selectedMonth, selectedYear])
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
             <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
             <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
@@ -95,3 +95,11 @@ const MaterialPurchaseHistory = () => {
 };
 
 export default MaterialPurchaseHistory;
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: 'white', // Your global background color
+      paddingBottom: 30
+    },
+  });

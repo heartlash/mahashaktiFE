@@ -7,13 +7,14 @@ import { saveFlockChange } from '@/lib/flock';
 import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
 const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [changeDate, setChangeDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
-    const [newMaterialConsumption, setNewMaterialConsumption] = useState(null);
+    const [newFlockChange, setNewFlockChange] = useState(null);
 
 
     const showDatePicker = () => {
@@ -34,7 +35,7 @@ const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible,
     };
 
     const handleNewChange = (field, value) => {
-        setNewMaterialConsumption((prevItem) => ({
+        setNewFlockChange((prevItem) => ({
             ...prevItem,
             [field]: value,
         }));
@@ -44,20 +45,20 @@ const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible,
         setSubmitModalVisible(true)
 
         const userInfo = await getUserInfo();
-        var temp = newMaterialConsumption
+        var temp = newFlockChange
         temp.createdBy = userInfo.name
         temp.date = changeDate
 
         const result = await saveFlockChange(temp);
         setSubmitModalVisible(false)
         if (result.errorMessage == null) {
-            setNewMaterialConsumption(null)
+            setNewFlockChange(null)
             setSuccessModalVisible(true)
             setTimeout(() => {
                 onRefreshOnChange()
                 setSuccessModalVisible(false);
             }, 2000);
-
+            onClose()
         } else {
             setFailureModalVisible(true)
             setTimeout(() => {
@@ -88,7 +89,6 @@ const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible,
                             { label: 'No', value: 'false' },
                         ]}
                         style={pickerSelectStyles}
-                    //placeholder={{ label: "Filter By Paid Status...", value: null }}
                     />
                 </View>
             </View>
@@ -100,14 +100,13 @@ const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible,
                     <TextInput
                         className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                         onChangeText={(text) => handleNewChange('remarks', text)}
-                        keyboardType="numeric"
                     />
                 </View>
                 <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Date: </Text>
                     <TouchableOpacity
                         onPress={showDatePicker}
-                        className="border border-gray-300 p-2 rounded bg-white"
+                        className="border border-gray-300 p-2 rounded-lg bg-white"
                     >
                         <Text className="text-gray-600">
                             {changeDate}
@@ -133,26 +132,3 @@ const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible,
 }
 
 export default CreateFlockChange
-
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-        fontSize: 16,
-        paddingVertical: 12,
-        paddingHorizontal: 10,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        color: 'black',
-        paddingRight: 30, // to ensure the text is never behind the icon
-    },
-    inputAndroid: {
-        fontSize: 16,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        borderWidth: 0.5,
-        borderColor: 'gray',
-        borderRadius: 8,
-        color: 'black',
-        paddingRight: 30, // to ensure the text is never behind the icon
-    },
-});

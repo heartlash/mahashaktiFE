@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Alert, TouchableOpacity, Button, ActivityIndicator, Modal } from 'react-native'
+import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getUserInfo } from '@/lib/auth';
@@ -7,6 +7,7 @@ import moment from 'moment-timezone';
 import RNPickerSelect from 'react-native-picker-select';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
 
@@ -82,7 +83,7 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
                 onRefreshOnChange()
                 setSuccessModalVisible(false);
             }, 2000);
-
+            onClose()
         } else {
             setFailureModalVisible(true)
             setTimeout(() => {
@@ -151,54 +152,24 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
 
                 <View className="flex-1 pr-2">
                     <Text className="text-gray-700 font-semibold">Vendor: </Text>
-                    <View className="border border-gray-300 p-2 rounded bg-white">
-                        <RNPickerSelect
-                            onValueChange={(value) => handleNewChange('vendor', value)}
-                            items={vendorData}
-                            placeholder={{ label: 'Choose Vendor', value: null }}
-                            style={{
-                                inputIOS: {
-                                    borderColor: '#D1D5DB', // Tailwind gray-300
-                                    padding: 8,
-                                    borderRadius: 8,
-                                    color: '#4B5563', // Tailwind gray-700
-                                },
-                                inputAndroid: {
-                                    borderColor: '#D1D5DB',
-                                    padding: 8,
-                                    borderRadius: 8,
-                                    color: '#4B5563',
-                                }
-                            }} />
-                    </View>
+                    <RNPickerSelect
+                        onValueChange={(value) => handleNewChange('vendor', value)}
+                        items={vendorData}
+                        placeholder={{ label: 'Choose Vendor', value: null }}
+                        style={pickerSelectStyles} />
 
                 </View>
 
                 <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Paid:</Text>
-                    <View className="border border-gray-300 p-2 rounded bg-white">
-                        <RNPickerSelect
-                            onValueChange={(value) => handleNewChange('paid', value)}
-                            items={[
-                                { label: 'Yes', value: true },
-                                { label: 'No', value: false },
-                            ]}
-                            placeholder={{ label: 'Choose Paid Status', value: null }}
-                            style={{
-                                inputIOS: {
-                                    borderColor: '#D1D5DB', // Tailwind gray-300
-                                    padding: 8,
-                                    borderRadius: 8,
-                                    color: '#4B5563', // Tailwind gray-700
-                                },
-                                inputAndroid: {
-                                    borderColor: '#D1D5DB',
-                                    padding: 8,
-                                    borderRadius: 8,
-                                    color: '#4B5563',
-                                }
-                            }} />
-                    </View>
+                    <RNPickerSelect
+                        onValueChange={(value) => handleNewChange('paid', value)}
+                        items={[
+                            { label: 'Yes', value: true },
+                            { label: 'No', value: false },
+                        ]}
+                        placeholder={{ label: 'Choose Paid Status', value: null }}
+                        style={pickerSelectStyles} />
                 </View>
 
             </View>

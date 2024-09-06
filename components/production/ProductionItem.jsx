@@ -5,8 +5,7 @@ import { getUserInfo } from '@/lib/auth';
 import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
-import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 
 const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
@@ -205,7 +204,7 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
                   editable={false}
                 />
               ) : (
-                <Text className="text-gray-700 ml-2">{item.createdBy}</Text>
+                <Text  className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
               )}
             </View>
           )}
@@ -223,7 +222,7 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
                   editable={false}
                 />
               ) : (
-                <Text className="text-gray-700 ml-2">{item.updatedBy}</Text>
+                <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.updatedBy}</Text>
               )}
             </View>
 
@@ -238,7 +237,9 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
               ) : (
                 <View className="flex-1 flex-row justify-between">
                   <TrashIcon size={28} color="black" onPress={handleDeletePress} />
-                  <PencilSquareIcon size={28} color="black" onPress={() => handleEditPress(item)} />
+                  <TouchableOpacity onPress={() => handleEditPress(item)}>
+                    <PencilSquareIcon size={28} color="black" />
+                  </TouchableOpacity>
                 </View>
               )}
             </View>

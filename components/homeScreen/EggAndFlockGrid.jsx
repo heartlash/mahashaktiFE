@@ -1,10 +1,8 @@
-import { View, Text, TouchableOpacity, FlatList, SafeAreaView, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, ImageBackground, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getFlockCount } from '@/lib/flock';
 import { getEggCount } from '@/lib/egg';
 import { router } from 'expo-router';
-import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
-import CustomModal from '../CustomModal';
 
 const EggAndFlockGrid = ({ refreshTrigger }) => {
 
@@ -58,12 +56,19 @@ const EggAndFlockGrid = ({ refreshTrigger }) => {
         <TouchableOpacity
           className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
           activeOpacity={0.7}>
-          <View className="flex-none h-full items-center">
-            <Text className="text-center font-pmedium text-black text-xl pt-7">EGG STOCK</Text>
-            {loadingEgg ? (<ActivityIndicator size="small" color="#0000ff" className="pt-5" />) : (
-              <Text className="text-center font-bold text-lime-950 text-xl pt-5">{eggCount}</Text>
-            )}
-          </View>
+          <ImageBackground
+            source={require('../../assets/images/flowers.jpeg')}
+            resizeMode="cover"
+            className="flex-1 rounded-3xl"
+            imageStyle={{ borderRadius: 20 }}
+          >
+            <View className="flex-none h-full items-center">
+              <Text className="text-center font-pmedium text-black text-xl pt-7">EGG STOCK</Text>
+              {loadingEgg ? (<ActivityIndicator size="small" color="#0000ff" className="pt-5" />) : (
+                <Text className="text-center font-bold text-black text-xl pt-5">{eggCount}</Text>
+              )}
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
 
@@ -72,12 +77,19 @@ const EggAndFlockGrid = ({ refreshTrigger }) => {
           className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
           activeOpacity={0.7}
           onPress={() => router.push('/home/flock')}>
-          <View className="flex-none h-full items-center">
-            <Text className="text-center font-pmedium text-black text-xl pt-7">FLOCK</Text>
-            {loadingFlock ? (<ActivityIndicator size="small" color="#0000ff" className="pt-5" />) : (
-              <Text className="text-center font-bold text-lime-950 text-xl pt-5">{flockCount}</Text>
-            )}
-          </View>
+          <ImageBackground
+            source={require('../../assets/images/flowers.jpeg')}
+            resizeMode="cover"
+            className="flex-1 rounded-3xl"
+            imageStyle={{ borderRadius: 20 }}
+          >
+            <View className="flex-none h-full items-center">
+              <Text className="text-center font-pmedium text-black text-xl pt-7">FLOCK</Text>
+              {loadingFlock ? (<ActivityIndicator size="small" color="#0000ff" className="pt-5" />) : (
+                <Text className="text-center font-bold text-black text-xl pt-5">{flockCount}</Text>
+              )}
+            </View>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
     </View>

@@ -6,14 +6,13 @@ import { getUserInfo } from '@/lib/auth';
 import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
-import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
 const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
   const [edited, setEdited] = useState(item);
-  const [loading, setLoading] = useState(false);
 
   const handleEditChange = (field, value) => {
 
@@ -102,8 +101,6 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
     );
   };
 
-  if (loading)
-    return <AnimatedActivityIndicator />
 
   return (
 
@@ -114,7 +111,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
       <Animated.View
         entering={FadeInDown.duration(1000).springify()}>
         {/* First Row */}
-        <View className="flex-row justify-between mb-3">
+        <View className="flex-row justify-between mb-4">
           <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
             <Text className="text-gray-700 font-semibold">Eggs Sold: </Text>
             {editItem === item ? (
@@ -160,19 +157,18 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
           <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
             <Text className="text-gray-700 font-semibold">Paid: </Text>
             {editItem === item ? (
-              <View className="border border-gray-300 px-3 py-2 rounded-lg bg-white">
-                <RNPickerSelect
-                  onValueChange={(value) => handleEditChange('paid', value)}
-                  items={[
-                    { label: 'Yes', value: true },
-                    { label: 'No', value: false },
-                  ]}
-                  placeholder={{
-                    label: item.paid,
-                    value: item.paid,
-                  }}
-                />
-              </View>
+              <RNPickerSelect
+                onValueChange={(value) => handleEditChange('paid', value)}
+                items={[
+                  { label: 'Yes', value: true },
+                  { label: 'No', value: false },
+                ]}
+                placeholder={{
+                  label: item.paid,
+                  value: item.paid,
+                }}
+                style={pickerSelectStyles}
+              />
             ) : (
               <Text className="text-gray-700">{item.paid}</Text>
             )}
@@ -184,18 +180,17 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
           <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
             <Text className="text-gray-700 font-semibold">Vendor: </Text>
             {editItem === item ? (
-              <View className="border border-gray-300 px-3 py-2 rounded-lg bg-white">
-                <RNPickerSelect
-                  onValueChange={(value) => handleEditChange('paid', value)}
-                  items={vendorData}
-                  placeholder={{
-                    label: item.vendorName && vendorData.find(v => v.label === item.vendorName)
-                      ? item.vendorName
-                      : 'Select Vendor...',
-                    value: item.vendorName,
-                  }}
-                />
-              </View>
+              <RNPickerSelect
+                onValueChange={(value) => handleEditChange('paid', value)}
+                items={vendorData}
+                placeholder={{
+                  label: item.vendorName && vendorData.find(v => v.label === item.vendorName)
+                    ? item.vendorName
+                    : 'Select Vendor...',
+                  value: item.vendorName,
+                }}
+                style={pickerSelectStyles}
+              />
             ) : (
               <Text className="text-gray-700">{item.vendorName}</Text>
             )}
@@ -210,7 +205,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
                   editable={false}
                 />
               ) : (
-                <Text className="text-gray-700">{item.createdBy}</Text>
+                <Text  className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
               )}
             </View>
           )}
@@ -230,7 +225,8 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
                     editable={false}
                   />
                 ) : (
-                  <Text className="text-gray-700">{item.updatedBy}</Text>
+                  <Text className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.updatedBy}</Text>
+
                 )}
               </View>
             </View>

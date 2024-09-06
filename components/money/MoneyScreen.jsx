@@ -6,6 +6,7 @@ import { getMonthStartAndEndDate } from '@/lib/util';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
+import Animated, {FadeInDown} from 'react-native-reanimated';
 
 
 
@@ -99,48 +100,58 @@ const MoneyScreen = () => {
 
             <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />
 
-            <TouchableOpacity
-                className="bg-white p-7 mx-5 rounded-lg shadow-lg mb-4 border border-gray-200"
+            <Animated.View
+                entering={FadeInDown.duration(1000).springify()}
             >
-                <TouchableOpacity
-                    onPress={() => router.push({
-                        pathname: '/money/materialExpenses',
-                        params: {
-                            month: selectedMonth,
-                            year: selectedYear
-                        }
-                    })}
-                    className="bg-yellow-300 p-3 rounded-lg mx-10 my-3"
-                >
-                    <Text className="text-black font-semibold justify-center p-3">Material Expenses ₹{profitData.materialPurchaseExpenses}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    onPress={() => router.push({
-                        pathname: '/money/operationalExpenses',
-                        params: {
-                            month: selectedMonth,
-                            year: selectedYear
-                        }
-                    })}
-                    className="bg-yellow-300 p-3 rounded-lg mx-10 my-3"
-                >
-                    <Text className="text-black font-semibold justify-center p-3">Operational Expenses ₹{profitData.operationalExpenses}</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    onPress={() => router.push({
-                        pathname: '/money/vendorCredit',
-                        params: {
-                            month: selectedMonth,
-                            year: selectedYear
-                        }
-                    })}
-                    className="bg-yellow-300 p-3 rounded-lg mx-10 my-3"
-                >
-                    <Text className="text-black font-semibold justify-center p-3">All Time Credits</Text>
-                </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => router.push({
+                    pathname: '/money/materialExpenses',
+                    params: {
+                        month: selectedMonth,
+                        year: selectedYear
+                    }
+                })}
+                className="bg-yellow-300 p-3 rounded-3xl mx-10 my-3"
+            >
+                <Text className="text-black text-center font-semibold p-3">Material Expenses ₹{profitData.materialPurchaseExpenses}</Text>
             </TouchableOpacity>
+            </Animated.View>
+
+
+            <Animated.View
+                entering={FadeInDown.delay(200).duration(1000).springify()}
+            >
+            <TouchableOpacity
+                onPress={() => router.push({
+                    pathname: '/money/operationalExpenses',
+                    params: {
+                        month: selectedMonth,
+                        year: selectedYear
+                    }
+                })}
+                className="bg-yellow-300 p-3 rounded-3xl mx-10 my-3"
+            >
+                <Text className="text-black text-center font-semibold p-3">Operational Expenses ₹{profitData.operationalExpenses}</Text>
+            </TouchableOpacity>
+            </Animated.View>
+
+
+            <Animated.View
+                entering={FadeInDown.delay(400).duration(1000).springify()}
+            >
+            <TouchableOpacity
+                onPress={() => router.push({
+                    pathname: '/money/vendorCredit',
+                    params: {
+                        month: selectedMonth,
+                        year: selectedYear
+                    }
+                })}
+                className="bg-yellow-300 p-3 rounded-3xl  mx-10 my-3"
+            >
+                <Text className="text-black text-center font-semibold p-3">All Time Credits</Text>
+            </TouchableOpacity>
+            </Animated.View>
 
         </ScrollView>
 

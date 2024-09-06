@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Alert, TouchableOpacity, Button, ActivityIndicator, Modal } from 'react-native'
+import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -7,6 +7,7 @@ import { saveOperationalExpense } from '@/lib/operationalExpense';
 import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
 
@@ -59,6 +60,7 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
                 onRefreshOnChange()
                 setSuccessModalVisible(false);
             }, 2000);
+            onClose()
 
         } else {
             setFailureModalVisible(true)
@@ -76,13 +78,11 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
                 <View className="flex-1 pr-2">
                     <Text className="text-gray-700 font-semibold">Item:</Text>
 
-                    <View className="border border-gray-300 p-2 rounded bg-white">
-                        <RNPickerSelect
-                            onValueChange={(value) => handleNewOperationalExpense('itemId', value)}
-                            items={operationalExpenseItems}
-                            placeholder={{ label: 'Choose Expense Item', value: null }}
-                            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700" />
-                    </View>
+                    <RNPickerSelect
+                        onValueChange={(value) => handleNewOperationalExpense('itemId', value)}
+                        items={operationalExpenseItems}
+                        placeholder={{ label: 'Choose Expense Item', value: null }}
+                        style={pickerSelectStyles} />
                 </View>
                 <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Expense Date:</Text>

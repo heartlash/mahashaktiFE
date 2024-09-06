@@ -50,19 +50,27 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
 
   const renderItem = ({ item }) => (
     <View style={{ width: itemWidth, height: "100%" }} className="px-2">
+      <ImageBackground
+        source={require('../../assets/images/blue.jpeg')}
+        resizeMode="cover"
+        className="flex-1 rounded-3xl"
+        imageStyle={{ borderRadius: 20 }}
+      >
+        <TouchableOpacity onPress={() => router.push('/material')} className="rounded-3xl">
 
-      <TouchableOpacity onPress={() => router.push('/material')} className="bg-cyan-200 rounded-3xl">
-        <View className="flex-none h-full flex-row">
-          <View className="basis-1/2 pl-5">
-            <Text className="text-left font-bold text-black text-xl pt-7 pb-3">{item.material}</Text>
-            <Text className="text-left font-bold text-black">Stock</Text>
+          <View className="flex-none h-full flex-row">
+            <View className="basis-1/2 pl-5">
+              <Text className="text-left font-bold text-black text-xl pt-7 pb-3">{item.material}</Text>
+              <Text className="text-left font-bold text-black">Stock</Text>
+            </View>
+            <View className="basis-1/2 pr-5">
+              <Text className="text-black text-xl font-bold text-right pt-7 pb-3">{item.quantity} {item.unit}</Text>
+              <Text className="text-black font-bold text-right">{item.wouldLastFor} Days</Text>
+            </View>
           </View>
-          <View className="basis-1/2 pr-5">
-            <Text className="text-black text-xl font-bold text-right pt-7 pb-3">{item.quantity} {item.unit}</Text>
-            <Text className="text-black font-bold text-right">{item.wouldLastFor} Days</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </ImageBackground>
+
 
     </View>
   );
