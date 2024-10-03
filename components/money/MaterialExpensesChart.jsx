@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, View, SafeAreaView, RefreshControl, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DonutChart from '../donut/DonutChart';
 import { useFont } from '@shopify/react-native-skia';
@@ -9,7 +9,7 @@ import { useGlobalSearchParams } from 'expo-router';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import { getMaterialPurchaseHistory } from '@/lib/materialPurchase';
 import { useNavigation } from '@react-navigation/native';
-
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 const RADIUS = 120;
 
@@ -28,6 +28,7 @@ export const MaterialExpensesChart = () => {
     const colors = ['#fe769c', '#46a0f8', '#c3f439', '#88dabc', '#e43433', '#ff9cb1', '#5ab0ff', '#d5f97a',
         '#a2ebd2', '#f75a59', '#ffa3c3', '#71b8ff', '#e1ff8c', '#b8eed9', '#ff7b7a'];
 
+    const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -35,6 +36,7 @@ export const MaterialExpensesChart = () => {
     }, []);
 
     const fetchMaterialPurchaseHistory = async () => {
+        setLoading(true)
         const { startDate, endDate } = getMonthStartAndEndDate(month, year)
         const result = await getMaterialPurchaseHistory(null, startDate, endDate);
         if (result.errorMessage == null) {
@@ -49,6 +51,7 @@ export const MaterialExpensesChart = () => {
 
             setMaterialToAmountExpense(materialToAmountMapped);
             generateData(materialToAmountMapped);
+            setLoading(false)
 
         }
         if (result.data == null)
@@ -103,10 +106,10 @@ export const MaterialExpensesChart = () => {
     const font = useFont(require('../../assets/fonts/Roboto-Bold.ttf'), 40);
     const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 20);
 
-    if (!font || !smallFont) {
-
-        return <View />
+    if (!font || !smallFont || loading) {
+        return <AnimatedActivityIndicator/>
     }
+    
     return (
         <View>
             <View className="mx-2 my-1">
@@ -151,6 +154,7 @@ const styles = StyleSheet.create({
         width: RADIUS * 2,
         height: RADIUS * 2,
         marginTop: 10,
+        marginBottom: 20
     },
     button: {
         marginVertical: 40,

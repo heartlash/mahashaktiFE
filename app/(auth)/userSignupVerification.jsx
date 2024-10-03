@@ -73,7 +73,9 @@ const UserSignupVerification = () => {
 
         setIsSubmitting(true)
 
-        if (rightEmailOtp != otpEmailInput || rightPhoneOtp != otpPhoneNumberInput) {
+        if (rightEmailOtp != otpEmailInput) {
+
+        //if (rightEmailOtp != otpEmailInput || rightPhoneOtp != otpPhoneNumberInput) {
             setVerificationMessage("Wrong OTP!")
             setIsSubmitting(false)
             return
@@ -95,8 +97,8 @@ const UserSignupVerification = () => {
             }
             else {
                 const result = await signup(name, phoneNumber, email.toLowerCase(), password);
-                if (result == 'SUCCESS') {
 
+                if (result.data == 'SUCCESS') {
                     setModalVisible(true);
 
                     setTimeout(() => {
@@ -126,7 +128,7 @@ const UserSignupVerification = () => {
                 contentContainerStyle={{ flex: 1 }}
                 bounces={false}
             >
-                <CustomModal modalVisible={modalVisible} setModalVisible={setModalVisible} mainText="Successfully Signed Up!" secondaryText={""} />
+                <CustomModal modalVisible={modalVisible} setModalVisible={setModalVisible} theme="celebrate" mainText="Successfully Signed Up!" secondaryText={""} />
 
                 <View className="bg-white h-full w-full">
                     <StatusBar style="light" />

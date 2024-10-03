@@ -73,7 +73,7 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
           onPress={() => router.push('/production')}
         >
           <ImageBackground
-          source={require('../../assets/images/yellow.jpeg')} 
+          source={require('../../assets/images/orange.jpeg')} 
           resizeMode="cover" 
           className="flex-1 rounded-3xl"
           imageStyle={{ borderRadius: 20 }} 
@@ -85,7 +85,7 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
             ) : (
               <View>
                 <Text className="text-center font-pregular text-black text-lg pt-2">{productionDate}</Text>
-                <Text className="text-center font-bold text-lime-950 border border-gray-600 text-xl pt-2">{productionCount}</Text>
+                <Text className="text-center font-bold text-lime-950  text-xl pt-2">{productionCount}</Text>
                 <Text className="text-center font-pregular text-lime-950 text-lg pt-2">{productionPercentage}%</Text>
               </View>
             )}
@@ -101,7 +101,7 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
           onPress={() => router.push('/sale')}
         >
            <ImageBackground
-          source={require('../../assets/images/yellow.jpeg')} 
+          source={require('../../assets/images/orange.jpeg')} 
           resizeMode="cover" 
           className="flex-1 rounded-3xl"
           imageStyle={{ borderRadius: 20 }} 

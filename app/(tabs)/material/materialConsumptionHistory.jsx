@@ -1,4 +1,5 @@
-import { View, SafeAreaView, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import MaterialConsumptionHistoryList from '@/components/materialConsumptionHistory/MaterialConsumptionHistoryList';

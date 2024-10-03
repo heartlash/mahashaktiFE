@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ScrollView, StyleSheet, Text, View, RefreshControl, Modal, ActivityIndicator } from 'react-native';
+import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DonutChart from '../donut/DonutChart';
 import { useFont } from '@shopify/react-native-skia';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import RenderItem from '../donut/RenderItem';
-import { getVendorsCredits, settleVendorCredit } from '@/lib/vendor';
+import { getVendorsCredits } from '@/lib/vendor';
 import { useNavigation } from '@react-navigation/native';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
@@ -21,7 +21,7 @@ const CreditsChart = () => {
     const [creditsToVendors, setCreditsToVendors] = useState({})
     const [vendorNameToId, setVendorNameToId] = useState({})
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [refresh, setRefresh] = useState(false);
     const onRefreshOnChange = () => {
         setRefresh(prev => !prev);
@@ -124,12 +124,9 @@ const CreditsChart = () => {
 
     }, [refresh])
 
-    if (!font || !smallFont) {
-        return <View />
-    }
-
-    if (loading) 
+    if (!font || !smallFont || loading) {
         return <AnimatedActivityIndicator/>
+    }
 
     return (
         <View>
@@ -179,6 +176,7 @@ const styles = StyleSheet.create({
         width: RADIUS * 2,
         height: RADIUS * 2,
         marginTop: 10,
+        marginBottom: 20
     },
     button: {
         marginVertical: 40,

@@ -25,27 +25,33 @@ export const globalStyles = StyleSheet.create({
     // Add more styles as needed
   });
 
-export const pickerSelectStyles = StyleSheet.create({
+  export const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
-        fontSize: 16,
-        paddingVertical: 7, // Matches the padding of your TouchableOpacity
-        paddingHorizontal: 12, // Matches the padding of your TouchableOpacity
-        borderWidth: 1,
-        borderColor: 'gray', // Matches 'border-gray-300' class
-        borderRadius: 10, // Matches 'rounded-lg' class
-        backgroundColor: 'white', // Matches 'bg-white' class
-        color: 'black',
-        paddingRight: 30, // Ensure the text is never behind the dropdown icon
+      fontSize: 16,
+      paddingVertical: 7,
+      paddingHorizontal: 12,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 10,
+      backgroundColor: 'white',
+      color: 'black',
+      paddingRight: 30, // Ensure the text is never behind the dropdown icon
     },
     inputAndroid: {
-        fontSize: 16,
-        paddingVertical: 7, // Matches the padding of your TouchableOpacity
-        paddingHorizontal: 12, // Matches the padding of your TouchableOpacity
-        borderWidth: 1,
-        borderColor: 'gray', // Matches 'border-gray-300' class
-        borderRadius: 10, // Matches 'rounded-lg' class
-        backgroundColor: 'white', // Matches 'bg-white' class
-        color: 'black',
-        paddingRight: 30, // Ensure the text is never behind the dropdown icon
+      fontSize: 16,
+      paddingVertical: 7,
+      paddingHorizontal: 12,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 10,
+      backgroundColor: 'white',
+      color: 'black',
+      paddingRight: 30,
+      // Force elevation for Android to ensure the border and background render correctly
+      elevation: 3, // Adds shadow on Android to enhance visibility of borders
     },
-});
+    placeholder: {
+      color: 'gray', // Placeholder text color
+    },
+  });
+  

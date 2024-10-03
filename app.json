@@ -14,9 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "config": {
-        "usesNonExemptEncryption": false
-      }
+      "bundleIdentifier": "Mahashakti"
     },
     "android": {
       "adaptiveIcon": {
@@ -34,6 +32,20 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "bebb0d1e-ffda-4e5a-b27d-be5ac8cf4314"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/bebb0d1e-ffda-4e5a-b27d-be5ac8cf4314"
     }
   }
 }

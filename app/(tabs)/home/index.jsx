@@ -1,5 +1,5 @@
 import { ScrollView, RefreshControl } from 'react-native'
-import React, {useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ProductionSaleGrid from '@/components/homeScreen/ProductionSaleGrid';
 import EggAndFlockGrid from '@/components/homeScreen/EggAndFlockGrid';
@@ -24,19 +24,22 @@ const index = () => {
   }, []);
 
   return (
-    <SafeAreaView>
-      <ScrollView className="flex flex-col" contentContainerStyle={{height: '100%'}}
-       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-        <ProductionSaleGrid refreshTrigger={refreshTrigger}/>
-        <ActivityGrid refreshTrigger={refreshTrigger}/>
-        <EggAndFlockGrid refreshTrigger={refreshTrigger}/>
-        <WeatherGrid refreshTrigger={refreshTrigger}/>
-        <MaterialStockCarousel refreshTrigger={refreshTrigger}/>
+    <SafeAreaView style={{ flex: 1 }}> 
+      <ScrollView
+        className="flex flex-col"
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <ProductionSaleGrid refreshTrigger={refreshTrigger} />
+        <ActivityGrid refreshTrigger={refreshTrigger} />
+        <EggAndFlockGrid refreshTrigger={refreshTrigger} />
+        <WeatherGrid refreshTrigger={refreshTrigger} />
+        <MaterialStockCarousel refreshTrigger={refreshTrigger} />
       </ScrollView>
     </SafeAreaView>
-  )
+  );
 }
 
 export default index

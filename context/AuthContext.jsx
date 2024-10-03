@@ -34,7 +34,7 @@ const AuthProvider = ({children}) => {
     const login = async(username, password) => {
         try {
             console.log("login is called");
-            const response = await axios.post("http://localhost:8080/mahashakti/users/login",  {
+            const response = await axios.post("http://192.168.31.25:8080/mahashakti/users/login",  {
                 username,
                 password
               }, {
@@ -64,7 +64,7 @@ const AuthProvider = ({children}) => {
     const signup = async(name, phoneNumber, email, password) => {
         try {
             console.log("login is called");
-            const response = await axios.post("http://localhost:8080/mahashakti/users/signup",  {
+            const response = await axios.post("http://192.168.31.25:8080/mahashakti/users/signup",  {
                 name, phoneNumber, email, password
               }, {
                 headers: {

@@ -29,6 +29,7 @@ export const OperationalExpensesChart = () => {
     const colors = ['#fe769c', '#46a0f8', '#c3f439', '#88dabc', '#e43433', '#ff9cb1', '#5ab0ff', '#d5f97a',
         '#a2ebd2', '#f75a59', '#ffa3c3', '#71b8ff', '#e1ff8c', '#b8eed9', '#ff7b7a'];
 
+    const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -36,6 +37,7 @@ export const OperationalExpensesChart = () => {
     }, []);
 
     const fetchOperationalExpensesHistory = async () => {
+        setLoading(true)
         const { startDate, endDate } = getMonthStartAndEndDate(month, year)
         const result = await getOperationalExpenses(startDate, endDate);
         if (result.errorMessage == null) {
@@ -50,7 +52,7 @@ export const OperationalExpensesChart = () => {
 
             setOperationExpenseItemToAmountExpense(operationalExpenseItemToAmountMapped);
             generateData(operationalExpenseItemToAmountMapped);
-
+            setLoading(false)
         }
         if (result.data == null)
             setMaterialToAmountExpense({})
@@ -104,9 +106,10 @@ export const OperationalExpensesChart = () => {
     const font = useFont(require('../../assets/fonts/Roboto-Bold.ttf'), 40);
     const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 20);
 
-    if (!font || !smallFont) {
-        return <AnimatedActivityIndicator />
+    if (!font || !smallFont || loading) {
+        return <AnimatedActivityIndicator/>
     }
+
     return (
         <View>
             <View className="mx-2 my-1">
@@ -152,6 +155,7 @@ const styles = StyleSheet.create({
         width: RADIUS * 2,
         height: RADIUS * 2,
         marginTop: 10,
+        marginBottom: 20
     },
     button: {
         marginVertical: 40,
