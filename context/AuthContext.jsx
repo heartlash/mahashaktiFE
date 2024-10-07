@@ -8,6 +8,9 @@ const AuthContext = createContext();
 
 const TOKEN_KEY = 'accessToken';
 
+export const SERVER = "13.201.73.202"
+//export const SERVER = "192.168.31.25"
+
 
 const AuthProvider = ({children}) => {
     const [authState, setAuthState] = useState({
@@ -33,7 +36,7 @@ const AuthProvider = ({children}) => {
     
     const login = async(username, password) => {
         try {
-            const response = await axios.post("http://192.168.31.25:8080/mahashakti/users/login",  {
+            const response = await axios.post(`http://${SERVER}:8080/mahashakti/users/login`,  {
                 username,
                 password
               }, {
@@ -61,7 +64,7 @@ const AuthProvider = ({children}) => {
 
     const signup = async(name, phoneNumber, email, password) => {
         try {
-            const response = await axios.post("http://192.168.31.25:8080/mahashakti/users/signup",  {
+            const response = await axios.post(`http://${SERVER}:8080/mahashakti/users/signup`,  {
                 name, phoneNumber, email, password
               }, {
                 headers: {

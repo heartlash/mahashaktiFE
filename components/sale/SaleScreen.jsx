@@ -223,14 +223,14 @@ const SaleScreen = () => {
                             setSubmitModalVisible={setSubmitModalVisible}
                         />
                     ) : (
-                        <View className="flex-row justify-center mb-3">
+                        <View className="flex-row justify-end mb-3">
                             {/* Center Button */}
-                            <View className="absolute left-0 right-0 items-center">
+                            <View className="mr-20 items-end">
                                 <Ionicons name="add-circle" size={45} color="black" onPress={() => setCreateSale(true)} />
                             </View>
 
                             {/* Right-Aligned Button */}
-                            <View className="flex-1 items-end pr-4 mt-1">
+                            <View className=" items-end pr-4 mt-1">
                                 <TouchableOpacity className="bg-yellow-200 p-2 rounded-md" onPress={() => router.push('/sale/vendors')}>
                                     <Text className="text-black">Vendors</Text>
                                 </TouchableOpacity>

@@ -31,7 +31,7 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
         const userInfo = await getUserInfo();
         const updatedItem = { ...edited, updatedBy: userInfo.name };
         const result = await updateOperationalExpenses(updatedItem);
-        setSubmitModalVisible(true)
+        setSubmitModalVisible(false)
         if (result.errorMessage == null) {
             setEditItem(null);
             setSuccessModalVisible(true)
@@ -132,10 +132,22 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
                     <View>
                         <View className="flex-row justify-between mb-3">
                             <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                                <Text className="text-gray-700 font-semibold">Remarks: </Text>
+                                {editItem === item ? (
+                                    <TextInput
+                                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 "
+                                        value={edited.remarks.toString()}
+                                        onChangeText={(text) => handleEditChange('remarks', text)}
+                                    />
+                                ) : (
+                                    <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.remarks}</Text>
+                                )}
+                            </View>
+                            <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
                                 <Text className="text-gray-700 font-semibold">Created By:</Text>
                                 {editItem === item ? (
                                     <TextInput
-                                        className="border border-gray-300 p-2 rounded-md text-gray-700 ml-2 bg-gray-200"
+                                        className="border border-gray-300 p-2 rounded-md text-gray-700 bg-gray-200"
                                         value={item.createdBy}
                                         editable={false}
                                     />
@@ -144,7 +156,10 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
 
                                 )}
                             </View>
-                            <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                        </View>
+                        
+                        <View className="flex-row justify-between mb-3">
+                            <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
                                 <Text className="text-gray-700 font-semibold">Updated By:</Text>
                                 {editItem === item ? (
                                     <TextInput

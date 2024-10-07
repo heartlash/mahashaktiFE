@@ -57,7 +57,7 @@ const EggAndFlockGrid = ({ refreshTrigger }) => {
           className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
           activeOpacity={0.7}>
           <ImageBackground
-            source={require('../../assets/images/flowers.jpeg')}
+            source={require('../../assets/images/orange.jpeg')}
             resizeMode="cover"
             className="flex-1 rounded-3xl"
             imageStyle={{ borderRadius: 20 }}
@@ -78,7 +78,7 @@ const EggAndFlockGrid = ({ refreshTrigger }) => {
           activeOpacity={0.7}
           onPress={() => router.push('/home/flock')}>
           <ImageBackground
-            source={require('../../assets/images/flowers.jpeg')}
+            source={require('../../assets/images/orange.jpeg')}
             resizeMode="cover"
             className="flex-1 rounded-3xl"
             imageStyle={{ borderRadius: 20 }}

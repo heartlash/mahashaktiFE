@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
+import { ScrollView, StyleSheet, View, RefreshControl, TouchableOpacity, Text } from 'react-native';
+import { useRouter } from 'expo-router';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DonutChart from '../donut/DonutChart';
 import { useFont } from '@shopify/react-native-skia';
@@ -19,7 +20,7 @@ export const OperationalExpensesChart = () => {
 
     const { month, year } = useGlobalSearchParams();
     const navigation = useNavigation();
-
+    const router = useRouter();
 
     const [operationExpenseItemToAmountExpense, setOperationExpenseItemToAmountExpense] = useState({})
 
@@ -107,7 +108,7 @@ export const OperationalExpensesChart = () => {
     const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 20);
 
     if (!font || !smallFont || loading) {
-        return <AnimatedActivityIndicator/>
+        return <AnimatedActivityIndicator />
     }
 
     return (
@@ -136,6 +137,13 @@ export const OperationalExpensesChart = () => {
                         type="Spent"
                     />
                 </View>
+
+                <View className=" items-end pr-4 mt-1 mb-3">
+                    <TouchableOpacity className="bg-yellow-200 p-3 rounded-md" onPress={() => router.push('/money/operationalExpensesScreen')}>
+                        <Text className="text-black">Add Expense</Text>
+                    </TouchableOpacity>
+                </View>
+
                 {data.map((item, index) => {
                     return <RenderItem item={item} key={index} index={index} goTo={"/money/operationalExpensesScreen"} />;
                 })}

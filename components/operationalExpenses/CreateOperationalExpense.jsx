@@ -117,6 +117,15 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
 
                 </View>
 
+                <View className="flex-1 pl-2">
+                    <Text className="text-gray-700 font-semibold">Remarks:</Text>
+                    <TextInput
+                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                        onChangeText={(text) => handleNewOperationalExpense('remarks', text)}
+                        keyboardType="numeric"
+                    />
+                </View>
+
             </View>
 
 
