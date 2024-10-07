@@ -20,10 +20,8 @@ const GlobalProvider = ({ children }) => {
   useEffect(() => {    
 
     const checkTokenValidity = async () => {
-      console.log("checktokenvalidity inside useeffect is called")
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
       const userInfoString = await SecureStore.getItemAsync(USER_INFO_KEY);
-      console.log("check token validity is called: ", token, JSON.parse(userInfoString))
       if (token && userInfoString) {
         try {
           const decodedToken = jwtDecode(token);

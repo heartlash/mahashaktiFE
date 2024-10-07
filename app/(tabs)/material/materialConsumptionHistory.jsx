@@ -3,7 +3,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import MaterialConsumptionHistoryList from '@/components/materialConsumptionHistory/MaterialConsumptionHistoryList';
-import { getMonthStartAndEndDate } from '@/lib/util';
+import { getMonthStartAndEndDate, formatDateToDDMMYYYY, monthNames } from '@/lib/util';
+import { getDocument } from '@/lib/download';
 import { getMaterialConsumptionHistory } from '@/lib/materialConsumption';
 import MonthYearAndFilter from '@/components/MonthYearAndFilter';
 import { useNavigation } from '@react-navigation/native';
@@ -52,6 +53,18 @@ const MaterialConsumptionHistory = () => {
         // Now you can use filterData as needed, e.g., update state or display it
     };
 
+    const handleDownload = async () => {
+        var data  = []
+        for(var consumptionData of materialConsumptionHistoryData)
+            data.push([formatDateToDDMMYYYY(consumptionData.consumptionDate), consumptionData.materialName, 
+                consumptionData.quantity + ' ' + consumptionData.unitSymbol])
+        
+        await getDocument(consumptionData.materialName + " Consumption Report", 
+            monthNames[selectedMonth - 1] + " " + selectedYear,
+            ["Date", "Material", "Quantity"], 
+            data);
+    };
+
     const fetchMaterialConsumptionHistory = async () => {
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
         const result = await getMaterialConsumptionHistory(id, startDate, endDate);
@@ -78,7 +91,7 @@ const MaterialConsumptionHistory = () => {
                 <View className="mx-2 my-1">
                     <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
                 </View>
-                <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />
+                <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload}/>
             </View>
             {materialConsumptionHistoryData.length > 0 ? (
                 <MaterialConsumptionHistoryList

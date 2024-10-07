@@ -4,6 +4,8 @@ export const convertTimestampToReadableDate = (timestamp) => {
   return date.toLocaleDateString("en-US", options);
 };
 
+export const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
 
 export const getFormattedDate = (dateString) => {
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -44,8 +46,6 @@ export const getFormattedDate = (dateString) => {
 
   // Return formatted date (e.g., 21st April)
   const day = date.getDate();
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
   const month = monthNames[date.getMonth()];
   const suffix = getDaySuffix(day);
 
@@ -74,4 +74,17 @@ export const getMonthStartAndEndDate = (month, year) => {
     startDate: startDate.toISOString().split('T')[0], // Format YYYY-MM-DD
     endDate: endDate.toISOString().split('T')[0]    // Format YYYY-MM-DD
   };
+}
+
+export const formatDateToDDMMYYYY = (dateString) => {
+
+  const date = new Date(dateString);
+
+  // Extract day, month, and year
+  const day = String(date.getDate()).padStart(2, '0'); // Pad single digit days with leading zero
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-based
+  const year = date.getFullYear();
+
+  // Format date to dd-mm-yyyy
+  return `${day}-${month}-${year}`;
 }

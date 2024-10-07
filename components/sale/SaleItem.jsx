@@ -155,22 +155,16 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
             )}
           </View>
           <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-            <Text className="text-gray-700 font-semibold">Paid: </Text>
+            <Text className="text-gray-700 font-semibold">Paid Amount: </Text>
             {editItem === item ? (
-              <RNPickerSelect
-                onValueChange={(value) => handleEditChange('paid', value)}
-                items={[
-                  { label: 'Yes', value: true },
-                  { label: 'No', value: false },
-                ]}
-                placeholder={{
-                  label: item.paid,
-                  value: item.paid,
-                }}
-                style={pickerSelectStyles}
+              <TextInput
+                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                value={edited.paidAmount.toString()}
+                onChangeText={(text) => handleEditChange('paidAmount', text)}
+                keyboardType="numeric"
               />
             ) : (
-              <Text className="text-gray-700">{item.paid}</Text>
+              <Text className="text-gray-700">{item.paidAmount}</Text>
             )}
           </View>
         </View>
@@ -205,7 +199,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
                   editable={false}
                 />
               ) : (
-                <Text  className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
+                <Text className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
               )}
             </View>
           )}

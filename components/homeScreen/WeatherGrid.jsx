@@ -30,7 +30,6 @@ const WeatherGrid = ({refreshTrigger}) => {
   const screenWidth = Dimensions.get('window').width;
 
   useEffect(() => {
-    console.log("useeffect is called:", refreshTrigger)
     const interval = setInterval(() => {
       setIndex(prevIndex => (prevIndex + 1) % 6);
     }, 3000);

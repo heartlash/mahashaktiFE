@@ -11,6 +11,7 @@ const MonthYearAndFilter = ({
     month,
     year,
     handleShowPress,
+    handleDownload,
     showVendorAndPaid,
     vendorData,
     setVendorFilter,
@@ -65,7 +66,6 @@ const MonthYearAndFilter = ({
                         <View className="flex-1 mr-2">
                             <RNPickerSelect
                                 onValueChange={(value) => {
-                                    console.log("see value in the vendor picker: ", value);
                                     // Force the value to null if it's the placeholder
                                     setVendorFilter(value === "null" ? null : value);
                                 }}
@@ -78,7 +78,6 @@ const MonthYearAndFilter = ({
                         <View className="flex-1">
                             <RNPickerSelect
                                 onValueChange={(value) => {
-                                    console.log("see value in the paid picker: ", value);
                                     // Force the value to null if it's the placeholder
                                     setPaidFilter(value === "null" ? null : value);
                                 }}
@@ -98,7 +97,7 @@ const MonthYearAndFilter = ({
             {/* Buttons */}
             <View className="flex-row space-x-4 justify-evenly">
                 <FontsAwesome name="search" size={30} color="green" onPress={handleShowPress} />
-                <Feather name="download" size={30} color="green" />
+                <Feather name="download" size={30} color="green" onPress={handleDownload}/>
             </View>
         </View>
     );

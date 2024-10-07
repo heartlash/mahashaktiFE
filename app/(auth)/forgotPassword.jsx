@@ -80,7 +80,6 @@ const ForgotPassword = () => {
 
                     <View className="mx-3 pt-20 mb-1" style={{ zIndex: 10 }}>
                         <TouchableOpacity onPress={() => {
-                            console.log("pressed");
                             navigation.goBack();
                         }}>
                             <MaterialIcons name="arrow-back-ios-new" size={24} color="black" />

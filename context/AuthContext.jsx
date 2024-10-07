@@ -33,7 +33,6 @@ const AuthProvider = ({children}) => {
     
     const login = async(username, password) => {
         try {
-            console.log("login is called");
             const response = await axios.post("http://192.168.31.25:8080/mahashakti/users/login",  {
                 username,
                 password
@@ -50,7 +49,6 @@ const AuthProvider = ({children}) => {
                     token: accessToken,
                     isAuthenticated: true
                 });
-                console.log(authState)
                 await SecureStore.setItemAsync(TOKEN_KEY, accessToken);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             
@@ -63,7 +61,6 @@ const AuthProvider = ({children}) => {
 
     const signup = async(name, phoneNumber, email, password) => {
         try {
-            console.log("login is called");
             const response = await axios.post("http://192.168.31.25:8080/mahashakti/users/signup",  {
                 name, phoneNumber, email, password
               }, {

@@ -10,7 +10,6 @@ const TabBar = ({ state, descriptors, navigation }) => {
     const fetchUserRole = async () => {
         const userInfo = await getUserInfo();
         if (userInfo != null) {
-            console.log("see user role: ", userInfo.role)
             setRole(userInfo.role);
         }
     };

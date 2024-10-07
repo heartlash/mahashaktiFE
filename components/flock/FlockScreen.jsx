@@ -61,8 +61,6 @@ const FlockScreen = () => {
 
         const resultFlockChange = await getFlockChange();
         if (resultFlockChange.errorMessage == null) {
-
-            console.log("see flock change data: ", resultFlockChange.data)
             setFlockChangeData(resultFlockChange.data);
             setLoading(false);
         } else {

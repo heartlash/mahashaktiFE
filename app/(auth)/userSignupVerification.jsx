@@ -49,7 +49,6 @@ const UserSignupVerification = () => {
     const fetchUserVerification = async () => {
         setLoading(true)
         const result = await userVerification(email, phoneNumber)
-        console.log(result)
         if (result.errorMessage == null) {
             setRightEmailOtp(result.data.emailOtp)
             setrightPhoneOtp(result.data.phoneNumberOtp)
@@ -135,7 +134,6 @@ const UserSignupVerification = () => {
                     <Image className="h-full w-full absolute" source={require('../../assets/images/background.jpeg')} />
                     <View className="mx-3 pt-20 mb-1" style={{ zIndex: 10 }}>
                         <TouchableOpacity onPress={() => {
-                            console.log("pressed");
                             navigation.goBack();
                         }}>
                             <MaterialIcons name="arrow-back-ios-new" size={24} color="black" />

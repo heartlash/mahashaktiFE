@@ -6,7 +6,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import AnimatedText from '../chart/AnimatedText';
 import { useSharedValue } from 'react-native-reanimated';
 import { useFont } from '@shopify/react-native-skia';
-import { getMonthStartAndEndDate } from '@/lib/util';
+import { getMonthStartAndEndDate, monthNames, formatDateToDDMMYYYY } from '@/lib/util';
+import { getDocument } from '@/lib/download';
 import { getProductionDataDateRange } from '@/lib/production';
 import ProductionList from './ProductionList';
 import CreateProduction from './CreateProduction';
@@ -56,6 +57,17 @@ const ProductionScreen = () => {
     setSelectedYear(year);
   }
 
+  const handleDownload = async () => {
+    var data  = []
+    for(var production of productionData)
+        data.push([formatDateToDDMMYYYY(production.productionDate), production.producedCount, production.productionPercentage, production.saleableCount, production.brokenCount, production.brokenReason,
+          production.giftCount,production.selfUseCount])
+    
+    await getDocument("Production Report", 
+        monthNames[selectedMonth - 1] + " " + selectedYear,
+        ["Date", "Produced", "Percentage", "Saleable", "Broken", "Reason", "Gift", "Self Use"], 
+        data);
+};
 
   const fetchProductionDataDateRange = async () => {
     const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
@@ -176,7 +188,7 @@ const ProductionScreen = () => {
 
             </View>) : (<></>)}
 
-          <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />
+          <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload}/>
 
           {createProduction ? (
             <CreateProduction

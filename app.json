@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "mahashaktiFE",
-    "slug": "mahashaktiFE",
+    "name": "Mahashakti",
+    "slug": "Mahashakti",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "scheme": "mahashakti",
     "userInterfaceStyle": "automatic",
     "splash": {

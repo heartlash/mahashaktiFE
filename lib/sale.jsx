@@ -45,8 +45,6 @@ export const getSaleDataDateRange = async (startDate, endDate) => {
             data.vendorId = data.vendor.id
             data.vendorName = data.vendor.name
             data.vendor = null
-            if (data.paid == true) data.paid = 'Yes'
-            if (data.paid == false) data.paid = 'No'
 
             saleDataList.push(data)
         }
@@ -63,8 +61,6 @@ export const getSaleDataDateRange = async (startDate, endDate) => {
 
 export const updateSaleData = async (updatedSaleData) => {
     try {
-        if (updatedSaleData.paid == 'Yes') updatedSaleData.paid = true
-        else if (updatedSaleData.paid == 'No') updatedSaleData.paid = false
         const response = await Backend.put(`/sale/${updatedSaleData.id}`,
             updatedSaleData,
             {

@@ -1,5 +1,6 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'expo-router';
 import { SystemBars } from 'react-native-bars';
 import LineChart from '../chart/LineChart';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,17 +9,20 @@ import { useSharedValue } from 'react-native-reanimated';
 import { useFont } from '@shopify/react-native-skia';
 import SaleList from './SaleList';
 import CreateSale from './CreateSale';
-import { getMonthStartAndEndDate } from '@/lib/util';
+import { getMonthStartAndEndDate, formatDateToDDMMYYYY } from '@/lib/util';
 import { getSaleDataDateRange } from '@/lib/sale';
 import { getVendorsData } from '@/lib/vendor';
+import { getDocument } from '@/lib/download';
 import MonthYearSelector from '../MonthYearAndFilter';
-import { getFormattedDate } from '@/lib/util';
+import { getFormattedDate, monthNames } from '@/lib/util';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 import CustomModal from '../CustomModal';
 
 
 const SaleScreen = () => {
+
+    const router = useRouter();
 
     const [selectedDate, setSelectedDate] = useState(null);
     const selectedValue = useSharedValue(0);
@@ -115,6 +119,17 @@ const SaleScreen = () => {
         setSaleData(filteredData)
     };
 
+    const handleDownload = async () => {
+        var data = []
+        for (var sale of saleData)
+            data.push([formatDateToDDMMYYYY(sale.saleDate), sale.soldCount, sale.rate, sale.amount, sale.paidAmount, sale.vendorName])
+
+        await getDocument("Sales Report",
+            monthNames[selectedMonth - 1] + " " + selectedYear,
+            ["Date", "Sold Count", "Rate", "Amount", "Paid Amount", "Vendor"],
+            data);
+    };
+
     const fetchSaleDataDateRange = async () => {
 
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
@@ -192,7 +207,7 @@ const SaleScreen = () => {
                             </View>
                         </View>) : (<></>)}
 
-                    <MonthYearSelector setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress}
+                    <MonthYearSelector setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload}
                         showVendorAndPaid={true}
                         vendorData={vendorData}
                         setVendorFilter={setVendorFilter}
@@ -208,8 +223,18 @@ const SaleScreen = () => {
                             setSubmitModalVisible={setSubmitModalVisible}
                         />
                     ) : (
-                        <View className="mb-3">
-                            <Ionicons name="add-circle" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateSale(true)} />
+                        <View className="flex-row justify-center mb-3">
+                            {/* Center Button */}
+                            <View className="absolute left-0 right-0 items-center">
+                                <Ionicons name="add-circle" size={45} color="black" onPress={() => setCreateSale(true)} />
+                            </View>
+
+                            {/* Right-Aligned Button */}
+                            <View className="flex-1 items-end pr-4 mt-1">
+                                <TouchableOpacity className="bg-yellow-200 p-2 rounded-md" onPress={() => router.push('/sale/vendors')}>
+                                    <Text className="text-black">Vendors</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     )}
                 </View>

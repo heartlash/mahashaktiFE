@@ -14,13 +14,11 @@ const index = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(false);
 
   const onRefresh = useCallback(() => {
-    console.log("on refresh is called on homepage: ", refreshTrigger)
     setRefreshing(true);
     setRefreshTrigger(prev => !prev); // Toggle the refresh trigger
     setTimeout(() => {
       setRefreshing(false);
     }, 1000); // Adjust the timeout as needed
-    console.log("on refresh is called on homepage after: ", refreshTrigger)
   }, []);
 
   return (

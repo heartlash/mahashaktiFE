@@ -67,7 +67,6 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
 
     const saveNewItem = async () => {
         setSubmitModalVisible(true)
-        console.log("see on save: ", moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'))
         // Make API call to save changes
         const userInfo = await getUserInfo();
         var temp = newItem
@@ -161,15 +160,12 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
                 </View>
 
                 <View className="flex-1 pl-2">
-                    <Text className="text-gray-700 font-semibold">Paid:</Text>
-                    <RNPickerSelect
-                        onValueChange={(value) => handleNewChange('paid', value)}
-                        items={[
-                            { label: 'Yes', value: true },
-                            { label: 'No', value: false },
-                        ]}
-                        placeholder={{ label: 'Choose Paid Status', value: null }}
-                        style={pickerSelectStyles} />
+                    <Text className="text-gray-700 font-semibold">Paid Amount:</Text>
+                    <TextInput
+                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                        onChangeText={(text) => handleNewChange('paidAmount', text)}
+                        keyboardType="numeric"
+                    />
                 </View>
 
             </View>

@@ -34,7 +34,7 @@ export const globalStyles = StyleSheet.create({
       borderColor: 'gray',
       borderRadius: 10,
       backgroundColor: 'white',
-      color: 'black',
+      color: 'gray',
       paddingRight: 30, // Ensure the text is never behind the dropdown icon
     },
     inputAndroid: {
@@ -45,7 +45,7 @@ export const globalStyles = StyleSheet.create({
       borderColor: 'gray',
       borderRadius: 10,
       backgroundColor: 'white',
-      color: 'black',
+      color: 'gray',
       paddingRight: 30,
       // Force elevation for Android to ensure the border and background render correctly
       elevation: 3, // Adds shadow on Android to enhance visibility of borders

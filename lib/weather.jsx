@@ -24,7 +24,6 @@ export const getWeatherData = async() => {
     var currentTemp = null;
     var day = null;
     var mood = null;
-    //console.log("see response: ", response.data.daily)
     for(var daily of response.data.daily) {
         
         if(index == 0) {
