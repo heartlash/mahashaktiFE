@@ -9,7 +9,7 @@ export const USER_INFO_KEY = "userInfo"
 
 const Backend = axios.create({
   //baseURL: 'https://1d6b-2401-4900-1cbc-9fa1-a502-ce3b-8b84-cc49.ngrok-free.app/mahashakti',
-  baseURL: `http://${SERVER}:8080/mahashakti`,
+  baseURL: `${SERVER}/mahashakti`,
 
 });
 

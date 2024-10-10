@@ -53,7 +53,7 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
 
                 // Calculate the amount only if both soldCount and rate are valid numbers
                 if (!isNaN(soldCount) && !isNaN(rate)) {
-                    updatedItem.amount = (soldCount * rate).toFixed(2);
+                    updatedItem.amount = (soldCount/210 * rate).toFixed(2);
                     setAmount(updatedItem.amount)
                 } else {
                     updatedItem.amount = ''; // Clear the amount if the inputs are invalid
@@ -127,7 +127,7 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
 
             <View className="flex-row justify-between mb-2">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-700 font-semibold">Rate: </Text>
+                    <Text className="text-gray-700 font-semibold">Carton Rate: </Text>
 
                     <TextInput
                         className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"

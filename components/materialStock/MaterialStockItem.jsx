@@ -74,7 +74,7 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
         </View>
         <View className="flex-row justify-between mb-3">
           <Text className="text-gray-700 font-semibold">Minimum Safe Quantity</Text>
-          <Text className="text-gray-700">{parseInt(item.minQuantity)} {item.unit}</Text>
+          <Text className="text-gray-700">{item.minQuantity.toFixed(2)} {item.unit}</Text>
         </View>
         <View className="flex-row justify-between mb-3">
           <Text className="text-gray-700 font-semibold">Last Purchase Date</Text>
@@ -103,13 +103,13 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
             )}
 
             {showRecordConsumption && (
-              <CreateMaterialConsumption materialId={item.materialId} onClose={() => handleOnCloseRecordConsumption()} onRefreshOnChange={onRefreshOnChange}
+              <CreateMaterialConsumption materialId={item.materialId} materialUnit={item.unit} onClose={() => handleOnCloseRecordConsumption()} onRefreshOnChange={onRefreshOnChange}
                 setSuccessModalVisible={setSuccessModalVisible}
                 setFailureModalVisible={setFailureModalVisible}
                 setSubmitModalVisible={setSubmitModalVisible} />
             )}
             {showRecordPurchase && (
-              <CreateMaterialPurchase materialId={item.materialId} onClose={() => handleOnCloseRecordPurchase()} onRefreshOnChange={onRefreshOnChange}
+              <CreateMaterialPurchase materialId={item.materialId} materialUnit={item.unit} onClose={() => handleOnCloseRecordPurchase()} onRefreshOnChange={onRefreshOnChange}
                 setSuccessModalVisible={setSuccessModalVisible}
                 setFailureModalVisible={setFailureModalVisible}
                 setSubmitModalVisible={setSubmitModalVisible} />

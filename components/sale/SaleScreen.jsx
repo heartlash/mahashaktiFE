@@ -69,20 +69,23 @@ const SaleScreen = () => {
     }, []);
 
     const filterData = () => {
+        let paidBoolean = null;
+        if(paidFilter == 'Yes') paidBoolean = true;
+        if(paidFilter == 'No') paidBoolean = false;
         var filteredList = []
 
         for (var data of storedSaleData) {
 
-            if (vendorFilter === null && paidFilter === null)
+            if (vendorFilter === null && paidBoolean === null)
                 filteredList.push(data)
 
-            else if (vendorFilter == data.vendorId && paidFilter === null)
+            else if (vendorFilter == data.vendorId && paidBoolean === null)
                 filteredList.push(data)
 
-            else if (vendorFilter === null && paidFilter == data.paid)
+            else if (vendorFilter === null && paidBoolean == data.paid)
                 filteredList.push(data)
 
-            else if (vendorFilter == data.vendorId && paidFilter == data.paid)
+            else if (vendorFilter == data.vendorId && paidBoolean == data.paid)
                 filteredList.push(data)
         }
 
@@ -122,11 +125,11 @@ const SaleScreen = () => {
     const handleDownload = async () => {
         var data = []
         for (var sale of saleData)
-            data.push([formatDateToDDMMYYYY(sale.saleDate), sale.soldCount, sale.rate, sale.amount, sale.paidAmount, sale.vendorName])
+            data.push([formatDateToDDMMYYYY(sale.saleDate), sale.soldCount, (sale.soldCount/210).toFixed(2), sale.rate, sale.amount, sale.paidAmount, sale.vendorName])
 
         await getDocument("Sales Report",
             monthNames[selectedMonth - 1] + " " + selectedYear,
-            ["Date", "Sold Count", "Rate", "Amount", "Paid Amount", "Vendor"],
+            ["Date", "Eggs Sold", "Cartons Sold", "Carton Rate", "Amount", "Paid Amount", "Vendor"],
             data);
     };
 
@@ -197,7 +200,7 @@ const SaleScreen = () => {
                                 type="Sale"
                             />
                             <View className="flex flex-row">
-                                <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Rate Per Egg</Text>
+                                <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Rate Per Carton</Text>
                                 <Text className="text-right text-gray-700 font-semibold  mb-2">{averageRatePerCarton}</Text>
                             </View>
                             <View className="flex flex-row">

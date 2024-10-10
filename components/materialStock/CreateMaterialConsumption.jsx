@@ -8,7 +8,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-const CreateMaterialConsumption = ({ onClose, materialId, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const CreateMaterialConsumption = ({ onClose, materialId, materialUnit, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [consumptionDate, setConsumptionDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -73,7 +73,7 @@ const CreateMaterialConsumption = ({ onClose, materialId, onRefreshOnChange, set
         <View className="bg-white p-4 mx-2 rounded-lg shadow-lg my-4 border border-gray-200">
             <View className="flex-row justify-between mb-2 ">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-700 font-semibold">Quantity: </Text>
+                    <Text className="text-gray-700 font-semibold">Quantity ({materialUnit}): </Text>
 
                     <TextInput
                         className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"

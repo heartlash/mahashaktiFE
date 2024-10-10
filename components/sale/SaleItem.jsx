@@ -29,7 +29,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
 
         // Calculate the amount only if both soldCount and rate are valid numbers
         if (!isNaN(soldCount) && !isNaN(rate)) {
-          updatedItem.amount = (soldCount * rate).toFixed(2);
+          updatedItem.amount = (soldCount/210 * rate).toFixed(2);
           edited.amount = updatedItem.amount
         } else {
           updatedItem.amount = ''; // Clear the amount if the inputs are invalid
@@ -126,7 +126,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
             )}
           </View>
           <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-            <Text className="text-gray-700 font-semibold">Rate: </Text>
+            <Text className="text-gray-700 font-semibold">Carton Rate: </Text>
             {editItem === item ? (
               <TextInput
                 className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
@@ -135,14 +135,25 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
                 keyboardType="numeric"
               />
             ) : (
-              <Text className="text-gray-700">{item.rate}</Text>
+              <Text className="text-gray-700">₹{item.rate}</Text>
             )}
           </View>
         </View>
 
-        {/* Second Row */}
         <View className="flex-row justify-between mb-3">
           <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Cartons Sold: </Text>
+            {editItem === item ? (
+              <TextInput
+                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                value={((edited.soldCount) / 210).toString()}
+                editable={false} // Make the field non-editable
+              />
+            ) : (
+              <Text className="text-gray-700">{(item.soldCount / 210).toFixed(2)}</Text>
+            )}
+          </View>
+          <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
             <Text className="text-gray-700 font-semibold">Amount: </Text>
             {editItem === item ? (
               <TextInput
@@ -151,31 +162,17 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
                 editable={false} // Make the field non-editable
               />
             ) : (
-              <Text className="text-gray-700">{item.amount}</Text>
-            )}
-          </View>
-          <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-            <Text className="text-gray-700 font-semibold">Paid Amount: </Text>
-            {editItem === item ? (
-              <TextInput
-                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
-                value={edited.paidAmount.toString()}
-                onChangeText={(text) => handleEditChange('paidAmount', text)}
-                keyboardType="numeric"
-              />
-            ) : (
-              <Text className="text-gray-700">{item.paidAmount}</Text>
+              <Text className="text-gray-700">₹{item.amount}</Text>
             )}
           </View>
         </View>
-
-        {/* Third Row */}
+        {/* Second Row */}
         <View className="flex-row justify-between mb-3">
           <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
             <Text className="text-gray-700 font-semibold">Vendor: </Text>
             {editItem === item ? (
               <RNPickerSelect
-                onValueChange={(value) => handleEditChange('paid', value)}
+                onValueChange={(value) => handleEditChange('vendorId', value)}
                 items={vendorData}
                 placeholder={{
                   label: item.vendorName && vendorData.find(v => v.label === item.vendorName)
@@ -189,8 +186,27 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
               <Text className="text-gray-700">{item.vendorName}</Text>
             )}
           </View>
-          {isExpanded && (
-            <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+          <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Paid Amount: </Text>
+            {editItem === item ? (
+              <TextInput
+                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                value={edited.paidAmount.toString()}
+                onChangeText={(text) => handleEditChange('paidAmount', text)}
+                keyboardType="numeric"
+              />
+            ) : (
+              <Text className="text-gray-700">₹{item.paidAmount}</Text>
+            )}
+          </View>
+        </View>
+
+        {/* Conditionally render additional content */}
+        {isExpanded && (
+          <View>
+            {/* Fourth Row */}
+            <View className="flex-row justify-between mb-3">
+            <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
               <Text className="text-gray-700 font-semibold">Created By: </Text>
               {editItem === item ? (
                 <TextInput
@@ -202,15 +218,8 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
                 <Text className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
               )}
             </View>
-          )}
-        </View>
 
-        {/* Conditionally render additional content */}
-        {isExpanded && (
-          <View>
-            {/* Fourth Row */}
-            <View>
-              <View className={`flex-1 pr-4 w-1/2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+              <View className={`flex-1 pl-4 w-1/2 ${editItem === item ? '' : 'flex-row items-center'}`}>
                 <Text className="text-gray-700 font-semibold">Updated By: </Text>
                 {editItem === item ? (
                   <TextInput

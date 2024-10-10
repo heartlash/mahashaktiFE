@@ -9,7 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
 
-const CreateMaterialPurchase = ({ onClose, materialId, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [purchaseDate, setPurchaseDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -71,7 +71,7 @@ const CreateMaterialPurchase = ({ onClose, materialId, onRefreshOnChange, setSuc
         <View className="bg-white p-4 mx-2 rounded-lg shadow-lg my-4 border border-gray-200">
             <View className="flex-row justify-between mb-2">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-700 font-semibold">Quantity: </Text>
+                    <Text className="text-gray-700 font-semibold">Quantity ({materialUnit}): </Text>
 
                     <TextInput
                         className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
