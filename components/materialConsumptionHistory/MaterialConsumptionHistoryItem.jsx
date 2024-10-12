@@ -115,7 +115,7 @@ const MaterialConsumptionHistoryItem = ({ item, isExpanded, onRefreshOnChange, o
                                 keyboardType="numeric"
                             />
                         ) : (
-                            <Text className="text-gray-700">{item.quantity} {item.unitSymbol}</Text>
+                            <Text className="text-gray-700">{item.quantity.toFixed(2)} {item.unitSymbol}</Text>
                         )}
                     </View>
 

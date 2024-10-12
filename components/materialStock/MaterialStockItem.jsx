@@ -61,7 +61,7 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
       >
         <View className="flex-row justify-between mb-3">
           <Text className="text-xl font-semibold text-gray-800">{item.material}</Text>
-          <Text className="text-xl font-medium text-gray-800">{item.quantity} {item.unit}</Text>
+          <Text className="text-xl font-medium text-gray-800">{item.quantity.toFixed(2)} {item.unit}</Text>
         </View>
         <View className="flex-row justify-end mb-3">
           <View className={`${stockStatusColor} px-2 py-1 rounded-lg`}>
@@ -71,6 +71,10 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
         <View className="flex-row justify-between mb-3">
           <Text className="text-gray-700 font-semibold">Stock For</Text>
           <Text className="text-gray-700">{item.wouldLastFor} Days</Text>
+        </View>
+        <View className="flex-row justify-between mb-3">
+          <Text className="text-gray-700 font-semibold">Daily Expected Consumption</Text>
+          <Text className="text-gray-700">{item.expectedDailyConsumption.toFixed(2)} {item.unit}</Text>
         </View>
         <View className="flex-row justify-between mb-3">
           <Text className="text-gray-700 font-semibold">Minimum Safe Quantity</Text>
