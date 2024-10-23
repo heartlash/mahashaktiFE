@@ -74,6 +74,7 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
         >
           <ImageBackground
           source={require('../../assets/images/orange.jpeg')} 
+          //source={require('../../assets/images/Gears.jpg')} 
           resizeMode="cover" 
           className="flex-1 rounded-3xl"
           imageStyle={{ borderRadius: 20 }} 
@@ -102,6 +103,7 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
         >
            <ImageBackground
           source={require('../../assets/images/orange.jpeg')} 
+          //source={require('../../assets/images/Currency.jpg')} 
           resizeMode="cover" 
           className="flex-1 rounded-3xl"
           imageStyle={{ borderRadius: 20 }} 

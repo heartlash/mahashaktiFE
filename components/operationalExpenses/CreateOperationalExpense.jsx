@@ -122,7 +122,6 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
                     <TextInput
                         className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                         onChangeText={(text) => handleNewOperationalExpense('remarks', text)}
-                        keyboardType="numeric"
                     />
                 </View>
 

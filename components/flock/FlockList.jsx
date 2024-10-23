@@ -1,17 +1,18 @@
 import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
-import MaterialPurchaseHistoryItem from './MaterialPurchaseHistoryItem';
+import FlockItem from './FlockItem';
 
-const MaterialPurchaseHistoryList = ({ materialPurchaseHistoryData, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const FlockList = ({ data, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
     const handlePress = (itemId) => {
+        setEditItem(editItem != null ? null : editItem)
         setExpandedItemId((prevId) => (prevId === itemId ? null : itemId));
     };
 
     const renderItem = ({ item }) => (
-        <MaterialPurchaseHistoryItem
+        <FlockItem
             item={item}
             isExpanded={expandedItemId === item.id}
             onPress={() => handlePress(item.id)}
@@ -26,18 +27,19 @@ const MaterialPurchaseHistoryList = ({ materialPurchaseHistoryData, onRefreshOnC
 
     return (
         <FlatList
-            data={materialPurchaseHistoryData.sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate))}
+            ListHeaderComponent={listHeaderComponent}
+            data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             extraData={expandedItemId}
+            showsVerticalScrollIndicator={false}
             refreshControl={
                 <RefreshControl
                     refreshing={refreshing} // Make sure refreshing is set correctly
                     onRefresh={onRefresh}   // Trigger refresh when pulled down
                 />
-            }
-        />
+            } />
     );
 };
 
-export default MaterialPurchaseHistoryList;
+export default FlockList;

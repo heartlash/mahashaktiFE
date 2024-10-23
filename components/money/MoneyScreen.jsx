@@ -111,7 +111,8 @@ const MoneyScreen = () => {
                         year: selectedYear
                     }
                 })}
-                className="bg-yellow-300 p-3 rounded-3xl mx-10 my-3"
+                style={styles.container}
+                className="p-3 rounded-3xl mx-10 my-3"
             >
                 <Text className="text-black text-center font-semibold p-3">Material Expenses ₹{profitData.materialPurchaseExpenses}</Text>
             </TouchableOpacity>
@@ -129,7 +130,8 @@ const MoneyScreen = () => {
                         year: selectedYear
                     }
                 })}
-                className="bg-yellow-300 p-3 rounded-3xl mx-10 my-3"
+                style={styles.container}
+                className="p-3 rounded-3xl mx-10 my-3"
             >
                 <Text className="text-black text-center font-semibold p-3">Operational Expenses ₹{profitData.operationalExpenses}</Text>
             </TouchableOpacity>
@@ -147,7 +149,8 @@ const MoneyScreen = () => {
                         year: selectedYear
                     }
                 })}
-                className="bg-yellow-300 p-3 rounded-3xl  mx-10 my-3"
+                style={styles.container}
+                className="p-3 rounded-3xl  mx-10 my-3"
             >
                 <Text className="text-black text-center font-semibold p-3">All Time Credits</Text>
             </TouchableOpacity>

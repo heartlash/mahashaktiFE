@@ -52,6 +52,7 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
     <View style={{ width: itemWidth, height: "100%" }} className="px-2">
       <ImageBackground
         source={require('../../assets/images/blue.jpeg')}
+        //source={require('../../assets/images/Flat Background.jpg')}
         resizeMode="cover"
         className="flex-1 rounded-3xl"
         imageStyle={{ borderRadius: 20 }}
@@ -64,7 +65,7 @@ const MaterialStockCarousel = ({ refreshTrigger }) => {
               <Text className="text-left font-bold text-black">Stock</Text>
             </View>
             <View className="basis-1/2 pr-5">
-              <Text className="text-black text-xl font-bold text-right pt-7 pb-3">{item.quantity} {item.unit}</Text>
+              <Text className="text-black text-xl font-bold text-right pt-7 pb-3">{parseFloat(item.quantity).toFixed(2)} {item.unit}</Text>
               <Text className="text-black font-bold text-right">{item.wouldLastFor} Days</Text>
             </View>
           </View>

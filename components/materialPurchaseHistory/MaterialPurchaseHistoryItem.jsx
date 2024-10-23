@@ -12,10 +12,27 @@ const MaterialPurchaseHistoryItem = ({ item, isExpanded, onRefreshOnChange, onPr
     const [edited, setEdited] = useState(item);
 
     const handleEditChange = (field, value) => {
-        setEdited((prevItem) => ({
-            ...prevItem,
-            [field]: value,
-        }));
+        setEdited((prevItem) => {
+            const updatedItem = {
+              ...prevItem,
+              [field]: value,
+            };
+            // Check if the field is either 'quantity' or 'rate' and update the 'amount' accordingly
+            if (field === 'quantity' || field === 'rate') {
+              const quantity = field === 'quantity' ? parseFloat(value) : parseFloat(updatedItem.quantity);
+              const rate = field === 'rate' ? parseFloat(value) : parseFloat(updatedItem.rate);
+      
+              // Calculate the amount only if both quantity and rate are valid numbers
+              if (!isNaN(quantity) && !isNaN(rate)) {
+                updatedItem.amount = (quantity * rate).toFixed(2);
+                edited.amount = updatedItem.amount
+              } else {
+                updatedItem.amount = ''; // Clear the amount if the inputs are invalid
+                edited.amount = 0
+              }
+            }
+            return updatedItem;
+          });
     };
 
     const handleEditPress = () => {
@@ -101,7 +118,6 @@ const MaterialPurchaseHistoryItem = ({ item, isExpanded, onRefreshOnChange, onPr
                                 className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                                 value={edited.materialName.toString()}
                                 onChangeText={(text) => handleEditChange('material', text)}
-                                keyboardType="numeric"
                                 editable={false}
                             />
                         ) : (
@@ -114,10 +130,11 @@ const MaterialPurchaseHistoryItem = ({ item, isExpanded, onRefreshOnChange, onPr
                             <TextInput
                                 className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                                 value={edited.rate.toString()}
-                                onChangeText={(text) => handleEditChange('material', text)}
+                                onChangeText={(text) => handleEditChange('rate', text)}
+                                keyboardType="numeric"
                             />
                         ) : (
-                            <Text className="text-gray-700">{item.rate}</Text>
+                            <Text className="text-gray-700">₹{item.rate}</Text>
                         )}
 
                     </View>
@@ -144,10 +161,10 @@ const MaterialPurchaseHistoryItem = ({ item, isExpanded, onRefreshOnChange, onPr
                             <TextInput
                                 className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                                 value={edited.amount.toString()}
-                                onChangeText={(text) => handleEditChange('amount', text)}
+                                editable={false}
                             />
                         ) : (
-                            <Text className="text-gray-700">{item.amount}</Text>
+                            <Text className="text-gray-700">₹{item.amount}</Text>
                         )}
                     </View>
                 </View>

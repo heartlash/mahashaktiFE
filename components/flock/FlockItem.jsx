@@ -96,7 +96,7 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                 {/* First Row */}
                 <View className="flex-row justify-between mb-2">
                     <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
-                        <Text className="text-gray-600">Count Change: </Text>
+                        <Text className="text-gray-700 font-semibold">Count Change: </Text>
                         {editItem === item ? (
                             <TextInput
                                 className="border border-gray-300 p-2 rounded text-gray-600"
@@ -110,7 +110,7 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                     </View>
 
                     <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row'}`}>
-                        <Text className="text-gray-600">Increase: </Text>
+                        <Text className="text-gray-700 font-semibold">Increase: </Text>
                         {editItem === item ? (
                             <RNPickerSelect
                                 onValueChange={(value) => handleEditChange("added", value)}
@@ -130,7 +130,7 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                 {/* Second Row */}
                 <View className="flex-row justify-between mb-2">
                     <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
-                        <Text className="text-gray-600">Remarks: </Text>
+                        <Text className="text-gray-700 font-semibold">Remarks: </Text>
                         {editItem === item ? (
                             <TextInput
                                 className="border border-gray-300 p-2 rounded text-gray-600"
@@ -142,10 +142,18 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                         )}
 
                     </View>
-                    {isExpanded && (<View className="flex-1 pl-2 flex-row">
-                        <Text className="text-gray-600">Created By: </Text>
-                        <Text className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
-                    </View>)}
+                    {isExpanded && ( <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row'}`}>
+                                <Text className="text-gray-700 font-semibold">Created By:</Text>
+                                {editItem === item ? (
+                                    <TextInput
+                                        className="border border-gray-300 p-2 rounded-md text-gray-700 bg-gray-200"
+                                        value={item.createdBy}
+                                        editable={false}
+                                    />
+                                ) : (
+                                    <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
+                                )}
+                            </View>)}
 
                 </View>
 
@@ -156,9 +164,17 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                         <View className="flex-row justify-between mb-2">
 
 
-                            <View className="flex-1 pr-2 flex-row">
-                                <Text className="text-gray-600">Updated By: </Text>
-                                <Text className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.updatedBy}</Text>
+                        <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
+                                <Text className="text-gray-700 font-semibold">Updated By:</Text>
+                                {editItem === item ? (
+                                    <TextInput
+                                        className="border border-gray-300 px-3 py-2 rounded-md text-gray-700 bg-gray-200"
+                                        value={item.updatedBy}
+                                        editable={false}
+                                    />
+                                ) : (
+                                    <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.updatedBy}</Text>
+                                )}
                             </View>
                         </View>
                         {/* Edit and Delete Buttons */}

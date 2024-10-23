@@ -54,10 +54,11 @@ const EggAndFlockGrid = ({ refreshTrigger }) => {
 
       <View className="basis-1/2 pr-1">
         <TouchableOpacity
-          className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
+          className="bg-amber-200 rounded-3xl flex-1"
           activeOpacity={0.7}>
           <ImageBackground
             source={require('../../assets/images/orange.jpeg')}
+            //source={require('../../assets/images/Egg.jpg')}
             resizeMode="cover"
             className="flex-1 rounded-3xl"
             imageStyle={{ borderRadius: 20 }}
@@ -74,11 +75,12 @@ const EggAndFlockGrid = ({ refreshTrigger }) => {
 
       <View className="basis-1/2 pl-1">
         <TouchableOpacity
-          className="bg-amber-200 border border-pink-200 rounded-3xl flex-1"
+          className="bg-amber-200 rounded-3xl flex-1"
           activeOpacity={0.7}
           onPress={() => router.push('/home/flock')}>
           <ImageBackground
             source={require('../../assets/images/orange.jpeg')}
+            //source={require('../../assets/images/Chicken Head.jpg')}
             resizeMode="cover"
             className="flex-1 rounded-3xl"
             imageStyle={{ borderRadius: 20 }}

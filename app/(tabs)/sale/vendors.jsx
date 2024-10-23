@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import VendorScreen from '@/components/vendors/VendorScreen'
@@ -7,7 +7,12 @@ import VendorScreen from '@/components/vendors/VendorScreen'
 const Vendors = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <VendorScreen/>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <VendorScreen />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

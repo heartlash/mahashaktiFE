@@ -38,17 +38,23 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
     setShowRecordConsumption(false);
   }
 
-  const stockStatus = parseInt(item.wouldLastFor) == 0 || parseInt(item.wouldLastFor) < 0
-    ? 'Out of Stock'
-    : parseFloat(item.minQuantity) >= parseFloat(item.quantity)
-      ? 'Low Stock'
-      : 'In Stock';
+  const stockStatus = parseFloat(item.expectedDailyConsumption) === 0
+    ? 'Not in Use'
+    : parseInt(item.wouldLastFor) == 0 || parseInt(item.wouldLastFor) < 0
+      ? 'Out of Stock'
+      : parseFloat(item.minQuantity) >= parseFloat(item.quantity)
+        ? 'Low Stock'
+        : 'In Stock';
 
-  const stockStatusColor = parseInt(item.wouldLastFor) == 0 || parseInt(item.wouldLastFor) < 0
-    ? 'bg-red-600'
+
+  const stockStatusColor = parseFloat(item.expectedDailyConsumption) === 0
+  ? 'bg-blue-500' // Color for "Not in Use"
+  : parseInt(item.wouldLastFor) == 0 || parseInt(item.wouldLastFor) < 0
+    ? 'bg-red-600'  // Color for "Out of Stock"
     : parseFloat(item.minQuantity) >= parseFloat(item.quantity)
-      ? 'bg-orange-500'
-      : 'bg-green-500';
+      ? 'bg-orange-500'  // Color for "Low Stock"
+      : 'bg-green-500';  // Color for "In Stock"
+    
 
   return (
     <TouchableOpacity

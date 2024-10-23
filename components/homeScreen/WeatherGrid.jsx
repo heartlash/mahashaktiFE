@@ -4,7 +4,6 @@ import { getWeatherData } from '@/lib/weather';
 
 const weatherImageBg = {
     Snow: require("../../assets/images/Snow.png"),
-    Atmosphere: require("../../assets/images/Atmosphere.png"),
     Drizzle: require("../../assets/images/Drizzle.png"),
     Clouds: require("../../assets/images/Clouds.png"),
     Rain: require("../../assets/images/Rain.png"),

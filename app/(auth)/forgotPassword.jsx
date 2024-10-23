@@ -1,9 +1,9 @@
 import { View, Text, Image, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
-import { React, useState, useEffect } from 'react'
-import { Link, router, useGlobalSearchParams } from 'expo-router';
+import { React, useState } from 'react'
+import { router } from 'expo-router';
 import { getUserDetails } from '@/lib/auth';
 import { StatusBar } from 'react-native-bars';
-import Animated, { FadeIn, FadeInDown, FadeInUp, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AnimatedActivityIndicator from '@/components/AnimatedActivityIndicator';
 import { useNavigation } from '@react-navigation/native';

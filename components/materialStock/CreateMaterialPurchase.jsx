@@ -14,6 +14,7 @@ const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOn
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [purchaseDate, setPurchaseDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
     const [newMaterialPurchase, setNewMaterialPurchase] = useState(null);
+    const [amount, setAmount] = useState('');
 
 
     const showDatePicker = () => {
@@ -34,10 +35,28 @@ const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOn
     };
 
     const handleNewChange = (field, value) => {
-        setNewMaterialPurchase((prevItem) => ({
-            ...prevItem,
-            [field]: value,
-        }));
+        setNewMaterialPurchase((prevItem) => {
+            const updatedItem = {
+                ...prevItem,
+                [field]: value,
+            };
+
+            // Check if the field is either 'quantity' or 'rate' and update the 'amount' accordingly
+            if (field === 'quantity' || field === 'rate') {
+                const quantity = field === 'quantity' ? parseFloat(value) : parseFloat(updatedItem.quantity);
+                const rate = field === 'rate' ? parseFloat(value) : parseFloat(updatedItem.rate);
+
+                // Calculate the amount only if both quantity and rate are valid numbers
+                if (!isNaN(quantity) && !isNaN(rate)) {
+                    updatedItem.amount = (quantity * rate).toFixed(2);
+                    setAmount(updatedItem.amount)
+                } else {
+                    updatedItem.amount = ''; // Clear the amount if the inputs are invalid
+                    setAmount('')
+                }
+            }
+            return updatedItem;
+        });
     };
 
     const saveNewMaterialPurchase = async () => {
@@ -116,7 +135,8 @@ const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOn
 
                     <TextInput
                         className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
-                        onChangeText={(text) => handleNewChange('amount', text)}
+                        value={amount}
+                        editable={false} // Make the field non-editable
                     />
 
                 </View>

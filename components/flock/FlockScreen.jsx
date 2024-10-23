@@ -1,12 +1,14 @@
-import { View, Text, StyleSheet, Animated } from 'react-native'
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
+import MonthYearAndFilter from '../MonthYearAndFilter';
 import { getFlockCount, getFlockChange } from '@/lib/flock';
-import FLockChangePaginatedList from './FlockChangePaginatedList';
 import CreateFlockChange from './CreateFlockChange';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import CustomModal from '../CustomModal';
+import FlockList from './FlockList';
+import { getMonthStartAndEndDate } from '@/lib/util';
 
 
 
@@ -15,7 +17,9 @@ const FlockScreen = () => {
     const navigation = useNavigation()
     const [flockCount, setFlockCount] = useState(0)
     const [flockChangeData, setFlockChangeData] = useState([])
-    const [showFlockChangeHistory, setShowFlockChangeHistory] = useState(false)
+    const [totalMortality, setTotalMortality] = useState(0)
+    const [averageDailyMortality, setAverageDailyMortality] = useState(0)
+
     const [createNewFlockChange, setCreateNewFlockChange] = useState(false)
 
     const [loading, setLoading] = useState(true)
@@ -35,22 +39,24 @@ const FlockScreen = () => {
         setRefresh(prev => !prev);
     }
 
-    const scrollY = useRef(new Animated.Value(0)).current;
 
-    // Interpolating the scroll position to adjust height and opacity
-    const headerHeight = scrollY.interpolate({
-        inputRange: [0, 200],
-        outputRange: [200, 0],
-        extrapolate: 'clamp',
-    });
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [month, setMonth] = useState(new Date().getMonth() + 1);
+    const [year, setYear] = useState(new Date().getFullYear());
 
-    const headerOpacity = scrollY.interpolate({
-        inputRange: [0, 200],
-        outputRange: [1, 0],
-        extrapolate: 'clamp',
-    });
+
+    const handleShowPress = () => {
+        setSelectedMonth(month);
+        setSelectedYear(year);
+    }
+
+    const handleDownload = async () => {
+
+    };
 
     const fetchFlockData = async () => {
+        const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
         const result = await getFlockCount();
         if (result.errorMessage == null) {
             setFlockCount(result.data);
@@ -59,7 +65,15 @@ const FlockScreen = () => {
             setLoading(true);
         }
 
-        const resultFlockChange = await getFlockChange();
+        const resultFlockChange = await getFlockChange(startDate, endDate);
+        var totalMortalityCount = 0;
+        for (var flockChange of resultFlockChange.data) {
+            if (flockChange.count < 0)
+                totalMortalityCount = totalMortalityCount + Math.abs(flockChange.count)
+        }
+        setTotalMortality(totalMortalityCount);
+        setAverageDailyMortality(resultFlockChange.data.length != 0 ? parseFloat(totalMortalityCount / resultFlockChange.data.length).toFixed(2) : 0)
+
         if (resultFlockChange.errorMessage == null) {
             setFlockChangeData(resultFlockChange.data);
             setLoading(false);
@@ -69,23 +83,45 @@ const FlockScreen = () => {
     };
 
     useEffect(() => {
-        fetchFlockData();
-    }, [refresh]);
 
+        setMonth(new Date().getMonth() + 1);
+        setYear(new Date().getFullYear());
+        setSelectedMonth(new Date().getMonth() + 1); // Reset to the current month
+        setSelectedYear(new Date().getFullYear()); // Reset to the current year
+
+        fetchFlockData();
+
+    }, [])
+
+    useEffect(() => {
+        fetchFlockData();
+    }, [selectedMonth, selectedYear, refresh])
 
     return (
         <>
             <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
             <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
             <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
-            <FLockChangePaginatedList
+            <FlockList
                 listHeaderComponent={<>
                     <View className="mx-2 my-1">
                         <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
                     </View>
-                    <View style={styles.container} className="p-10 justify-center items-center mb-4">
-                        <Text className="text-xl font-bold text-black">Total Flock: {flockCount} </Text>
+                    <View style={styles.container}>
+                        <View className="p-7 justify-center items-center">
+
+                            <Text className="text-xl font-bold text-black">Total Flock: {flockCount} </Text>
+                        </View>
+                        <View className="flex flex-row">
+                            <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Total Mortality</Text>
+                            <Text className="text-right text-gray-700 font-semibold  mb-2">{totalMortality}</Text>
+                        </View>
+                        <View className="flex flex-row">
+                            <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Daily Mortality</Text>
+                            <Text className="text-right text-gray-700 font-semibold  mb-2">{averageDailyMortality}</Text>
+                        </View>
                     </View>
+                    <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
 
                     {createNewFlockChange ? (
                         <CreateFlockChange
@@ -103,7 +139,6 @@ const FlockScreen = () => {
                 </>
                 }
                 data={flockChangeData.sort((a, b) => b.date.localeCompare(a.date))}
-                onClose={() => setShowFlockChangeHistory(false)} setFlockChangeData={setFlockChangeData} scrollY={scrollY}
                 onRefreshOnChange={onRefreshOnChange}
                 refreshing={refreshing}
                 onRefresh={onRefresh}

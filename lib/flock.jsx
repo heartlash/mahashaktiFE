@@ -15,9 +15,14 @@ export const getFlockCount = async () => {
     }
 }
 
-export const getFlockChange = async () => {
+export const getFlockChange = async (startDate, endDate) => {
     try {
-        const response = await Backend.get("/flock");
+        const response = await Backend.get("flock", {
+            params: {
+                startDate: startDate,
+                endDate: endDate
+            }
+        });
         return { data: response.data.data, errorMessage: null }
 
     } catch (error) {

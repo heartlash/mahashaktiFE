@@ -10,7 +10,9 @@ const MaterialStockScreen = () => {
 
     const [materialStockData, setMaterialStockData] = useState([])
     const [outOfStock, setOutOfStock] = useState(0)
-    const [toBeOutOfStock, setToBeOutOfStock] = useState(0)
+    const [lowStock, setLowStock] = useState(0)
+    const [notInUse, setNotInUse] = useState(0)
+
 
 
     const [loading, setLoading] = useState(true)
@@ -34,18 +36,23 @@ const MaterialStockScreen = () => {
         const result = await getMaterialStock();
         if (result.errorMessage == null) {
             setMaterialStockData(result.data);
-            var count = 0;
-            var count1 = 0;
+            var countNotInUse = 0;
+            var countOutOfStock = 0;
+            var countLowStock = 0;
             for (var data of result.data) {
-                if (parseInt(data.wouldLastFor) == 0) {
-                    count++;
-                }
-                else if (parseFloat(data.minQuantity) > parseFloat(data.quantity)) {
-                    count1++;
-                }
+                if(parseFloat(data.expectedDailyConsumption) == 0)
+                    countNotInUse++;
+                else if (parseInt(data.wouldLastFor) == 0)
+                    countOutOfStock++;
+                
+                else if (parseFloat(data.minQuantity) > parseFloat(data.quantity))
+                    countLowStock++;
+            
             }
-            setOutOfStock(count)
-            setToBeOutOfStock(count1)
+            setOutOfStock(countOutOfStock)
+            setLowStock(countLowStock)
+            setNotInUse(countNotInUse)
+
             setLoading(false);
         } else {
             setLoading(true);
@@ -74,8 +81,9 @@ const MaterialStockScreen = () => {
                         className="p-10 justify-center items-center mb-4"
                     >
                         <Text className="text-xl font-bold text-black">Total Materials: {materialStockData.length}</Text>
+                        <Text className="text-lg text-black mt-2">Not In Use: {notInUse}</Text>
                         <Text className="text-lg text-black mt-2">Out of Stock: {outOfStock}</Text>
-                        <Text className="text-lg text-black mt-2">Low Stock: {toBeOutOfStock}</Text>
+                        <Text className="text-lg text-black mt-2">Low Stock: {lowStock}</Text>
                     </View>) : (<></>)}
 
                 materialStockData={materialStockData.sort((a, b) => a.material.localeCompare(b.material))}

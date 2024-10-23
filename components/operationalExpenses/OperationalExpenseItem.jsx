@@ -123,7 +123,7 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
                                 keyboardType="numeric"
                             />
                         ) : (
-                            <Text className="text-gray-700 ml-2">{item.amount}</Text>
+                            <Text className="text-gray-700 ml-2">₹{item.amount}</Text>
                         )}
                     </View>
                 </View>
@@ -136,7 +136,7 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
                                 {editItem === item ? (
                                     <TextInput
                                         className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 "
-                                        value={edited.remarks.toString()}
+                                        value={(edited.remarks || '').toString()}
                                         onChangeText={(text) => handleEditChange('remarks', text)}
                                     />
                                 ) : (

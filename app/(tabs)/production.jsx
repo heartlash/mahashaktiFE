@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ProductionScreen from '@/components/production/ProductionScreen'
@@ -6,7 +6,12 @@ import ProductionScreen from '@/components/production/ProductionScreen'
 const Production = () => {
   return (
     <SafeAreaView style={styles.container}>
-        <ProductionScreen/>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ProductionScreen />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

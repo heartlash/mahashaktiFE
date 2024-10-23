@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
@@ -54,14 +54,14 @@ const MaterialConsumptionHistory = () => {
     };
 
     const handleDownload = async () => {
-        var data  = []
-        for(var consumptionData of materialConsumptionHistoryData)
-            data.push([formatDateToDDMMYYYY(consumptionData.consumptionDate), consumptionData.materialName, 
-                consumptionData.quantity + ' ' + consumptionData.unitSymbol])
-        
-        await getDocument(consumptionData.materialName + " Consumption Report", 
+        var data = []
+        for (var consumptionData of materialConsumptionHistoryData)
+            data.push([formatDateToDDMMYYYY(consumptionData.consumptionDate), consumptionData.materialName,
+            consumptionData.quantity + ' ' + consumptionData.unitSymbol])
+
+        await getDocument(consumptionData.materialName + " Consumption Report",
             monthNames[selectedMonth - 1] + " " + selectedYear,
-            ["Date", "Material", "Quantity"], 
+            ["Date", "Material", "Quantity"],
             data);
     };
 
@@ -84,30 +84,34 @@ const MaterialConsumptionHistory = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
-            <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
-            <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
-            <View>
-                <View className="mx-2 my-1">
-                    <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{ flex: 1 }}
+            >
+                <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
+                <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
+                <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
+                <View>
+                    <View className="mx-2 my-1">
+                        <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+                    </View>
+                    <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
                 </View>
-                <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload}/>
-            </View>
-            {materialConsumptionHistoryData.length > 0 ? (
-                <MaterialConsumptionHistoryList
-                    materialConsumptionHistoryData={materialConsumptionHistoryData.reverse()}
-                    setMaterialConsumptionHistoryData={setMaterialConsumptionHistoryData}
-                    onRefreshOnChange={onRefreshOnChange}
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    setSuccessModalVisible={setSuccessModalVisible}
-                    setFailureModalVisible={setFailureModalVisible}
-                    setSubmitModalVisible={setSubmitModalVisible}
-                />
-            ) : (<></>)}
+                {materialConsumptionHistoryData.length > 0 ? (
+                    <MaterialConsumptionHistoryList
+                        materialConsumptionHistoryData={materialConsumptionHistoryData.reverse()}
+                        setMaterialConsumptionHistoryData={setMaterialConsumptionHistoryData}
+                        onRefreshOnChange={onRefreshOnChange}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        setSuccessModalVisible={setSuccessModalVisible}
+                        setFailureModalVisible={setFailureModalVisible}
+                        setSubmitModalVisible={setSubmitModalVisible}
+                    />
+                ) : (<></>)}
 
 
-
+            </KeyboardAvoidingView>
         </SafeAreaView>
 
     )
@@ -117,8 +121,8 @@ export default MaterialConsumptionHistory;
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: 'white', // Your global background color
-      paddingBottom: 30
+        flex: 1,
+        backgroundColor: 'white', // Your global background color
+        paddingBottom: 30
     },
-  });
+});
