@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import CustomModal from '../CustomModal';
 import FlockList from './FlockList';
 import { getMonthStartAndEndDate } from '@/lib/util';
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
 
@@ -66,15 +67,17 @@ const FlockScreen = () => {
         }
 
         const resultFlockChange = await getFlockChange(startDate, endDate);
-        var totalMortalityCount = 0;
-        for (var flockChange of resultFlockChange.data) {
-            if (flockChange.count < 0)
-                totalMortalityCount = totalMortalityCount + Math.abs(flockChange.count)
-        }
-        setTotalMortality(totalMortalityCount);
-        setAverageDailyMortality(resultFlockChange.data.length != 0 ? parseFloat(totalMortalityCount / resultFlockChange.data.length).toFixed(2) : 0)
 
         if (resultFlockChange.errorMessage == null) {
+
+            var totalMortalityCount = 0;
+            for (var flockChange of resultFlockChange.data) {
+                if (flockChange.count < 0)
+                    totalMortalityCount = totalMortalityCount + Math.abs(flockChange.count)
+            }
+            setTotalMortality(totalMortalityCount);
+            setAverageDailyMortality(resultFlockChange.data.length != 0 ? parseFloat(totalMortalityCount / resultFlockChange.data.length).toFixed(2) : 0)
+
             setFlockChangeData(resultFlockChange.data);
             setLoading(false);
         } else {
@@ -96,6 +99,10 @@ const FlockScreen = () => {
     useEffect(() => {
         fetchFlockData();
     }, [selectedMonth, selectedYear, refresh])
+
+    if (loading) {
+        return <AnimatedActivityIndicator />
+    }
 
     return (
         <>

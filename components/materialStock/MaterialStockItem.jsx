@@ -4,7 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { MinusCircleIcon } from "react-native-heroicons/solid";
 import CreateMaterialConsumption from './CreateMaterialConsumption'
-import CreateMaterialPurchase from './CreateMaterialPurchase'
+import CreateMaterialRestock from './CreateMaterialRestock';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
@@ -87,12 +87,12 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
           <Text className="text-gray-700">{item.minQuantity.toFixed(2)} {item.unit}</Text>
         </View>
         <View className="flex-row justify-between mb-3">
-          <Text className="text-gray-700 font-semibold">Last Purchase Date</Text>
-          <Text className="text-gray-700">{item.lastPurchaseDate}</Text>
+          <Text className="text-gray-700 font-semibold">Last Restock Date</Text>
+          <Text className="text-gray-700">{item.lastRestockDate}</Text>
         </View>
         <View className="flex-row justify-between mb-3">
-          <Text className="text-gray-700 font-semibold">Last Purchase Rate</Text>
-          <Text className="text-gray-700">₹{item.lastPurchaseRate} per {item.unit}</Text>
+          <Text className="text-gray-700 font-semibold">Last Restock Quantity</Text>
+          <Text className="text-gray-700">{item.lastRestockQuantity} {item.unit}</Text>
         </View>
 
         {/* Conditionally render the CreateMaterialPurchase component only for the selected item */}
@@ -107,7 +107,7 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
                 </View>
                 <View className="flex-row justify-between my-4 mx-2">
                   <FontAwesome5 name="list" size={15} color="black" onPress={() => navigation.navigate('materialConsumptionHistory', { id: item.materialId })} />
-                  <FontAwesome5 name="list" size={15} color="black" onPress={() => navigation.navigate('materialPurchaseHistory', { id: item.materialId })} />
+                  <FontAwesome5 name="list" size={15} color="black" onPress={() => navigation.navigate('materialRestockHistory', { id: item.materialId })} />
                 </View>
               </View>
             )}
@@ -119,7 +119,7 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
                 setSubmitModalVisible={setSubmitModalVisible} />
             )}
             {showRecordPurchase && (
-              <CreateMaterialPurchase materialId={item.materialId} materialUnit={item.unit} onClose={() => handleOnCloseRecordPurchase()} onRefreshOnChange={onRefreshOnChange}
+              <CreateMaterialRestock materialId={item.materialId} materialUnit={item.unit} onClose={() => handleOnCloseRecordPurchase()} onRefreshOnChange={onRefreshOnChange}
                 setSuccessModalVisible={setSuccessModalVisible}
                 setFailureModalVisible={setFailureModalVisible}
                 setSubmitModalVisible={setSubmitModalVisible} />

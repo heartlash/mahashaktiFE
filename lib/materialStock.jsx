@@ -10,7 +10,7 @@ export const getMaterialStock = async () => {
         var index = 1
         for (var data of response.data.data) {
             data.id = index++
-            data.lastPurchaseDate = getFormattedDate(data.lastPurchaseDate)
+            data.lastRestockDate = getFormattedDate(data.lastRestockDate)
             materialStockDataList.push(data);
         }
         return { data: materialStockDataList, errorMessage: null }

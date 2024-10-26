@@ -13,7 +13,7 @@ export default function MaterialLayout() {
           }}
       />
       <Stack.Screen 
-        name="materialPurchaseHistory"
+        name="materialRestockHistory"
         options={{
           headerShown: false, // Hides the header
         }}

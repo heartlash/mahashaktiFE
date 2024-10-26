@@ -2,23 +2,23 @@ import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import MaterialPurchaseHistoryList from '@/components/materialPurchaseHistory/MaterialPurchaseHistoryList';
+import MaterialRestockHistoryList from '@/components/materialRestockHistory/MaterialRestockHistoryList';
 import MonthYearAndFilter from '@/components/MonthYearAndFilter';
 import { getMonthStartAndEndDate, formatDateToDDMMYYYY, monthNames } from '@/lib/util';
 import { getDocument } from '@/lib/download';
-import { getMaterialPurchaseHistory } from '@/lib/materialPurchase';
+import { getMaterialRestock } from '@/lib/materialRestock';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomModal from '@/components/CustomModal';
 
 
 
-const MaterialPurchaseHistory = () => {
+const MaterialRestockHistory = () => {
     const { id } = useLocalSearchParams();
     const navigation = useNavigation();
 
 
-    const [materialPurchaseHistoryData, setMaterialPurchaseHistoryData] = useState([]);
+    const [materialRestockHistoryData, setMaterialRestockHistoryData] = useState([]);
 
     const [successModalVisible, setSuccessModalVisible] = useState(false)
     const [failureModalVisible, setFailureModalVisible] = useState(false)
@@ -41,7 +41,7 @@ const MaterialPurchaseHistory = () => {
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        fetchMaterialPurchaseHistory().then(() => setRefreshing(false));
+        fetchMaterialRestockHistory().then(() => setRefreshing(false));
     }, []);
 
 
@@ -63,22 +63,22 @@ const MaterialPurchaseHistory = () => {
             data);
     };
 
-    const fetchMaterialPurchaseHistory = async () => {
+    const fetchMaterialRestockHistory = async () => {
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
-        const result = await getMaterialPurchaseHistory(id, startDate, endDate);
+        const result = await getMaterialRestock(id, startDate, endDate);
         if (result.errorMessage == null) {
-            setMaterialPurchaseHistoryData(result.data)
+            setMaterialRestockHistoryData(result.data)
         }
         if (result.data == null)
-            setMaterialPurchaseHistoryData([])
+            setMaterialRestockHistoryData([])
     }
 
 
     useEffect(() => {
 
-        fetchMaterialPurchaseHistory();
+        fetchMaterialRestockHistory();
 
-    }, [selectedMonth, selectedYear])
+    }, [refresh, selectedMonth, selectedYear])
 
     return (
         <SafeAreaView style={styles.container}>
@@ -95,10 +95,10 @@ const MaterialPurchaseHistory = () => {
                     </View>
                     <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
                 </View>
-                {materialPurchaseHistoryData.length > 0 ? (
-                    <MaterialPurchaseHistoryList
-                        materialPurchaseHistoryData={materialPurchaseHistoryData.reverse()}
-                        setMaterialPurchaseHistoryData={setMaterialPurchaseHistoryData}
+                {materialRestockHistoryData.length > 0 ? (
+                    <MaterialRestockHistoryList
+                        materialRestockHistoryData={materialRestockHistoryData.reverse()}
+                        setMaterialRestockHistoryData={setMaterialRestockHistoryData}
                         onRefreshOnChange={onRefreshOnChange}
                         refreshing={refreshing}
                         onRefresh={onRefresh}
@@ -113,7 +113,7 @@ const MaterialPurchaseHistory = () => {
     )
 };
 
-export default MaterialPurchaseHistory;
+export default MaterialRestockHistory;
 
 const styles = StyleSheet.create({
     container: {

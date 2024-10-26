@@ -1,8 +1,8 @@
 import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
-import MaterialPurchaseHistoryItem from './MaterialPurchaseHistoryItem';
+import OperationalExpenseHistoryItem from './OperationalExpenseHistoryItem';
 
-const MaterialPurchaseHistoryList = ({ materialPurchaseHistoryData, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const OperationalExpenseHistoryList = ({ operationalExpensesData, operationalExpenseItems, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
@@ -11,13 +11,14 @@ const MaterialPurchaseHistoryList = ({ materialPurchaseHistoryData, onRefreshOnC
     };
 
     const renderItem = ({ item }) => (
-        <MaterialPurchaseHistoryItem
+        <OperationalExpenseHistoryItem
             item={item}
             isExpanded={expandedItemId === item.id}
             onPress={() => handlePress(item.id)}
             editItem={editItem}
             setEditItem={setEditItem}
             onRefreshOnChange={onRefreshOnChange}
+            operationalExpenseItems={operationalExpenseItems}
             setSuccessModalVisible={setSuccessModalVisible}
             setFailureModalVisible={setFailureModalVisible}
             setSubmitModalVisible={setSubmitModalVisible}
@@ -26,18 +27,19 @@ const MaterialPurchaseHistoryList = ({ materialPurchaseHistoryData, onRefreshOnC
 
     return (
         <FlatList
-            data={materialPurchaseHistoryData.sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate))}
+            ListHeaderComponent={listHeaderComponent}
+            data={operationalExpensesData}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             extraData={expandedItemId}
+            showsVerticalScrollIndicator={false}
             refreshControl={
                 <RefreshControl
                     refreshing={refreshing} // Make sure refreshing is set correctly
                     onRefresh={onRefresh}   // Trigger refresh when pulled down
                 />
-            }
-        />
+            } />
     );
 };
 
-export default MaterialPurchaseHistoryList;
+export default OperationalExpenseHistoryList;

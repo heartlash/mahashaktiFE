@@ -1,17 +1,18 @@
 import { StyleSheet } from 'react-native'
 import React from 'react'
+import MaterialPurchaseHistory from '@/components/materialPurchase/MaterialPurchaseHistory'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { OperationalExpensesScreen } from '@/components/money/OperationalExpenseScreen'
 
-const operationalExpenses = () => {
+
+const materialPurchaseHistory = () => {
   return (
-    <SafeAreaView styles={styles.container}>
-        <OperationalExpensesScreen/>
+    <SafeAreaView style={styles.container}>
+      <MaterialPurchaseHistory/>
     </SafeAreaView>
   )
 }
 
-export default operationalExpenses
+export default materialPurchaseHistory
 
 const styles = StyleSheet.create({
   container: {

@@ -21,7 +21,7 @@ export default RenderItem = ({ item, index, goTo, isVendor, isExpanded, onPress,
     else onPress()
   }
 
-  const onSettle = async(vendorId, amount) => {
+  const onSettle = async (vendorId, amount) => {
     setLoading(true)
     const result = await settleVendorCredit(vendorId, amount);
 
@@ -45,8 +45,8 @@ export default RenderItem = ({ item, index, goTo, isVendor, isExpanded, onPress,
       <TouchableOpacity style={styles.contentContainer} onPress={() => onPressHere()}>
         <View style={[styles.color, { backgroundColor: item.color }]} />
         <Text style={styles.text}>{item.name}</Text>
-        <Text style={styles.text}>{item.percentage}%</Text>
-        <Text style={styles.text}>₹{item.value}</Text>
+        <Text style={styles.textPercentage}>{item.percentage}%</Text>
+        <Text style={styles.textValue}>₹{item.value}</Text>
       </TouchableOpacity>
       {isExpanded && (
         <View style={styles.expandedContent}>
@@ -86,12 +86,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   color: {
-    width: 40,
-    height: 40,
+    width: 20,
+    height: 20,
     borderRadius: 10,
   },
   text: {
     fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+    marginRight: 10
+  },
+  textPercentage: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  textValue: {
+    fontSize: 14,
     fontWeight: 'bold',
     color: 'black',
   },

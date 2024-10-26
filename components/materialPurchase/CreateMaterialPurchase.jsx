@@ -6,15 +6,18 @@ import { saveMaterialPurchase } from '@/lib/materialPurchase';
 import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import RNPickerSelect from 'react-native-picker-select';
+import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
-
-const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [purchaseDate, setPurchaseDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
     const [newMaterialPurchase, setNewMaterialPurchase] = useState(null);
     const [amount, setAmount] = useState('');
+    const [material, setMaterial] = useState();
+
 
 
     const showDatePicker = () => {
@@ -41,6 +44,11 @@ const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOn
                 [field]: value,
             };
 
+            if(field == 'materialId') {
+                for(var material of materials)
+                    if(material.value == value) setMaterial(material)
+            }
+
             // Check if the field is either 'quantity' or 'rate' and update the 'amount' accordingly
             if (field === 'quantity' || field === 'rate') {
                 const quantity = field === 'quantity' ? parseFloat(value) : parseFloat(updatedItem.quantity);
@@ -65,7 +73,7 @@ const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOn
         const userInfo = await getUserInfo();
         var temp = newMaterialPurchase
         temp.createdBy = userInfo.name
-        temp.materialId = materialId
+        temp.materialId = material.value
         temp.purchaseDate = purchaseDate
 
         const result = await saveMaterialPurchase(temp);
@@ -90,13 +98,13 @@ const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOn
         <View className="bg-white p-4 mx-2 rounded-lg shadow-lg my-4 border border-gray-200">
             <View className="flex-row justify-between mb-2">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-700 font-semibold">Quantity ({materialUnit}): </Text>
+                    <Text className="text-gray-700 font-semibold">Item:</Text>
 
-                    <TextInput
-                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
-                        onChangeText={(text) => handleNewChange('quantity', text)}
-                        keyboardType="numeric"
-                    />
+                    <RNPickerSelect
+                        onValueChange={(value) => handleNewChange('materialId', value)}
+                        items={materials}
+                        placeholder={{ label: 'Choose Material', value: null }}
+                        style={pickerSelectStyles} />
                 </View>
                 <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Purchase Date: </Text>
@@ -121,6 +129,15 @@ const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOn
 
             <View className="flex-row justify-between mb-2">
                 <View className="flex-1 pr-2">
+                    <Text className="text-gray-700 font-semibold">Quantity {material == null ? '' : material.unit}: </Text>
+
+                    <TextInput
+                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                        onChangeText={(text) => handleNewChange('quantity', text)}
+                        keyboardType="numeric"
+                    />
+                </View>
+                <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Rate: </Text>
 
                     <TextInput
@@ -130,7 +147,11 @@ const CreateMaterialPurchase = ({ onClose, materialId, materialUnit, onRefreshOn
                     />
 
                 </View>
-                <View className="flex-1 pl-2">
+
+            </View>
+            <View className="flex-row justify-between mb-2">
+
+                <View className="flex-1 pr-2">
                     <Text className="text-gray-700 font-semibold">Amount: </Text>
 
                     <TextInput

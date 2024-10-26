@@ -9,7 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
-const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onPress, editItem, setEditItem, onRefreshOnChange,
+const OperationalExpenseHistoryItem = ({ item, isExpanded, operationalExpenseItems, onPress, editItem, setEditItem, onRefreshOnChange,
     setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible
 }) => {
 
@@ -198,4 +198,4 @@ const OperationalExpenseItem = ({ item, isExpanded, operationalExpenseItems, onP
     );
 };
 
-export default OperationalExpenseItem;
+export default OperationalExpenseHistoryItem;

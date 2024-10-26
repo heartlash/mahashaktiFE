@@ -2,8 +2,7 @@ import { StyleSheet, Text, View, ActivityIndicator, Modal, TouchableOpacity } fr
 import React, { useEffect, useState, useCallback } from 'react';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import { getOperationalExpenses, getOperationalExpenseItems } from '@/lib/operationalExpense';
-import OperationalExpenseList from './OperationalExpenseList';
-import CreateOperationalExpenseItem from './CreateOperationalExpense';
+import OperationalExpenseHistoryList from './OperationalExpenseHistoryList';
 import MonthYearAndFilter from '../MonthYearAndFilter';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -11,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import CustomModal from '../CustomModal';
 
 
-const OperationalExpensesScreen = () => {
+const OperationalExpensesHistory = () => {
 
     const navigation = useNavigation();
 
@@ -119,26 +118,10 @@ const OperationalExpensesScreen = () => {
             <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
             <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
             <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
-            <OperationalExpenseList
-                listHeaderComponent={<View>
-
-
+            <OperationalExpenseHistoryList
+                listHeaderComponent={
                     <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />
-
-                    {createOperationalExpense ? (
-                        <CreateOperationalExpenseItem
-                            onClose={() => setCreateOperationalExpense(false)}
-                            onRefreshOnChange={onRefreshOnChange}
-                            operationalExpenseItems={operationalExpenseItems}
-                            setSuccessModalVisible={setSuccessModalVisible}
-                            setFailureModalVisible={setFailureModalVisible}
-                            setSubmitModalVisible={setSubmitModalVisible}
-                        />
-                    ) : (<View className="mb-3">
-                        <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateOperationalExpense(true)} />
-                    </View>
-                    )}
-                </View>}
+                }
                 operationalExpensesData={reversedData}
                 operationalExpenseItems={operationalExpenseItems}
                 onRefreshOnChange={onRefreshOnChange}
@@ -153,7 +136,7 @@ const OperationalExpensesScreen = () => {
     );
 };
 
-export default OperationalExpensesScreen;
+export default OperationalExpensesHistory;
 
 const styles = StyleSheet.create({
     container: {

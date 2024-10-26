@@ -1,8 +1,8 @@
 import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
-import OperationalExpenseItem from './OperationalExpenseItem';
+import MaterialConsumptionHistoryItem from '../materialConsumptionHistory/MaterialConsumptionHistoryItem';
 
-const OperationalExpenseList = ({ operationalExpensesData, operationalExpenseItems, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const MaterialPurchaseHistoryList = ({ materialPurchaseData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
 
@@ -11,14 +11,13 @@ const OperationalExpenseList = ({ operationalExpensesData, operationalExpenseIte
     };
 
     const renderItem = ({ item }) => (
-        <OperationalExpenseItem
+        <MaterialConsumptionHistoryItem
             item={item}
             isExpanded={expandedItemId === item.id}
             onPress={() => handlePress(item.id)}
             editItem={editItem}
             setEditItem={setEditItem}
             onRefreshOnChange={onRefreshOnChange}
-            operationalExpenseItems={operationalExpenseItems}
             setSuccessModalVisible={setSuccessModalVisible}
             setFailureModalVisible={setFailureModalVisible}
             setSubmitModalVisible={setSubmitModalVisible}
@@ -28,18 +27,18 @@ const OperationalExpenseList = ({ operationalExpensesData, operationalExpenseIte
     return (
         <FlatList
             ListHeaderComponent={listHeaderComponent}
-            data={operationalExpensesData}
+            data={materialPurchaseData.sort((a, b) => new Date(b.purchaseDate) - new Date(a.purchaseDate))}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             extraData={expandedItemId}
-            showsVerticalScrollIndicator={false}
             refreshControl={
                 <RefreshControl
                     refreshing={refreshing} // Make sure refreshing is set correctly
                     onRefresh={onRefresh}   // Trigger refresh when pulled down
                 />
-            } />
+            }
+        />
     );
 };
 
-export default OperationalExpenseList;
+export default MaterialPurchaseHistoryList;

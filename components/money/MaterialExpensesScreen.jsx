@@ -8,23 +8,29 @@ import { useSharedValue, withTiming } from 'react-native-reanimated';
 import RenderItem from '../donut/RenderItem';
 import { useGlobalSearchParams } from 'expo-router';
 import { getMonthStartAndEndDate } from '@/lib/util';
-import { getOperationalExpenses } from '@/lib/operationalExpense';
+import { getMaterialPurchase, getMaterials } from '@/lib/materialPurchase';
 import { useNavigation } from '@react-navigation/native';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
-
+import CreateMaterialPurchase from '../materialPurchase/CreateMaterialPurchase';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import CustomModal from '../CustomModal';
 
 const RADIUS = 120;
 
 
-export const OperationalExpensesChart = () => {
+export const MaterialExpensesScreen = () => {
 
     const { month, year } = useGlobalSearchParams();
     const navigation = useNavigation();
     const router = useRouter();
 
-    const [operationExpenseItemToAmountExpense, setOperationExpenseItemToAmountExpense] = useState({})
+    const [materialToAmountExpense, setMaterialToAmountExpense] = useState({})
+    const [createMaterialPurchase, setCreateMaterialPurchase] = useState(false)
 
     const [data, setData] = useState([]);
+    const [materials, setMaterials] = useState([]);
+
     const totalValue = useSharedValue(0);
     const decimals = useSharedValue([]);
     const colors = ['#fe769c', '#46a0f8', '#c3f439', '#88dabc', '#e43433', '#ff9cb1', '#5ab0ff', '#d5f97a',
@@ -32,38 +38,67 @@ export const OperationalExpensesChart = () => {
 
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
+    const [refresh, setRefresh] = useState(false);
+
+    const [successModalVisible, setSuccessModalVisible] = useState(false)
+    const [failureModalVisible, setFailureModalVisible] = useState(false)
+    const [submitModalVisible, setSubmitModalVisible] = useState(false)
+
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        fetchOperationalExpensesHistory().then(() => setRefreshing(false));
+        fetchMaterialPurchase().then(() => setRefreshing(false));
     }, []);
 
-    const fetchOperationalExpensesHistory = async () => {
+    const onRefreshOnChange = () => {
+        setRefresh(prev => !prev);
+    }
+
+
+    const fetchMaterialPurchase = async () => {
         setLoading(true)
         const { startDate, endDate } = getMonthStartAndEndDate(month, year)
-        const result = await getOperationalExpenses(startDate, endDate);
+        const result = await getMaterialPurchase(null, startDate, endDate);
         if (result.errorMessage == null) {
-            const operationalExpenseItemToAmountMapped = result.data.reduce((acc, item) => {
-                if (acc[item.itemName]) {
-                    acc[item.itemName] += item.amount;
+            const materialToAmountMapped = result.data.reduce((acc, item) => {
+                if (acc[item.materialName]) {
+                    acc[item.materialName] += item.amount;
                 } else {
-                    acc[item.itemName] = item.amount;
+                    acc[item.materialName] = item.amount;
                 }
                 return acc;
             }, {});
 
-            setOperationExpenseItemToAmountExpense(operationalExpenseItemToAmountMapped);
-            generateData(operationalExpenseItemToAmountMapped);
+            setMaterialToAmountExpense(materialToAmountMapped);
+            generateData(materialToAmountMapped);
             setLoading(false)
+
         }
         if (result.data == null)
             setMaterialToAmountExpense({})
     }
 
+    const fetchMaterials = async () => {
+        const result = await getMaterials();
+        if (result.errorMessage == null) {
+            var materialItems = []
+            for (var data of result.data) {
+                materialItems.push({ label: data.name, value: data.id, unit: data.unit });
+            }
+            setMaterials(materialItems)
+            setLoading(false);
+        }
+        else {
+            setLoading(true);
+        }
+    }
+
+
     useEffect(() => {
 
-        fetchOperationalExpensesHistory();
+        fetchMaterialPurchase();
+        fetchMaterials();
 
-    }, [])
+    }, [refresh])
 
 
     const calculatePercentage = (numbers, total) => {
@@ -78,10 +113,10 @@ export const OperationalExpensesChart = () => {
         return percentageArray;
     }
 
-    const generateData = (operationExpenseItemToAmountExpense) => {
+    const generateData = (materialToAmountExpense) => {
 
-        const generateNumbers = Object.values(operationExpenseItemToAmountExpense)
-        const materialNames = Object.keys(operationExpenseItemToAmountExpense)
+        const generateNumbers = Object.values(materialToAmountExpense)
+        const materialNames = Object.keys(materialToAmountExpense)
 
         const total = generateNumbers.reduce(
             (acc, currentValue) => acc + currentValue,
@@ -116,6 +151,10 @@ export const OperationalExpensesChart = () => {
             <View className="mx-2 my-1">
                 <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
             </View>
+            <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
+            <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
+            <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
+         
             <ScrollView
                 contentContainerStyle={{ alignItems: 'center' }}
                 showsVerticalScrollIndicator={false}
@@ -138,43 +177,58 @@ export const OperationalExpensesChart = () => {
                     />
                 </View>
 
-                <View className=" items-end pr-4 mt-1 mb-3">
-                    <TouchableOpacity className="bg-yellow-200 p-3 rounded-md" onPress={() => router.push('/money/operationalExpensesScreen')}>
-                        <Text className="text-black">Add Expense</Text>
-                    </TouchableOpacity>
+                {/* Centered Icon Section */}
+                {!createMaterialPurchase && (
+                    <View className="items-center mb-7 space-y-5">
+                        <Ionicons
+                            name="add-circle"
+                            size={45}
+                            color="black"
+                            onPress={() => setCreateMaterialPurchase(true)}
+                        />
+                        <FontAwesome5
+                            name="list"
+                            size={20}
+                            color="black"
+                            onPress={() => router.push('/money/materialPurchaseHistory')}
+                        />
+                    </View>
+
+
+                )}
+
+                {/* CreateMaterialPurchase Section */}
+                {createMaterialPurchase && (
+                    <View className="w-full px-4 mb-4">
+                        <CreateMaterialPurchase
+                            onClose={() => setCreateMaterialPurchase(false)}
+                            onRefreshOnChange={onRefreshOnChange}
+                            materials={materials}
+                            setSuccessModalVisible={setSuccessModalVisible}
+                            setFailureModalVisible={setFailureModalVisible}
+                            setSubmitModalVisible={setSubmitModalVisible}
+                        />
+                    </View>
+                )}
+
+                {/* List Section */}
+                <View className="w-full px-4">
+                    {data.map((item, index) => (
+                        <RenderItem item={item} key={index} index={index} goTo={"/money/materialPurchaseHistory"} />
+                    ))}
                 </View>
-
-                {data.map((item, index) => {
-                    return <RenderItem item={item} key={index} index={index} goTo={"/money/operationalExpensesScreen"} />;
-                })}
-
-
             </ScrollView>
         </View>
+
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     chartContainer: {
         width: RADIUS * 2,
         height: RADIUS * 2,
         marginTop: 10,
         marginBottom: 20
-    },
-    button: {
-        marginVertical: 40,
-        backgroundColor: '#f4f7fc',
-        paddingHorizontal: 60,
-        paddingVertical: 15,
-        borderRadius: 10,
-    },
-    buttonText: {
-        color: 'black',
-        fontSize: 20,
     },
 });
 

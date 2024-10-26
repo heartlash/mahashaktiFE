@@ -1,9 +1,8 @@
 import Backend from "@/config/backend";
-import { getFormattedDate } from "./util";
 
-export const saveMaterialPurchase = async (materialPurchase) => {
+export const saveMaterialRestock = async (materialRestock) => {
     try {
-        const response = await Backend.post("/material/purchase", [materialPurchase]);
+        const response = await Backend.post("/material/restock", materialRestock);
         return { data: response.data.data, errorMessage: null }
 
     } catch (error) {
@@ -16,11 +15,11 @@ export const saveMaterialPurchase = async (materialPurchase) => {
 }
 
 
-export const getMaterialPurchase = async (materialId, startDate, endDate) => {
+export const getMaterialRestock = async (materialId, startDate, endDate) => {
     try {
         var response;
         if (materialId != null) {
-            response = await Backend.get(`/material/purchase/materialId/${materialId}`, {
+            response = await Backend.get(`/material/restock/${materialId}`, {
                 params: {
                     startDate,
                     endDate,
@@ -38,7 +37,7 @@ export const getMaterialPurchase = async (materialId, startDate, endDate) => {
         }
 
 
-        var materialPurchaseData = []
+        var materialRestockData = []
 
         for (var data of response.data.data) {
             data.materialName = data.material.name;
@@ -48,11 +47,11 @@ export const getMaterialPurchase = async (materialId, startDate, endDate) => {
             data.unitSymbol = data.material.unit.symbol;
             data.material = null
 
-            materialPurchaseData.push(data)
+            materialRestockData.push(data)
         }
 
 
-        return { data: materialPurchaseData, errorMessage: null }
+        return { data: materialRestockData, errorMessage: null }
 
     } catch (error) {
         console.log(error);
@@ -63,10 +62,10 @@ export const getMaterialPurchase = async (materialId, startDate, endDate) => {
     }
 }
 
-export const updateMaterialPurchaseData = async (updatedMaterialPurchaseData) => {
+export const updateMaterialRestockData = async (updatedMaterialRestock) => {
     try {
-        const response = await Backend.put(`/material/purchase/${updatedMaterialPurchaseData.id}`,
-            updatedMaterialPurchaseData,
+        const response = await Backend.put(`/material/restock/id/${updatedMaterialRestock.id}`,
+            updatedMaterialRestock,
             {
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,9 +84,9 @@ export const updateMaterialPurchaseData = async (updatedMaterialPurchaseData) =>
     }
 };
 
-export const deleteMaterialPurchaseData = async (materialPurchaseDataId) => {
+export const deleteMaterialRestockData = async (materialRestockId) => {
     try {
-        const response = await Backend.delete(`/material/purchase/${materialPurchaseDataId}`);
+        const response = await Backend.delete(`/material/restock/id/${materialRestockId}`);
 
         return { data: response.data, errorMessage: null }
 
@@ -99,23 +98,3 @@ export const deleteMaterialPurchaseData = async (materialPurchaseDataId) => {
         }
     }
 };
-
-export const getMaterials = async () => {
-    try {
-        const response = await Backend.get("/data/materials");
-        var materials = []
-
-        for(var material of response.data.data) {
-            material.unit = material.unit.symbol
-            materials.push(material);
-        }
-        return { data: materials, errorMessage: null }
-
-    } catch (error) {
-        console.log(error);
-        return {
-            data: null,
-            errorMessage: error.response?.data?.errorMessage || error.message || error
-        }
-    }
-}

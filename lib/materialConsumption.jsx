@@ -1,11 +1,8 @@
 import Backend from "@/config/backend";
-import { getFormattedDate } from "./util";
 
 export const saveMaterialConsumption = async (materialConsumption) => {
     try {
-        console.log("comes here to material stock")
         const response = await Backend.post("/material/consumption", [materialConsumption]);
-        console.log("after here to material stock")
 
         return { data: response.data.data, errorMessage: null }
 

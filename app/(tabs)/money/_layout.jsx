@@ -30,7 +30,13 @@ export default function MoneyLayout() {
         }}
       />
       <Stack.Screen 
-        name="operationalExpensesScreen"
+        name="operationalExpensesHistory"
+        options={{
+          headerShown: false, // Hides the header
+        }}
+      />
+       <Stack.Screen 
+        name="materialPurchaseHistory"
         options={{
           headerShown: false, // Hides the header
         }}
