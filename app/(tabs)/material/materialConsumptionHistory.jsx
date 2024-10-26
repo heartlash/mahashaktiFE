@@ -1,4 +1,4 @@
-import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, Platform, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocalSearchParams } from 'expo-router';
@@ -92,8 +92,11 @@ const MaterialConsumptionHistory = () => {
                 <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
                 <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
                 <View>
-                    <View className="mx-2 my-1">
+                    <View className="flex-row items-center mx-2 my-1">
                         <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+                        <View className="flex-1 items-center">
+                            <Text className="text-lg font-bold mr-2">Consumption History</Text>
+                        </View>
                     </View>
                     <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
                 </View>

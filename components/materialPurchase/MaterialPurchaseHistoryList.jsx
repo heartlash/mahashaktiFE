@@ -1,6 +1,6 @@
 import { FlatList, RefreshControl } from 'react-native';
 import React, { useState } from 'react';
-import MaterialConsumptionHistoryItem from '../materialConsumptionHistory/MaterialConsumptionHistoryItem';
+import MaterialPurchaseHistoryItem from './MaterialPurchaseHistoryItem';
 
 const MaterialPurchaseHistoryList = ({ materialPurchaseData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
     const [expandedItemId, setExpandedItemId] = useState(null);
@@ -11,7 +11,7 @@ const MaterialPurchaseHistoryList = ({ materialPurchaseData, listHeaderComponent
     };
 
     const renderItem = ({ item }) => (
-        <MaterialConsumptionHistoryItem
+        <MaterialPurchaseHistoryItem
             item={item}
             isExpanded={expandedItemId === item.id}
             onPress={() => handlePress(item.id)}

@@ -1,4 +1,4 @@
-import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import MaterialPurchaseHistoryList from './MaterialPurchaseHistoryList';
 import MonthYearAndFilter from '@/components/MonthYearAndFilter';
@@ -113,8 +113,11 @@ const MaterialPurchaseHistory = () => {
 
     return (
         <View>
-            <View className="mx-2 my-1">
-                <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+            <View className="flex-row items-center mx-2 my-1">
+                <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()}/>
+                <View className="flex-1 items-center">
+                    <Text className="text-lg font-bold mr-2">Purchase History</Text>
+                </View>
             </View>
             <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
             <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
@@ -124,7 +127,7 @@ const MaterialPurchaseHistory = () => {
                 listHeaderComponent={
                     <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
                 }
-                materialPurchaseData={materialPurchaseData.reverse()}
+                materialPurchaseData={materialPurchaseData}
                 setMaterialPurchaseData={setMaterialPurchaseData}
                 onRefreshOnChange={onRefreshOnChange}
                 refreshing={refreshing}

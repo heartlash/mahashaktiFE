@@ -112,8 +112,11 @@ const OperationalExpensesHistory = () => {
 
     return (
         <View>
-            <View className="mx-2 my-1">
+            <View className="flex-row items-center mx-2 my-1">
                 <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+                <View className="flex-1 items-center">
+                    <Text className="text-lg font-bold mr-2">Ops Expense History</Text>
+                </View>
             </View>
             <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
             <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
