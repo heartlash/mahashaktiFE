@@ -4,11 +4,11 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { Buffer } from 'buffer'; 
 
-export const getDocument = async (name, details, headers, data) => {
+export const getDocument = async (name, details, headers, data, summaryHeaders, summaryData) => {
     try {
         const response = await Backend.post(
             "/generate-document", 
-            { name, details, headers, data },
+            { name, details, headers, data, summaryHeaders, summaryData},
             { responseType: 'arraybuffer' }  
         );
 

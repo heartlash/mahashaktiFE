@@ -98,7 +98,7 @@ const MoneyScreen = () => {
                     ? 'Profit' : 'Loss'} : ₹{Math.abs(parseInt(profitData.profit))}</Text>
             </View>
 
-            <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />
+            <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} download={false}/>
 
             <Animated.View
                 entering={FadeInDown.duration(1000).springify()}

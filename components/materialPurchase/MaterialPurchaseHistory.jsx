@@ -58,10 +58,12 @@ const MaterialPurchaseHistory = () => {
             data.push([formatDateToDDMMYYYY(purchaseData.purchaseDate), purchaseData.materialName,
             purchaseData.quantity + ' ' + purchaseData.unitSymbol, purchaseData.rate, purchaseData.amount])
 
-        await getDocument(purchaseData.materialName + " Purchase Report",
+        await getDocument("Material Purchase Report",
             monthNames[selectedMonth - 1] + " " + selectedYear,
             ["Date", "Material", "Quantity", "Rate", "Amount"],
-            data);
+            data.reverse(),
+            [],
+            []);
     };
 
     const fetchMaterialPurchase = async () => {
@@ -114,7 +116,7 @@ const MaterialPurchaseHistory = () => {
     return (
         <View>
             <View className="flex-row items-center mx-2 my-1">
-                <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()}/>
+                <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
                 <View className="flex-1 items-center">
                     <Text className="text-lg font-bold mr-2">Purchase History</Text>
                 </View>

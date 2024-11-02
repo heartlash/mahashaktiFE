@@ -70,8 +70,8 @@ const SaleScreen = () => {
 
     const filterData = () => {
         let paidBoolean = null;
-        if(paidFilter == 'Yes') paidBoolean = true;
-        if(paidFilter == 'No') paidBoolean = false;
+        if (paidFilter == 'Yes') paidBoolean = true;
+        if (paidFilter == 'No') paidBoolean = false;
         var filteredList = []
 
         for (var data of storedSaleData) {
@@ -124,13 +124,25 @@ const SaleScreen = () => {
 
     const handleDownload = async () => {
         var data = []
-        for (var sale of saleData)
-            data.push([formatDateToDDMMYYYY(sale.saleDate), sale.soldCount, (sale.soldCount/210).toFixed(2), sale.rate, sale.amount, sale.paidAmount, sale.vendorName])
+        var totalEggsSold = 0;
+        var totalAmount = 0;
+        var totalPaidAmount = 0;
+        var vendorName = vendorFilter != null ? saleData[0].vendorName : ''
+
+        for (var sale of saleData) {
+            totalEggsSold += sale.soldCount
+            totalAmount += sale.amount
+            totalPaidAmount += sale.paidAmount
+            data.push([formatDateToDDMMYYYY(sale.saleDate), sale.soldCount, (sale.soldCount / 210).toFixed(2), sale.rate, + sale.amount, sale.paidAmount, sale.vendorName])
+        }
 
         await getDocument("Sales Report",
-            monthNames[selectedMonth - 1] + " " + selectedYear,
+            monthNames[selectedMonth - 1] + " " + selectedYear + " " + vendorName,
             ["Date", "Eggs Sold", "Cartons Sold", "Carton Rate", "Amount", "Paid Amount", "Vendor"],
-            data);
+            data.reverse(),
+            ["Total Eggs Sold", "Total Cartons", "Average Rate", "Total Amount", "Paid", "Credit"],
+            [totalEggsSold, (totalEggsSold / 210).toFixed(2), averageRatePerCarton, totalAmount, totalPaidAmount, totalAmount - totalPaidAmount]
+        )
     };
 
     const fetchSaleDataDateRange = async () => {

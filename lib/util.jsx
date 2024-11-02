@@ -64,10 +64,9 @@ const getDaySuffix = (day) => {
 
 
 export const getMonthStartAndEndDate = (month, year) => {
-  // Ensure month is zero-indexed for JavaScript Date object
-  const startDate = new Date(year, month - 1, 1);
-  // Calculate the end date by setting the date to the first day of the next month and subtracting one day
-  const endDate = new Date(year, month, 0);
+  const startDate = new Date(Date.UTC(year, month - 1, 1)); 
+  // End date is the first day of the next month (December 1 for November input)
+  const endDate = new Date(Date.UTC(year, month, 0));
 
 
   return {

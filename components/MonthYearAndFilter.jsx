@@ -15,7 +15,8 @@ const MonthYearAndFilter = ({
     showVendorAndPaid,
     vendorData,
     setVendorFilter,
-    setPaidFilter
+    setPaidFilter,
+    download=true
 }) => {
     const monthOptions = [
         { label: "January", value: 1 },
@@ -97,7 +98,7 @@ const MonthYearAndFilter = ({
             {/* Buttons */}
             <View className="flex-row space-x-4 justify-evenly">
                 <FontsAwesome name="search" size={30} color="green" onPress={handleShowPress} />
-                <Feather name="download" size={30} color="green" onPress={handleDownload}/>
+                {download && (<Feather name="download" size={30} color="green" onPress={handleDownload}/>)}
             </View>
         </View>
     );

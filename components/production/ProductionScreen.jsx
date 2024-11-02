@@ -58,16 +58,25 @@ const ProductionScreen = () => {
   }
 
   const handleDownload = async () => {
-    var data  = []
-    for(var production of productionData)
-        data.push([formatDateToDDMMYYYY(production.productionDate), production.producedCount, production.productionPercentage, production.saleableCount, production.brokenCount, production.brokenReason,
-          production.giftCount,production.selfUseCount])
+    var data = []
+    var totalProduction = 0;
+    var totalBroken = 0;
     
-    await getDocument("Production Report", 
-        monthNames[selectedMonth - 1] + " " + selectedYear,
-        ["Date", "Produced", "Percentage", "Saleable", "Broken", "Reason", "Gift", "Self Use"], 
-        data);
-};
+    for (var production of productionData) {
+      totalProduction += production.producedCount
+      totalBroken += production.brokenCount
+      data.push([formatDateToDDMMYYYY(production.productionDate), production.producedCount, production.productionPercentage, production.saleableCount, production.brokenCount, production.brokenReason,
+      production.giftCount, production.selfUseCount])
+    }
+
+    await getDocument("Production Report",
+      monthNames[selectedMonth - 1] + " " + selectedYear,
+      ["Date", "Produced", "Percentage", "Saleable", "Broken", "Reason", "Gift", "Self Use"],
+      data.reverse(),
+      ["Total Production", "Total Carton", "Average Percentage", "Total Broken"],
+      [totalProduction, (totalProduction/210).toFixed(1), averageProductionPercentage, totalBroken]
+    );
+  };
 
   const fetchProductionDataDateRange = async () => {
     const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
@@ -188,7 +197,7 @@ const ProductionScreen = () => {
 
             </View>) : (<></>)}
 
-          <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload}/>
+          <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
 
           {createProduction ? (
             <CreateProduction

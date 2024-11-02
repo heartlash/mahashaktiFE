@@ -1,25 +1,23 @@
-import { StyleSheet, Text, View, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, Modal } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import { getOperationalExpenses, getOperationalExpenseItems } from '@/lib/operationalExpense';
 import OperationalExpenseHistoryList from './OperationalExpenseHistoryList';
 import MonthYearAndFilter from '../MonthYearAndFilter';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { formatDateToDDMMYYYY } from '@/lib/util';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import CustomModal from '../CustomModal';
+import { getDocument } from '@/lib/download';
+import { monthNames } from '@/lib/util';
 
 
 const OperationalExpensesHistory = () => {
 
     const navigation = useNavigation();
 
-    const [selectedDate, setSelectedDate] = useState(null);
-
     const [operationalExpensesData, setOperationalExpensesData] = useState([]);
     const [operationalExpenseItems, setOperationalExpenseItems] = useState([]);
-
-    const [createOperationalExpense, setCreateOperationalExpense] = useState(false)
 
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
@@ -50,6 +48,19 @@ const OperationalExpensesHistory = () => {
         setSelectedYear(year);
     }
 
+    const handleDownload = async () => {
+        var data = []
+        for (var operationalExpense of operationalExpensesData)
+            data.push([formatDateToDDMMYYYY(operationalExpense.expenseDate), operationalExpense.itemName,
+                operationalExpense.amount, operationalExpense.remarks])
+
+        await getDocument("Operational Expense Report",
+            monthNames[selectedMonth - 1] + " " + selectedYear,
+            ["Date", "Item", "Amount", "Remarks"],
+            data.reverse(),
+            [],
+            []);
+    };
 
     const fetchOperationalExpensesDateRange = async () => {
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
@@ -123,7 +134,7 @@ const OperationalExpensesHistory = () => {
             <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
             <OperationalExpenseHistoryList
                 listHeaderComponent={
-                    <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} />
+                    <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload}/>
                 }
                 operationalExpensesData={reversedData}
                 operationalExpenseItems={operationalExpenseItems}
