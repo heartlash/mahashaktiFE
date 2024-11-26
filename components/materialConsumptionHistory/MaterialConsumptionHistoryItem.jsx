@@ -130,11 +130,11 @@ const MaterialConsumptionHistoryItem = ({ item, isExpanded, onRefreshOnChange, o
                         {editItem === item ? (
                             <TextInput
                                 className="border border-gray-300 p-2 rounded-md text-gray-700 bg-gray-200"
-                                value={item.shed.name}
+                                value={item.shed ? item.shed.name : 'NA'}
                                 editable={false}
                             />
                         ) : (
-                            <Text className="text-gray-700 ml-2">{item.shed.name}</Text>
+                            <Text className="text-gray-700 ml-2">{item.shed ? item.shed.name : 'NA'}</Text>
                         )}
                     </View>
                     {isExpanded && (
