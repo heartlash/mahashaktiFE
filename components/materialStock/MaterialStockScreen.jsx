@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'expo-router';
 import { getMaterialStock } from '@/lib/materialStock';
 import MaterialStockList from './MaterialStockList';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
@@ -12,7 +13,7 @@ const MaterialStockScreen = () => {
     const [outOfStock, setOutOfStock] = useState(0)
     const [lowStock, setLowStock] = useState(0)
     const [notInUse, setNotInUse] = useState(0)
-
+    const router = useRouter();
 
 
     const [loading, setLoading] = useState(true)
@@ -40,14 +41,14 @@ const MaterialStockScreen = () => {
             var countOutOfStock = 0;
             var countLowStock = 0;
             for (var data of result.data) {
-                if(parseFloat(data.expectedDailyConsumption) == 0)
+                if (parseFloat(data.expectedDailyConsumption) == 0)
                     countNotInUse++;
                 else if (parseInt(data.wouldLastFor) == 0)
                     countOutOfStock++;
-                
+
                 else if (parseFloat(data.minQuantity) > parseFloat(data.quantity))
                     countLowStock++;
-            
+
             }
             setOutOfStock(countOutOfStock)
             setLowStock(countLowStock)
@@ -76,7 +77,7 @@ const MaterialStockScreen = () => {
             <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
             <MaterialStockList
                 listHeaderComponent=
-                {materialStockData.length > 0 ? (
+                {materialStockData.length > 0 ? (<>
                     <View style={styles.container}
                         className="p-10 justify-center items-center mb-4"
                     >
@@ -84,7 +85,16 @@ const MaterialStockScreen = () => {
                         <Text className="text-lg text-black mt-2">Not In Use: {notInUse}</Text>
                         <Text className="text-lg text-black mt-2">Out of Stock: {outOfStock}</Text>
                         <Text className="text-lg text-black mt-2">Low Stock: {lowStock}</Text>
-                    </View>) : (<></>)}
+                    </View>
+                    <View className="flex-1 justify-center items-center">
+                        <TouchableOpacity
+                            className="bg-yellow-200 p-2 rounded-md mb-4"
+                            onPress={() => router.push('/material/feedComposition')}
+                        >
+                            <Text className="text-black">Feed Composition</Text>
+                        </TouchableOpacity>
+                    </View></>
+                ) : (<></>)}
 
                 materialStockData={materialStockData.sort((a, b) => a.material.localeCompare(b.material))}
                 onRefreshOnChange={onRefreshOnChange}

@@ -7,7 +7,7 @@ import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const CreateProduction = ({ onClose, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const CreateProduction = ({ shedId, onClose, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [productionDate, setProductionDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -47,6 +47,7 @@ const CreateProduction = ({ onClose, onRefreshOnChange, setSuccessModalVisible, 
     var temp = newProduction
     temp.createdBy = userInfo.name
     temp.productionDate = productionDate
+    temp.shedId = shedId
     const result = await saveProductionData(temp);
     setSubmitModalVisible(false)
     if (result.errorMessage == null) {

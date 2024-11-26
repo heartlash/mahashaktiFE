@@ -84,7 +84,7 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
     return (
 
         <TouchableOpacity
-            className="bg-white p-4 mx-2 rounded-lg shadow-sm mb-4 border border-gray-200"
+            className="bg-white p-4 mx-2 rounded-lg shadow-sm mb-5 border border-gray-200"
             onPress={onPress}
         >
             <Animated.View
@@ -94,7 +94,7 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                     {new Date(item.date).toDateString()}
                 </Text>
                 {/* First Row */}
-                <View className="flex-row justify-between mb-2">
+                <View className="flex-row justify-between mb-3">
                     <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
                         <Text className="text-gray-700 font-semibold">Count Change: </Text>
                         {editItem === item ? (
@@ -128,7 +128,7 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                 </View>
 
                 {/* Second Row */}
-                <View className="flex-row justify-between mb-2">
+                <View className="flex-row justify-between mb-3">
                     <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>
                         <Text className="text-gray-700 font-semibold">Remarks: </Text>
                         {editItem === item ? (
@@ -161,7 +161,7 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                 {isExpanded && (
                     <View>
                         {/* Fourth Row */}
-                        <View className="flex-row justify-between mb-2">
+                        <View className="flex-row justify-between mb-3">
 
 
                         <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row'}`}>

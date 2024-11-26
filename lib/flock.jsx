@@ -15,15 +15,37 @@ export const getFlockCount = async () => {
     }
 }
 
-export const getFlockChange = async (startDate, endDate) => {
+export const getFlockShedCount = async (shedId) => {
+
+    try {
+        const response = await Backend.get(`/flock/shed/${shedId}/count`);
+        console.log("see response: ", response)
+        return { data: response.data.data.count, errorMessage: null }
+    } catch (error) {
+        console.log(error);
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
+    }
+}
+
+export const getFlockChange = async (startDate, endDate, shedId) => {
     try {
         const response = await Backend.get("flock", {
             params: {
                 startDate: startDate,
-                endDate: endDate
+                endDate: endDate,
+                shedId: shedId
             }
         });
-        return { data: response.data.data, errorMessage: null }
+        var flockChangeList = []
+        for (var flockChange of response.data.data) {
+            flockChange.shedId = flockChange.shed.id
+            flockChange.shed = null
+            flockChangeList.push(flockChange);
+        }
+        return { data: flockChangeList, errorMessage: null }
 
     } catch (error) {
         console.log(error);

@@ -10,7 +10,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
-const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const CreateFlockChange = ({ shedId, onClose, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [changeDate, setChangeDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -48,6 +48,7 @@ const CreateFlockChange = ({ onClose, onRefreshOnChange, setSuccessModalVisible,
         var temp = newFlockChange
         temp.createdBy = userInfo.name
         temp.date = changeDate
+        temp.shedId = shedId
 
         const result = await saveFlockChange(temp);
         setSubmitModalVisible(false)

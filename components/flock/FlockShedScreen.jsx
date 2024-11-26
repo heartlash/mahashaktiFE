@@ -1,24 +1,30 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState, useCallback } from 'react'
+import { useGlobalSearchParams } from 'expo-router';
 import MonthYearAndFilter from '../MonthYearAndFilter';
-import { getFlockCount, getFlockChange } from '@/lib/flock';
-import { getSheds } from '@/lib/shed';
+import { getFlockShedCount, getFlockChange } from '@/lib/flock';
+import CreateFlockChange from './CreateFlockChange';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import CustomModal from '../CustomModal';
+import FlockList from './FlockList';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
-import ShedList from '../shed/ShedList';
 
 
-const FlockScreen = () => {
+
+const FlockShedScreen = () => {
 
     const navigation = useNavigation()
-    const [flockCount, setFlockCount] = useState(0)
-    const [shedData, setShedData] = useState([])
+    const { shedId, shedName } = useGlobalSearchParams()
 
+    const [flockCount, setFlockCount] = useState(0)
+    const [flockChangeData, setFlockChangeData] = useState([])
     const [totalMortality, setTotalMortality] = useState(0)
     const [averageDailyMortality, setAverageDailyMortality] = useState(0)
+
+    const [createNewFlockChange, setCreateNewFlockChange] = useState(false)
 
     const [loading, setLoading] = useState(true)
     const [refresh, setRefresh] = useState(false)
@@ -55,7 +61,7 @@ const FlockScreen = () => {
 
     const fetchFlockData = async () => {
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
-        const result = await getFlockCount();
+        const result = await getFlockShedCount(shedId);
         if (result.errorMessage == null) {
             setFlockCount(result.data);
             setLoading(false);
@@ -63,7 +69,7 @@ const FlockScreen = () => {
             setLoading(true);
         }
 
-        const resultFlockChange = await getFlockChange(startDate, endDate);
+        const resultFlockChange = await getFlockChange(startDate, endDate, shedId);
 
         if (resultFlockChange.errorMessage == null) {
 
@@ -74,15 +80,8 @@ const FlockScreen = () => {
             }
             setTotalMortality(totalMortalityCount);
             setAverageDailyMortality(resultFlockChange.data.length != 0 ? parseFloat(totalMortalityCount / resultFlockChange.data.length).toFixed(2) : 0)
-            setLoading(false);
-        } else {
-            setLoading(true);
-        }
 
-        const shedResult = await getSheds();
-
-        if (shedResult.errorMessage == null) {
-            setShedData(shedResult.data)
+            setFlockChangeData(resultFlockChange.data);
             setLoading(false);
         } else {
             setLoading(true);
@@ -113,15 +112,19 @@ const FlockScreen = () => {
             <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
             <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
             <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
-            <ShedList
+
+
+            <FlockList
                 listHeaderComponent={<>
-                    <View className="mx-2 my-1">
+                    <View className="flex-row items-center mx-2 my-1">
                         <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+                        <View className="flex-1 items-center">
+                            <Text className="text-lg font-bold mr-2">{shedName}</Text>
+                        </View>
                     </View>
                     <View style={styles.container}>
                         <View className="p-7 justify-center items-center">
-
-                            <Text className="text-xl font-bold text-black">Total Flock: {flockCount} </Text>
+                            <Text className="text-xl font-bold text-black">Total Flock: {flockCount}</Text>
                         </View>
                         <View className="flex flex-row">
                             <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Total Mortality</Text>
@@ -132,11 +135,25 @@ const FlockScreen = () => {
                             <Text className="text-right text-gray-700 font-semibold  mb-2">{averageDailyMortality}</Text>
                         </View>
                     </View>
-                    <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} download={false} />
+                    <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
+
+                    {createNewFlockChange ? (
+                        <CreateFlockChange
+                            shedId={shedId}
+                            onClose={() => setCreateNewFlockChange(false)}
+                            onRefreshOnChange={onRefreshOnChange}
+                            setSuccessModalVisible={setSuccessModalVisible}
+                            setFailureModalVisible={setFailureModalVisible}
+                            setSubmitModalVisible={setSubmitModalVisible}
+
+                        />
+                    ) : (<View className="mb-3">
+                        <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateNewFlockChange(true)} />
+                    </View>
+                    )}
                 </>
                 }
-                isFlock={true}
-                data={shedData}
+                data={flockChangeData.sort((a, b) => b.date.localeCompare(a.date))}
                 onRefreshOnChange={onRefreshOnChange}
                 refreshing={refreshing}
                 onRefresh={onRefresh}
@@ -151,7 +168,7 @@ const FlockScreen = () => {
 
 
 
-export default FlockScreen
+export default FlockShedScreen
 
 const styles = StyleSheet.create({
     container: {

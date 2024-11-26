@@ -128,22 +128,26 @@ const OperationalExpenseHistoryItem = ({ item, isExpanded, operationalExpenseIte
                     </View>
                 </View>
 
+                <View className="flex-row justify-between mb-3">
+                    <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                        <Text className="text-gray-700 font-semibold">Remarks:</Text>
+                        {editItem === item ? (
+                            <TextInput
+                                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 "
+                                value={(edited.remarks || '').toString()}
+                                onChangeText={(text) => handleEditChange('remarks', text)}
+                            />
+                        ) : (
+                            <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.remarks}</Text>
+                        )}
+                    </View>
+                </View>
+
                 {isExpanded && (
                     <View>
                         <View className="flex-row justify-between mb-3">
+
                             <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
-                                <Text className="text-gray-700 font-semibold">Remarks: </Text>
-                                {editItem === item ? (
-                                    <TextInput
-                                        className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 "
-                                        value={(edited.remarks || '').toString()}
-                                        onChangeText={(text) => handleEditChange('remarks', text)}
-                                    />
-                                ) : (
-                                    <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.remarks}</Text>
-                                )}
-                            </View>
-                            <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
                                 <Text className="text-gray-700 font-semibold">Created By:</Text>
                                 {editItem === item ? (
                                     <TextInput
@@ -156,10 +160,8 @@ const OperationalExpenseHistoryItem = ({ item, isExpanded, operationalExpenseIte
 
                                 )}
                             </View>
-                        </View>
-                        
-                        <View className="flex-row justify-between mb-3">
-                            <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+
+                            <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
                                 <Text className="text-gray-700 font-semibold">Updated By:</Text>
                                 {editItem === item ? (
                                     <TextInput
@@ -173,8 +175,6 @@ const OperationalExpenseHistoryItem = ({ item, isExpanded, operationalExpenseIte
                                 )}
                             </View>
                         </View>
-
-
 
                         <View className="flex-row justify-between">
                             {editItem === item ? (
@@ -191,9 +191,10 @@ const OperationalExpenseHistoryItem = ({ item, isExpanded, operationalExpenseIte
                                     </TouchableOpacity>
                                 </View>
                             )}
-                        </View></View>)}
+                        </View>
+                    </View>)}
             </Animated.View>
-        </TouchableOpacity>
+        </TouchableOpacity >
 
     );
 };

@@ -122,63 +122,77 @@ const MaterialConsumptionHistoryItem = ({ item, isExpanded, onRefreshOnChange, o
                 </View>
 
 
-                {isExpanded && (
-                    <View>
-                        {/* Second Row */}
-                        <View className="flex-row justify-between mb-2">
 
-                            <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-                                <Text className="text-gray-700 font-semibold">Created By:</Text>
-                                {editItem === item ? (
-                                    <TextInput
-                                        className="border border-gray-300 px-3 py-2 rounded-md text-gray-700 bg-gray-200"
-                                        value={item.createdBy}
-                                        editable={false}
-                                    />
-                                ) : (
-                                    <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
-
-                                )}
-                            </View>
-                            <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-                                <Text className="text-gray-700 font-semibold">Updated By:</Text>
-                                {editItem === item ? (
-                                    <TextInput
-                                        className="border border-gray-300 px-3 py-2 rounded-md text-gray-700 bg-gray-200"
-                                        value={item.updatedBy
-                                        }
-                                        editable={false}
-                                    />
-                                ) : (
-                                    <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.updatedBy}</Text>
-
-                                )}
-                            </View>
-                        </View>
-
-
-                        {/* Edit and Delete Buttons */}
-                        <View className="flex-row justify-between">
+                {/* Second Row */}
+                <View className="flex-row justify-between mb-3">
+                    <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                        <Text className="text-gray-700 font-semibold">Shed:</Text>
+                        {editItem === item ? (
+                            <TextInput
+                                className="border border-gray-300 p-2 rounded-md text-gray-700 bg-gray-200"
+                                value={item.shed.name}
+                                editable={false}
+                            />
+                        ) : (
+                            <Text className="text-gray-700 ml-2">{item.shed.name}</Text>
+                        )}
+                    </View>
+                    {isExpanded && (
+                        <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                            <Text className="text-gray-700 font-semibold">Created By:</Text>
                             {editItem === item ? (
-                                <View className="flex-1 flex-row justify-between">
-                                    <MaterialIcons name="cancel" size={30} color="black" onPress={() => setEditItem(null)} />
-                                    <Entypo name="save" size={30} color="black" onPress={handleSavePress} />
-
-                                </View>
+                                <TextInput
+                                    className="border border-gray-300 p-2 rounded-md text-gray-700 bg-gray-200"
+                                    value={item.createdBy}
+                                    editable={false}
+                                />
                             ) : (
-                                <View className="flex-1 flex-row justify-between">
-                                    <TrashIcon size={24} color="black" onPress={handleDeletePress} />
-                                    <TouchableOpacity onPress={() => handleEditPress(item)}>
-                                        <PencilSquareIcon size={28} color="black" />
-                                    </TouchableOpacity>
-                                </View>
+                                <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
                             )}
+                        </View>
+                    )}
+                </View>
 
+                {isExpanded && (<>
+                    <View className="flex-row justify-between mb-5">
+
+                        <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                            <Text className="text-gray-700 font-semibold">Updated By:</Text>
+                            {editItem === item ? (
+                                <TextInput
+                                    className="border border-gray-300 px-3 py-2 rounded-md text-gray-700 bg-gray-200"
+                                    value={item.updatedBy}
+                                    editable={false}
+                                />
+                            ) : (
+                                <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.updatedBy}</Text>
+
+                            )}
                         </View>
                     </View>
-                )}
+
+
+                    {/* Edit and Delete Buttons */}
+                    <View className="flex-row justify-between">
+                        {editItem === item ? (
+                            <View className="flex-1 flex-row justify-between">
+                                <MaterialIcons name="cancel" size={30} color="black" onPress={() => setEditItem(null)} />
+                                <Entypo name="save" size={30} color="black" onPress={handleSavePress} />
+
+                            </View>
+                        ) : (
+                            <View className="flex-1 flex-row justify-between">
+                                <TrashIcon size={24} color="black" onPress={handleDeletePress} />
+                                <TouchableOpacity onPress={() => handleEditPress(item)}>
+                                    <PencilSquareIcon size={28} color="black" />
+                                </TouchableOpacity>
+                            </View>
+                        )}
+
+                    </View>
+                </>)}
             </Animated.View>
-        </TouchableOpacity>
+        </TouchableOpacity >
 
     );
 };

@@ -5,21 +5,27 @@ export default function MaterialLayout() {
 
   return (
     <Stack>
-      <Stack.Screen 
+      <Stack.Screen
         name="index"
         options={{
-            title: "",
-            headerShown: false, // Hides the header
-          }}
+          title: "",
+          headerShown: false, // Hides the header
+        }}
       />
-      <Stack.Screen 
+      <Stack.Screen
         name="materialRestockHistory"
         options={{
           headerShown: false, // Hides the header
         }}
       />
-      <Stack.Screen 
+      <Stack.Screen
         name="materialConsumptionHistory"
+        options={{
+          headerShown: false, // Hides the header
+        }}
+      />
+      <Stack.Screen
+        name="feedComposition"
         options={{
           headerShown: false, // Hides the header
         }}

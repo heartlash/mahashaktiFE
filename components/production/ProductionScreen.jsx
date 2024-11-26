@@ -1,34 +1,28 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
-import { SystemBars } from 'react-native-bars';
-import LineChart from '../chart/LineChart';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import AnimatedText from '../chart/AnimatedText';
-import { useSharedValue } from 'react-native-reanimated';
-import { useFont } from '@shopify/react-native-skia';
+import { getSheds } from '@/lib/shed';
 import { getMonthStartAndEndDate, monthNames, formatDateToDDMMYYYY } from '@/lib/util';
 import { getDocument } from '@/lib/download';
+import { useNavigation } from '@react-navigation/native';
 import { getProductionDataDateRange } from '@/lib/production';
-import ProductionList from './ProductionList';
-import CreateProduction from './CreateProduction';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MonthYearAndFilter from '../MonthYearAndFilter';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 import CustomModal from '../CustomModal';
+import ShedList from '../shed/ShedList';
 
 
 const ProductionScreen = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const selectedValue = useSharedValue(0);
-  const font = useFont(require('../../assets/fonts/Roboto-Regular.ttf'), 50);
 
-  const [productionData, setProductionData] = useState([]);
+  const navigation = useNavigation()
+
+  const [shedData, setShedData] = useState([])
+
+  const [totalProduction, setTotalProduction] = useState(0);
   const [averageDailyProduction, setAverageDailyProduction] = useState(0);
-
   const [averageProductionPercentage, setAverageProductionPercentage] = useState(0);
   const [averageBrokenCount, setAverageBrokenCount] = useState(0);
-
-  const [createProduction, setCreateProduction] = useState(false)
 
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
@@ -49,33 +43,16 @@ const ProductionScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchProductionDataDateRange().then(() => setRefreshing(false));
+    Promise.all([fetchProductionDataDateRange(), fetchSheds()])
+      .then(() => setRefreshing(false))
+      .catch(() => setRefreshing(false));
   }, []);
-
   const handleShowPress = () => {
     setSelectedMonth(month);
     setSelectedYear(year);
   }
 
   const handleDownload = async () => {
-    var data = []
-    var totalProduction = 0;
-    var totalBroken = 0;
-    
-    for (var production of productionData) {
-      totalProduction += production.producedCount
-      totalBroken += production.brokenCount
-      data.push([formatDateToDDMMYYYY(production.productionDate), production.producedCount, production.productionPercentage, production.saleableCount, production.brokenCount, production.brokenReason,
-      production.giftCount, production.selfUseCount])
-    }
-
-    await getDocument("Production Report",
-      monthNames[selectedMonth - 1] + " " + selectedYear,
-      ["Date", "Produced", "Percentage", "Saleable", "Broken", "Reason", "Gift", "Self Use"],
-      data.reverse(),
-      ["Total Production", "Total Carton", "Average Percentage", "Total Broken"],
-      [totalProduction, (totalProduction/210).toFixed(1), averageProductionPercentage, totalBroken]
-    );
   };
 
   const fetchProductionDataDateRange = async () => {
@@ -87,14 +64,13 @@ const ProductionScreen = () => {
       var sumOfProduction = 0
       var sumOfBrokenCount = 0
 
-
-      setProductionData(result.data)
       for (var data of result.data) {
         count++
         sumOfPercentages += parseFloat(data.productionPercentage)
         sumOfProduction += data.producedCount
         sumOfBrokenCount += data.brokenCount
       }
+      setTotalProduction(sumOfProduction)
       setAverageProductionPercentage(parseFloat(sumOfPercentages / count).toFixed(2))
       setAverageDailyProduction(parseFloat(sumOfProduction / count).toFixed(2))
       setAverageBrokenCount(parseFloat(sumOfBrokenCount / count).toFixed(2))
@@ -105,23 +81,22 @@ const ProductionScreen = () => {
       setLoading(true);
     }
   }
+  const fetchSheds = async () => {
 
-  const [currentView, setCurrentView] = useState(0);
+    const shedResult = await getSheds();
 
-  const views = [
-    {
-      title: 'Average Percentage',
-      value: averageProductionPercentage,
-    },
-    {
-      title: 'Average Production',
-      value: averageDailyProduction,
-    },
-    {
-      title: 'Average Broken Count',
-      value: averageBrokenCount,
-    },
-  ];
+    if (shedResult.errorMessage == null) {
+      var shedList = []
+      for (var shed of shedResult.data) {
+        if (shed.active == true && shed.baby == false)
+          shedList.push(shed)
+      }
+      setShedData(shedList)
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }
 
   useEffect(() => {
 
@@ -131,87 +106,54 @@ const ProductionScreen = () => {
     setSelectedYear(new Date().getFullYear()); // Reset to the current year
 
     fetchProductionDataDateRange();
-    setChartRefresh(!chartRefresh);
-
-    const interval = setInterval(() => {
-      setCurrentView((prevView) => (prevView + 1) % views.length);
-    }, 2000);
-
-    return () => clearInterval(interval);
+    fetchSheds();
 
   }, [])
 
   useEffect(() => {
     fetchProductionDataDateRange();
+    fetchSheds();
     setChartRefresh(!chartRefresh);
-
-    const interval = setInterval(() => {
-      setCurrentView((prevView) => (prevView + 1) % views.length);
-    }, 2000);
-
-    return () => clearInterval(interval);
   }, [selectedMonth, selectedYear, refresh])
 
-
-  const reversedData = [...productionData].reverse();
 
   if (loading) {
     return <AnimatedActivityIndicator />
   }
 
   return (
-    <GestureHandlerRootView>
+    <>
       <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
       <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
       <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
 
-      <ProductionList
-        listHeaderComponent={<View>
-          {productionData.length > 0 ? (
-            <View style={styles.container}>
-              <SystemBars animated={true} barStyle={'light-content'} />
-              {selectedDate ? (<Text style={styles.text}>{selectedDate}</Text>) : <Text style={styles.text}>{selectedDate} Production</Text>}
-
-              <AnimatedText selectedValue={selectedValue} font={font} />
-              <LineChart
-                data={productionData}
-                setSelectedDate={setSelectedDate}
-                selectedValue={selectedValue}
-                type="Production"
-                chartRefresh={chartRefresh}
-              />
-
-              {views.map((view, index) => (
-                <View
-                  className="flex flex-row"
-                  key={index}
-                  style={[
-                    styles.view,
-                    { opacity: currentView === index ? 1 : 0 },
-                  ]}
-                >
-                  <Text className="text-left text-gray-700 font-semibold mx-5 mb-3">{view.title}</Text>
-                  <Text className="text-right text-gray-700 font-semibold mb-3">{view.value}</Text>
-                </View>
-              ))}
-
-            </View>) : (<></>)}
-
-          <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
-
-          {createProduction ? (
-            <CreateProduction
-              onClose={() => setCreateProduction(false)}
-              onRefreshOnChange={onRefreshOnChange}
-              setSuccessModalVisible={setSuccessModalVisible}
-              setFailureModalVisible={setFailureModalVisible}
-              setSubmitModalVisible={setSubmitModalVisible} />
-          ) : (<View className="mb-3">
-            <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateProduction(true)} />
+      <ShedList
+        listHeaderComponent={<>
+          <View className="mx-2 my-1">
+            <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
           </View>
-          )}
-        </View>}
-        productionData={reversedData}
+          <View style={styles.container}>
+            <View className="p-7 justify-center items-center">
+              <Text className="text-xl font-bold text-black">Total Production: {totalProduction} </Text>
+            </View>
+            <View className="flex flex-row">
+              <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Production</Text>
+              <Text className="text-right text-gray-700 font-semibold  mb-2">{averageDailyProduction}</Text>
+            </View>
+            <View className="flex flex-row">
+              <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Production Percentage</Text>
+              <Text className="text-right text-gray-700 font-semibold  mb-2">{averageProductionPercentage}</Text>
+            </View>
+            <View className="flex flex-row">
+              <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Broken</Text>
+              <Text className="text-right text-gray-700 font-semibold  mb-2">{averageBrokenCount}</Text>
+            </View>
+          </View>
+          <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} download={false} />
+        </>
+        }
+        isProduction={true}
+        data={shedData}
         onRefreshOnChange={onRefreshOnChange}
         refreshing={refreshing}
         onRefresh={onRefresh}
@@ -219,7 +161,7 @@ const ProductionScreen = () => {
         setFailureModalVisible={setFailureModalVisible}
         setSubmitModalVisible={setSubmitModalVisible}
       />
-    </GestureHandlerRootView>
+    </>
   );
 };
 

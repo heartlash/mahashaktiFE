@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import CustomModal from '../CustomModal';
 import { getDocument } from '@/lib/download';
 import { monthNames } from '@/lib/util';
+import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 
 
 const OperationalExpensesHistory = () => {
@@ -112,15 +113,9 @@ const OperationalExpensesHistory = () => {
 
     const reversedData = [...operationalExpensesData].reverse();
 
-    if (loading) {
-        return <Modal transparent={true}>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Loading...</Text>
-            </View>
-        </Modal>
-    }
-
+    if (loading) 
+        return <AnimatedActivityIndicator/>
+    
     return (
         <View>
             <View className="flex-row items-center mx-2 my-1">

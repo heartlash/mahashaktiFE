@@ -6,7 +6,7 @@ import { getMonthStartAndEndDate } from '@/lib/util';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
-import Animated, {FadeInDown} from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 
 
@@ -98,62 +98,74 @@ const MoneyScreen = () => {
                     ? 'Profit' : 'Loss'} : ₹{Math.abs(parseInt(profitData.profit))}</Text>
             </View>
 
-            <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} download={false}/>
+            <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} download={false} />
+
 
             <Animated.View
                 entering={FadeInDown.duration(1000).springify()}
             >
-            <TouchableOpacity
-                onPress={() => router.push({
-                    pathname: '/money/materialExpenses',
-                    params: {
-                        month: selectedMonth,
-                        year: selectedYear
-                    }
-                })}
-                style={styles.container}
-                className="p-3 rounded-3xl mx-10 my-3"
+                <TouchableOpacity
+                    onPress={() => router.push('/money/priceRecommendation')}
+                    style={styles.container}
+                    className="p-3 rounded-3xl mx-10 my-3"
+                >
+                    <Text className="text-black text-center font-semibold p-3">Price Recommendation</Text>
+                </TouchableOpacity>
+            </Animated.View>
+            <Animated.View
+                entering={FadeInDown.duration(1000).springify()}
             >
-                <Text className="text-black text-center font-semibold p-3">Material Expenses ₹{profitData.materialPurchaseExpenses}</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => router.push({
+                        pathname: '/money/materialExpenses',
+                        params: {
+                            month: selectedMonth,
+                            year: selectedYear
+                        }
+                    })}
+                    style={styles.container}
+                    className="p-3 rounded-3xl mx-10 my-3"
+                >
+                    <Text className="text-black text-center font-semibold p-3">Material Expenses ₹{profitData.materialPurchaseExpenses}</Text>
+                </TouchableOpacity>
             </Animated.View>
 
 
             <Animated.View
                 entering={FadeInDown.delay(200).duration(1000).springify()}
             >
-            <TouchableOpacity
-                onPress={() => router.push({
-                    pathname: '/money/operationalExpenses',
-                    params: {
-                        month: selectedMonth,
-                        year: selectedYear
-                    }
-                })}
-                style={styles.container}
-                className="p-3 rounded-3xl mx-10 my-3"
-            >
-                <Text className="text-black text-center font-semibold p-3">Operational Expenses ₹{profitData.operationalExpenses}</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => router.push({
+                        pathname: '/money/operationalExpenses',
+                        params: {
+                            month: selectedMonth,
+                            year: selectedYear
+                        }
+                    })}
+                    style={styles.container}
+                    className="p-3 rounded-3xl mx-10 my-3"
+                >
+                    <Text className="text-black text-center font-semibold p-3">Operational Expenses ₹{profitData.operationalExpenses}</Text>
+                </TouchableOpacity>
             </Animated.View>
 
 
             <Animated.View
                 entering={FadeInDown.delay(400).duration(1000).springify()}
             >
-            <TouchableOpacity
-                onPress={() => router.push({
-                    pathname: '/money/vendorCredit',
-                    params: {
-                        month: selectedMonth,
-                        year: selectedYear
-                    }
-                })}
-                style={styles.container}
-                className="p-3 rounded-3xl  mx-10 my-3"
-            >
-                <Text className="text-black text-center font-semibold p-3">All Time Credits</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => router.push({
+                        pathname: '/money/vendorCredit',
+                        params: {
+                            month: selectedMonth,
+                            year: selectedYear
+                        }
+                    })}
+                    style={styles.container}
+                    className="p-3 rounded-3xl  mx-10 my-3"
+                >
+                    <Text className="text-black text-center font-semibold p-3">All Time Credits</Text>
+                </TouchableOpacity>
             </Animated.View>
 
         </ScrollView>

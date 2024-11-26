@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 import { Stack } from "expo-router";
 
+export default function ProductionLayout() {
 
-const HomeLayout = () => {
   return (
     <Stack>
       <Stack.Screen
@@ -13,20 +13,11 @@ const HomeLayout = () => {
         }}
       />
       <Stack.Screen
-        name="flock"
-        options={{
-          headerShown: false, // Hides the header
-        }}
-      />
-      <Stack.Screen
-        name="flockShedScreen"
+        name="productionShedScreen"
         options={{
           headerShown: false, // Hides the header
         }}
       />
     </Stack>
-
-  )
+  );
 }
-
-export default HomeLayout
