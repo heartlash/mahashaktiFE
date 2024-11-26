@@ -6,7 +6,6 @@ export const getProductionHomeData = async () => {
     try {
         const response = await Backend.get("/production/latest");
 
-        console.log("see response.data: ", response.data.data)
         var totalProductionCount = 0;
         var totalProductionPercentage = 0;
 

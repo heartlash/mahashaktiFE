@@ -19,7 +19,6 @@ export const getFlockShedCount = async (shedId) => {
 
     try {
         const response = await Backend.get(`/flock/shed/${shedId}/count`);
-        console.log("see response: ", response)
         return { data: response.data.data.count, errorMessage: null }
     } catch (error) {
         console.log(error);
