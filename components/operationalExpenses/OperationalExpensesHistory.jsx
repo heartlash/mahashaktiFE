@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ActivityIndicator, Modal } from 'react-native';
+import { Text, View } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import { getOperationalExpenses, getOperationalExpenseItems } from '@/lib/operationalExpense';
@@ -11,11 +11,14 @@ import CustomModal from '../CustomModal';
 import { getDocument } from '@/lib/download';
 import { monthNames } from '@/lib/util';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
+import { useLocalSearchParams } from 'expo-router';
 
 
 const OperationalExpensesHistory = () => {
 
     const navigation = useNavigation();
+
+    const { id, name } = useLocalSearchParams();
 
     const [operationalExpensesData, setOperationalExpensesData] = useState([]);
     const [operationalExpenseItems, setOperationalExpenseItems] = useState([]);
@@ -55,7 +58,7 @@ const OperationalExpensesHistory = () => {
             data.push([formatDateToDDMMYYYY(operationalExpense.expenseDate), operationalExpense.itemName,
                 operationalExpense.amount, operationalExpense.remarks])
 
-        await getDocument("Operational Expense Report",
+        await getDocument((name ?? '') + " Operational Expense Report",
             monthNames[selectedMonth - 1] + " " + selectedYear,
             ["Date", "Item", "Amount", "Remarks"],
             data.reverse(),
@@ -65,14 +68,14 @@ const OperationalExpensesHistory = () => {
 
     const fetchOperationalExpensesDateRange = async () => {
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
-        const result = await getOperationalExpenses(startDate, endDate);
+        const result = await getOperationalExpenses(id, startDate, endDate);
         if (result.errorMessage == null) {
             setOperationalExpensesData(result.data)
             setLoading(false);
         }
-        else {
-            setLoading(true);
-        }
+
+        if (result.data == null)
+            setOperationalExpensesData([])
     }
 
 
@@ -146,18 +149,4 @@ const OperationalExpensesHistory = () => {
 };
 
 export default OperationalExpensesHistory;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#0d0d0d',
-    },
-    text: {
-        color: 'white',
-        fontSize: 24,
-        textAlign: 'center',
-        fontFamily: 'Roboto-Regular',
-    },
-});
-
 

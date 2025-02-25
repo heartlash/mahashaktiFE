@@ -1,10 +1,24 @@
 import { FlatList, RefreshControl } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductionItem from '@/components/production/ProductionItem';
+import { checkAllowedToExpand } from '@/lib/auth';
 
 const ProductionList = ({ productionData, listHeaderComponent, onRefreshOnChange, onRefresh, refreshing, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+    
     const [expandedItemId, setExpandedItemId] = useState(null);
     const [editItem, setEditItem] = useState(null);
+
+    const [allowedToExpand, setAllowedToExpand] = useState(false);
+
+    useEffect(() => {
+        const fetchAllowedToExpand = async () => {
+            const result = await checkAllowedToExpand();
+            setAllowedToExpand(result);
+        };
+
+        fetchAllowedToExpand();
+    }, []); // Empty array means it runs only on mount
+
 
     const handlePress = (itemId) => {
         setEditItem(editItem != null ? null : editItem)
@@ -14,7 +28,7 @@ const ProductionList = ({ productionData, listHeaderComponent, onRefreshOnChange
     const renderItem = ({ item }) => (
         <ProductionItem
             item={item}
-            isExpanded={expandedItemId === item.id}
+            isExpanded={expandedItemId === item.id && allowedToExpand}
             onPress={() => handlePress(item.id)}
             editItem={editItem}
             setEditItem={setEditItem}

@@ -18,6 +18,7 @@ import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 import CustomModal from '../CustomModal';
 import { useGlobalSearchParams } from 'expo-router';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { checkAllowedToCreate } from '@/lib/auth';
 
 
 const ProductionShedScreen = () => {
@@ -35,6 +36,7 @@ const ProductionShedScreen = () => {
     const [averageBrokenCount, setAverageBrokenCount] = useState(0);
 
     const [createProduction, setCreateProduction] = useState(false)
+    const [allowedToCreate, setAllowedToCreate] = useState(false)
 
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
@@ -67,20 +69,27 @@ const ProductionShedScreen = () => {
         var data = []
         var totalProduction = 0;
         var totalBroken = 0;
+        var totalGradeA = 0;
+        var totalGradeB = 0;
+        var totalWaste = 0;
 
         for (var production of productionData) {
             totalProduction += production.producedCount
             totalBroken += production.brokenCount
-            data.push([formatDateToDDMMYYYY(production.productionDate), production.producedCount, production.productionPercentage, production.saleableCount, production.brokenCount, production.brokenReason,
+            totalGradeA += production.saleableGradeACount
+            totalGradeB += production.saleableGradeBCount
+            totalWaste += production.wasteCount
+
+            data.push([formatDateToDDMMYYYY(production.productionDate), production.producedCount, production.productionPercentage, production.brokenCount, production.wasteCount, production.brokenReason,
             production.giftCount, production.selfUseCount])
         }
 
         await getDocument("Production Report",
             monthNames[selectedMonth - 1] + " " + selectedYear,
-            ["Date", "Produced", "Percentage", "Saleable", "Broken", "Reason", "Gift", "Self Use"],
+            ["Date", "Produced", "Percentage", "Broken", "Waste", "Reason", "Gift", "Self Use"],
             data.reverse(),
-            ["Total Production", "Total Carton", "Average Percentage", "Total Broken"],
-            [totalProduction, (totalProduction / 210).toFixed(1), averageProductionPercentage, totalBroken]
+            ["Total Production", "Average Percentage", "Total Grade A", "Total Broken", "Total Waste", "Total Grade B"],
+            [totalProduction, averageProductionPercentage, totalGradeA, totalBroken, totalWaste, totalGradeB]
         );
     };
 
@@ -112,6 +121,14 @@ const ProductionShedScreen = () => {
         }
     }
 
+    const fetchCheckAllowedToCreate = async () => {
+
+        const result = await checkAllowedToCreate();
+        if (result != null) setAllowedToCreate(result)
+
+    }
+
+
     const [currentView, setCurrentView] = useState(0);
 
     const views = [
@@ -136,6 +153,7 @@ const ProductionShedScreen = () => {
         setSelectedMonth(new Date().getMonth() + 1); // Reset to the current month
         setSelectedYear(new Date().getFullYear()); // Reset to the current year
 
+        fetchCheckAllowedToCreate();
         fetchProductionDataDateRange();
         setChartRefresh(!chartRefresh);
 
@@ -148,6 +166,7 @@ const ProductionShedScreen = () => {
     }, [])
 
     useEffect(() => {
+        fetchCheckAllowedToCreate();
         fetchProductionDataDateRange();
         setChartRefresh(!chartRefresh);
 
@@ -210,19 +229,30 @@ const ProductionShedScreen = () => {
                         </View>) : (<></>)}
 
                     <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
-
-                    {createProduction ? (
-                        <CreateProduction
-                            shedId={shedId}
-                            onClose={() => setCreateProduction(false)}
-                            onRefreshOnChange={onRefreshOnChange}
-                            setSuccessModalVisible={setSuccessModalVisible}
-                            setFailureModalVisible={setFailureModalVisible}
-                            setSubmitModalVisible={setSubmitModalVisible} />
-                    ) : (<View className="mb-3">
-                        <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateProduction(true)} />
-                    </View>
+                    {allowedToCreate && (
+                        createProduction ? (
+                            <CreateProduction
+                                shedId={shedId}
+                                onClose={() => setCreateProduction(false)}
+                                onRefreshOnChange={onRefreshOnChange}
+                                setSuccessModalVisible={setSuccessModalVisible}
+                                setFailureModalVisible={setFailureModalVisible}
+                                setSubmitModalVisible={setSubmitModalVisible}
+                            />
+                        ) : (
+                            <View className="mb-3">
+                                <Ionicons
+                                    name="add-circle"
+                                    className="mb-3"
+                                    size={45}
+                                    style={{ alignSelf: 'center' }}
+                                    color="black"
+                                    onPress={() => setCreateProduction(true)}
+                                />
+                            </View>
+                        )
                     )}
+
                 </View>}
                 productionData={productionData}
                 onRefreshOnChange={onRefreshOnChange}

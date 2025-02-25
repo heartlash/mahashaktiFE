@@ -1,16 +1,16 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import TabBarButton from './TabBarButton';
-import { getUserInfo } from '@/lib/auth';
+import { getUserRole } from '@/lib/auth';
 
 const TabBar = ({ state, descriptors, navigation }) => {
 
     const [role, setRole] = useState("VIEWER");
 
     const fetchUserRole = async () => {
-        const userInfo = await getUserInfo();
-        if (userInfo != null) {
-            setRole(userInfo.role);
+        const userRole = await getUserRole();
+        if (userRole != null) {
+            setRole(userRole);
         }
     };
 
@@ -56,6 +56,11 @@ const TabBar = ({ state, descriptors, navigation }) => {
 
                 // Hide "Money" tab for non-admin/non-owner roles
                 if ((role !== 'ADMIN' && role !== 'OWNER') && route.name === 'money') {
+                    return null;
+                }
+
+                 // Hide "Sales" tab for doctor roles
+                 if (role == 'DOCTOR' && route.name === 'sale') {
                     return null;
                 }
 

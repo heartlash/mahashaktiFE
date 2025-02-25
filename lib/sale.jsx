@@ -31,13 +31,14 @@ export const getSaleHomeData = async () => {
     }
 }
 
-export const getSaleDataDateRange = async (startDate, endDate) => {
+export const getSaleDataDateRange = async (startDate, endDate, eggTypeId) => {
     try {
         var saleDataList = []
         const response = await Backend.get('/sale', {
             params: {
                 startDate: startDate,
-                endDate: endDate
+                endDate: endDate,
+                eggTypeId: eggTypeId
             }
         });
 
@@ -45,6 +46,9 @@ export const getSaleDataDateRange = async (startDate, endDate) => {
             data.vendorId = data.vendor.id
             data.vendorName = data.vendor.name
             data.vendor = null
+            data.eggTypeId = data.eggType.id
+            data.eggTypeName = data.eggType.name
+            data.eggType = null
 
             saleDataList.push(data)
         }
@@ -98,7 +102,7 @@ export const deleteSaleData = async (saleDataId) => {
 export const saveSaleData = async (saleData) => {
     var response;
     try {
-        response = await Backend.post("/sale", [saleData]);
+        response = await Backend.post("/sale", saleData);
 
         return {
             data: response.data,
@@ -124,3 +128,18 @@ export const groupSalesByDate = (sales) => {
         return groups;
     }, {});
 };
+
+export const getCredits = async () => {
+
+    try {
+        const response = await Backend.get("/sale/credits");
+        return { data: response.data.data, errorMessage: null }
+
+    } catch (error) {
+        console.log(error);
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
+    }
+}

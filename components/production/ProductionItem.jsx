@@ -124,7 +124,7 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
         {/* Second Row */}
         <View className="flex-row justify-between mb-3">
           <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
-            <Text className="text-gray-700 font-semibold">Broken:</Text>
+            <Text className="text-gray-700 font-semibold">Total Broken:</Text>
             {editItem === item ? (
               <TextInput
                 className="border border-gray-300 p-2 rounded-md text-gray-700"
@@ -148,11 +148,24 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
               <Text className="text-gray-700 ml-2">{item.brokenReason}</Text>
             )}
           </View>
+
         </View>
 
-        {/* Third Row */}
         <View className="flex-row justify-between mb-3">
+
           <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Waste:</Text>
+            {editItem === item ? (
+              <TextInput
+                className="border border-gray-300 p-2 rounded-md text-gray-700"
+                value={edited.wasteCount.toString()}
+                onChangeText={(text) => handleEditChange('wasteCount', text)}
+              />
+            ) : (
+              <Text className="text-gray-700 ml-2">{item.wasteCount}</Text>
+            )}
+          </View>
+          <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
             <Text className="text-gray-700 font-semibold">Gift:</Text>
             {editItem === item ? (
               <TextInput
@@ -165,7 +178,13 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
               <Text className="text-gray-700 ml-2">{item.giftCount}</Text>
             )}
           </View>
-          <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+
+        </View>
+
+        {/* Third Row */}
+        <View className="flex-row justify-between mb-3">
+
+          <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
             <Text className="text-gray-700 font-semibold">Self Use:</Text>
             {editItem === item ? (
               <TextInput
@@ -178,12 +197,8 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
               <Text className="text-gray-700 ml-2">{item.selfUseCount}</Text>
             )}
           </View>
-        </View>
-
-        {/* Fourth Row */}
-        <View className="flex-row justify-between mb-3">
-          <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
-            <Text className="text-gray-700 font-semibold">Saleable Eggs:</Text>
+          <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Saleable Grade A:</Text>
             {editItem === item ? (
               <TextInput
                 className="border border-gray-300 p-2 rounded-md text-gray-700 bg-gray-200"
@@ -191,7 +206,26 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
                 editable={false}
               />
             ) : (
-              <Text className="text-gray-700 ml-2">{item.saleableCount}</Text>
+              <Text className="text-gray-700 ml-2">{item.saleableGradeACount}</Text>
+            )}
+          </View>
+
+        </View>
+
+
+
+        {/* Fourth Row */}
+        <View className="flex-row justify-between mb-3">
+          <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Saleable Grade B:</Text>
+            {editItem === item ? (
+              <TextInput
+                className="border border-gray-300 p-2 rounded-md text-gray-700 bg-gray-200"
+                value="To be calculated"
+                editable={false}
+              />
+            ) : (
+              <Text className="text-gray-700 ml-2">{item.saleableGradeBCount}</Text>
             )}
           </View>
           {isExpanded && (
@@ -204,7 +238,7 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
                   editable={false}
                 />
               ) : (
-                <Text  className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
+                <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
               )}
             </View>
           )}
@@ -232,7 +266,6 @@ const ProductionItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRe
                 <View className="flex-1 flex-row justify-between">
                   <MaterialIcons name="cancel" size={30} color="black" onPress={() => setEditItem(null)} />
                   <Entypo name="save" size={30} color="black" onPress={handleSavePress} />
-
                 </View>
               ) : (
                 <View className="flex-1 flex-row justify-between">

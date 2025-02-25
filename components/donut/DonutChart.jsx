@@ -17,7 +17,6 @@ const DonutChart = ({
     radius,
     font,
     smallFont,
-    type
 }) => {
 
     
@@ -33,7 +32,7 @@ const DonutChart = ({
     );
 
     const fontSize = font.measureText('₹00');
-    const smallFontSize = smallFont.measureText('Total '+ type);
+    const smallFontSize = smallFont.measureText('Total');
 
     const textX = useDerivedValue(() => {
         const _fontSize = font.measureText(targetText.value);
@@ -70,7 +69,7 @@ const DonutChart = ({
                 <Text
                     x={radius - smallFontSize.width / 2}
                     y={radius + smallFontSize.height / 2 - fontSize.height / 1.2}
-                    text={'Total '+ type}
+                    text={'Total'}
                     font={smallFont}
                     color="black"
                 />

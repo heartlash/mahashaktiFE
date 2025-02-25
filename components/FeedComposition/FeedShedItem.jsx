@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { updateFeedQuantity } from '@/lib/feed';
@@ -7,6 +7,7 @@ import { getUserInfo } from '@/lib/auth';
 import { PencilSquareIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { checkAllowedToCreate } from '@/lib/auth';
 
 const FeedShedItem = ({ item, isExpanded, onPress, isEditing, setEditItemId, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
@@ -39,6 +40,17 @@ const FeedShedItem = ({ item, isExpanded, onPress, isEditing, setEditItemId, onR
     }
   };
 
+  const [allowedToCreate, setAllowedToCreate] = useState(false);
+
+  useEffect(() => {
+    const fetchAllowedToCreate = async () => {
+      const result = await checkAllowedToCreate();
+      setAllowedToCreate(result);
+    };
+
+    fetchAllowedToCreate();
+  }, []); // Empty array means it runs only on mount
+
 
   const shedStatus = 'Active'
   const shedkStatusColor = 'bg-green-500'
@@ -52,7 +64,7 @@ const FeedShedItem = ({ item, isExpanded, onPress, isEditing, setEditItemId, onR
       <Animated.View
         entering={FadeInDown.duration(1000).springify()}
       >
-         <View className="flex-row justify-between mb-3">
+        <View className="flex-row justify-between mb-3">
           <Text className="text-xl font-semibold text-gray-800">{item.name}</Text>
           <View className="flex-row items-center ml-2">
             {item.baby === true && (
@@ -88,18 +100,19 @@ const FeedShedItem = ({ item, isExpanded, onPress, isEditing, setEditItemId, onR
         {isExpanded && (<>
           <View className="flex-row justify-end space-x-4 mt-2 mb-2">
 
-            {isEditing ? (
-              <View className="flex-1 flex-row justify-between">
-                <MaterialIcons name="cancel" size={26} color="black" onPress={() => setEditItemId(null)} />
-                <Entypo name="save" size={26} color="black" onPress={handleSavePress} />
-              </View>
-            ) : (
-              <View className="flex-1 flex-row justify-end">
-                <TouchableOpacity onPress={() => setEditItemId(item.id)}>
-                  <PencilSquareIcon size={26} color="black" />
-                </TouchableOpacity>
-              </View>
-            )}
+            {allowedToCreate && (
+              isEditing ? (
+                <View className="flex-1 flex-row justify-between">
+                  <MaterialIcons name="cancel" size={26} color="black" onPress={() => setEditItemId(null)} />
+                  <Entypo name="save" size={26} color="black" onPress={handleSavePress} />
+                </View>
+              ) : (
+                <View className="flex-1 flex-row justify-end">
+                  <TouchableOpacity onPress={() => setEditItemId(item.id)}>
+                    <PencilSquareIcon size={26} color="black" />
+                  </TouchableOpacity>
+                </View>
+              ))}
           </View>
           <View className="flex-1 flex-row justify-between mt-5 mb-5">
             <Text className="text-gray-700 font-semibold ml-2">Material</Text>

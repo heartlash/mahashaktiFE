@@ -11,7 +11,7 @@ import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
 
-const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const CreateOperationalExpense = ({ onClose, operationalExpenseItem, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [expenseDate, setExpenseDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -50,6 +50,7 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
         const userInfo = await getUserInfo();
         var temp = newOperationalExpense
         temp.createdBy = userInfo.name
+        temp.itemId = operationalExpenseItem.id
         temp.expenseDate = expenseDate
         const result = await saveOperationalExpense(temp);
         setSubmitModalVisible(false)
@@ -71,20 +72,10 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
         }
     }
 
-
     return (
         <View className="bg-white p-4 mx-2 rounded-lg shadow-lg mb-4 border border-gray-200">
             <View className="flex-row justify-between mb-2 ">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-700 font-semibold">Item:</Text>
-
-                    <RNPickerSelect
-                        onValueChange={(value) => handleNewOperationalExpense('itemId', value)}
-                        items={operationalExpenseItems}
-                        placeholder={{ label: 'Choose Expense Item', value: null }}
-                        style={pickerSelectStyles} />
-                </View>
-                <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Expense Date:</Text>
                     <TouchableOpacity
                         onPress={showDatePicker}
@@ -101,12 +92,8 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
                         onCancel={hideDatePicker}
                         maximumDate={new Date()} // Prevent selecting future dates
                     />
-
                 </View>
-            </View>
-
-            <View className="flex-row justify-between mb-2">
-                <View className="flex-1 pr-2">
+                <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Amount:</Text>
 
                     <TextInput
@@ -116,13 +103,16 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
                     />
 
                 </View>
+            </View>
 
-                <View className="flex-1 pl-2">
+            <View className="flex-row justify-between mb-2">
+                <View className="flex-1">
                     <Text className="text-gray-700 font-semibold">Remarks:</Text>
                     <TextInput
                         className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
                         onChangeText={(text) => handleNewOperationalExpense('remarks', text)}
                     />
+
                 </View>
 
             </View>
@@ -136,4 +126,4 @@ const CreateOperationalExpenseItem = ({ onClose, operationalExpenseItems, onRefr
     )
 }
 
-export default CreateOperationalExpenseItem
+export default CreateOperationalExpense

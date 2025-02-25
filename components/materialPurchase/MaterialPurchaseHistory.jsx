@@ -8,6 +8,7 @@ import { getMaterialPurchase, getMaterials } from '@/lib/materialPurchase';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomModal from '@/components/CustomModal';
+import { useLocalSearchParams } from 'expo-router';
 
 
 
@@ -15,6 +16,7 @@ const MaterialPurchaseHistory = () => {
 
     const navigation = useNavigation();
 
+    const { id, name } = useLocalSearchParams();
 
     const [materialPurchaseData, setMaterialPurchaseData] = useState([]);
     const [materials, setMaterials] = useState([]);
@@ -58,7 +60,7 @@ const MaterialPurchaseHistory = () => {
             data.push([formatDateToDDMMYYYY(purchaseData.purchaseDate), purchaseData.materialName,
             purchaseData.quantity + ' ' + purchaseData.unitSymbol, purchaseData.rate, purchaseData.amount])
 
-        await getDocument("Material Purchase Report",
+        await getDocument((name ?? '')  + " Material Purchase Report",
             monthNames[selectedMonth - 1] + " " + selectedYear,
             ["Date", "Material", "Quantity", "Rate", "Amount"],
             data.reverse(),
@@ -68,7 +70,7 @@ const MaterialPurchaseHistory = () => {
 
     const fetchMaterialPurchase = async () => {
         const { startDate, endDate } = getMonthStartAndEndDate(selectedMonth, selectedYear)
-        const result = await getMaterialPurchase(null, startDate, endDate);
+        const result = await getMaterialPurchase(id, startDate, endDate);
         if (result.errorMessage == null) {
             setMaterialPurchaseData(result.data)
             setLoading(false);

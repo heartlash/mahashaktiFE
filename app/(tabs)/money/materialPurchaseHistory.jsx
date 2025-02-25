@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import React from 'react'
 import MaterialPurchaseHistory from '@/components/materialPurchase/MaterialPurchaseHistory'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -7,7 +7,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 const materialPurchaseHistory = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <MaterialPurchaseHistory/>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <MaterialPurchaseHistory />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

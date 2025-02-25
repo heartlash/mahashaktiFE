@@ -132,3 +132,28 @@ export const logout = async () => {
 export const getUserInfo = async () => {
   return JSON.parse(await SecureStore.getItemAsync(USER_INFO_KEY));
 }
+
+export const getUserRole = async () => {
+  const userInfo = await getUserInfo();
+  if (userInfo != null) {
+    return userInfo.role;
+  }
+};
+
+export const checkAllowedToCreate = async () => {
+
+  const allowedToCreateRoles = ['ADMIN', 'OWNER', 'SUPERVISOR']
+  const role = await getUserRole();
+
+  if (allowedToCreateRoles.includes(role)) return true;
+  else return false;
+}
+
+export const checkAllowedToExpand = async () => {
+
+  const allowedToCreateExpand = ['ADMIN', 'OWNER', 'SUPERVISOR']
+  const role = await getUserRole();
+
+  if (allowedToCreateExpand.includes(role)) return true;
+  else return false;
+}

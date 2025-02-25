@@ -120,3 +120,14 @@ export const calculateWeeksPassed = (genesisDate) => {
   // Calculate and return the number of weeks
   return Math.floor(timeDifference / millisecondsInAWeek);
 };
+
+
+export const removeUnderscores = (name) => {
+  if(name == null) return;
+  return name.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+}
+
+export const formatMoneyOrNumber = (amount) => {
+  if(amount == null) return;
+  return amount.toLocaleString('en-IN');
+}

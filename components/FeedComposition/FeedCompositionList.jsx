@@ -3,6 +3,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import FeedCompositionItem from './FeedCompositionItem';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 import { getFeedCompositionPerShed } from '@/lib/feed';
+import { checkAllowedToExpand } from '@/lib/auth';
 
 const FeedCompositionList = ({ shedId, listHeaderComponent, onRefresh, refreshing, 
     setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible 
@@ -12,6 +13,7 @@ const FeedCompositionList = ({ shedId, listHeaderComponent, onRefresh, refreshin
     const [loading, setLoading] = useState(true);
     const [feedCompositionData, setFeedCompositionData] = useState([]);
     const [refresh, setRefresh] = useState(false)
+    const [allowedToExpand, setAllowedToExpand] = useState(false);
 
     const handlePress = (itemId) => {
         setExpandedItemId(itemId === expandedItemId ? null : itemId);
@@ -21,6 +23,12 @@ const FeedCompositionList = ({ shedId, listHeaderComponent, onRefresh, refreshin
     const onRefreshOnChange = () => {
         setRefresh(prev => !prev);
     }
+
+    const fetchAllowedToExpand = async () => {
+        const result = await checkAllowedToExpand();
+        setAllowedToExpand(result);
+    };
+
 
     const fetchFeedCompositionPerShed = async () => {
         const result = await getFeedCompositionPerShed(shedId);
@@ -40,6 +48,7 @@ const FeedCompositionList = ({ shedId, listHeaderComponent, onRefresh, refreshin
     };
 
     useEffect(() => {
+        fetchAllowedToExpand();
         fetchFeedCompositionPerShed();
     }, [refresh]);
 
@@ -50,7 +59,7 @@ const FeedCompositionList = ({ shedId, listHeaderComponent, onRefresh, refreshin
     const renderItem = ({ item }) => (
         <FeedCompositionItem
             item={item}
-            isExpanded={expandedItemId === item.id}
+            isExpanded={expandedItemId === item.id && allowedToExpand}
             isEditing={editItemId === item.id}
             onPress={() => handlePress(item.id)}
             setEditItemId={setEditItemId}

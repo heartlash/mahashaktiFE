@@ -11,6 +11,12 @@ export default function MoneyLayout() {
             headerShown: false, // Hides the header
           }}
       />
+      <Stack.Screen
+        name="saleTypeScreen"
+        options={{
+          headerShown: false, // Hides the header
+        }}
+      />
       <Stack.Screen 
         name="vendors"
         options={{

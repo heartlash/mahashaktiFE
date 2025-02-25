@@ -73,24 +73,24 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
           onPress={() => router.push('/production')}
         >
           <ImageBackground
-          source={require('../../assets/images/orange.jpeg')} 
-          //source={require('../../assets/images/Gears.jpg')} 
-          resizeMode="cover" 
-          className="flex-1 rounded-3xl"
-          imageStyle={{ borderRadius: 20 }} 
-        >
-          <View className="flex-none h-full items-center">
-            <Text className="text-center font-pmedium text-black text-xl pt-7">PROD</Text>
-            {loadingProduction ? (
-              <ActivityIndicator size="small" color="#0000ff" className="pt-5" />
-            ) : (
-              <View>
-                <Text className="text-center font-pregular text-black text-lg pt-2">{productionDate}</Text>
-                <Text className="text-center font-bold text-lime-950  text-xl pt-2">{productionCount}</Text>
-                <Text className="text-center font-pregular text-lime-950 text-lg pt-2">{productionPercentage}%</Text>
-              </View>
-            )}
-          </View>
+            source={require('../../assets/images/orange.jpeg')}
+            //source={require('../../assets/images/Gears.jpg')} 
+            resizeMode="cover"
+            className="flex-1 rounded-3xl"
+            imageStyle={{ borderRadius: 20 }}
+          >
+            <View className="flex-none h-full items-center">
+              <Text className="text-center font-pmedium text-black text-xl pt-7">PROD</Text>
+              {loadingProduction ? (
+                <ActivityIndicator size="small" color="#0000ff" className="pt-5" />
+              ) : (
+                <View>
+                  <Text className="text-center font-pregular text-black text-lg pt-2">{productionDate}</Text>
+                  <Text className="text-center font-bold text-lime-950  text-xl pt-2">{productionCount}</Text>
+                  <Text className="text-center font-pregular text-lime-950 text-lg pt-2">{productionPercentage}%</Text>
+                </View>
+              )}
+            </View>
           </ImageBackground>
         </TouchableOpacity>
       </View>
@@ -101,26 +101,26 @@ const ProductionSaleGrid = ({ refreshTrigger }) => {
           activeOpacity={0.7}
           onPress={() => router.push('/sale')}
         >
-           <ImageBackground
-          source={require('../../assets/images/orange.jpeg')} 
-          //source={require('../../assets/images/Currency.jpg')} 
-          resizeMode="cover" 
-          className="flex-1 rounded-3xl"
-          imageStyle={{ borderRadius: 20 }} 
-        >
-          <View className="flex-none h-full items-center">
-            <Text className="text-center font-pmedium text-black text-xl pt-7">SALE</Text>
-            {loadingSale ? (
-              <ActivityIndicator size="small" color="#0000ff" className="pt-5" />
-            ) : (
-              <View>
-                <Text className="text-center font-pregular text-black text-lg pt-2">{saleDate}</Text>
-                <Text className="text-center font-bold text-lime-950 text-xl pt-2">{saleCount}</Text>
-                <Text className="text-center font-pregular text-lime-950 text-lg pt-2">@ ₹{averageSaleRate}</Text>
+          <ImageBackground
+            source={require('../../assets/images/orange.jpeg')}
+            //source={require('../../assets/images/Currency.jpg')} 
+            resizeMode="cover"
+            className="flex-1 rounded-3xl"
+            imageStyle={{ borderRadius: 20 }}
+          >
+            <View className="flex-none h-full items-center">
+              <Text className="text-center font-pmedium text-black text-xl pt-7">SALE</Text>
+              {loadingSale ? (
+                <ActivityIndicator size="small" color="#0000ff" className="pt-5" />
+              ) : (
+                <View>
+                  <Text className="text-center font-pregular text-black text-lg pt-2">{saleDate}</Text>
+                  <Text className="text-center font-bold text-lime-950 text-xl pt-2">{saleCount}</Text>
+                  <Text className="text-center font-pregular text-lime-950 text-lg pt-2">@ ₹{averageSaleRate}</Text>
 
-              </View>
-            )}
-          </View>
+                </View>
+              )}
+            </View>
           </ImageBackground>
         </TouchableOpacity>
       </View>

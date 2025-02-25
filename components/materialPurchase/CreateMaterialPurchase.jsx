@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Alert, TouchableOpacity, Button, ActivityIndicator, Modal } from 'react-native'
+import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getUserInfo } from '@/lib/auth';
@@ -6,18 +6,14 @@ import { saveMaterialPurchase } from '@/lib/materialPurchase';
 import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import RNPickerSelect from 'react-native-picker-select';
-import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
-const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const CreateMaterialPurchase = ({ onClose, material, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [purchaseDate, setPurchaseDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
     const [newMaterialPurchase, setNewMaterialPurchase] = useState(null);
     const [amount, setAmount] = useState('');
-    const [material, setMaterial] = useState();
-
 
 
     const showDatePicker = () => {
@@ -44,10 +40,6 @@ const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSucc
                 [field]: value,
             };
 
-            if(field == 'materialId') {
-                for(var material of materials)
-                    if(material.value == value) setMaterial(material)
-            }
 
             // Check if the field is either 'quantity' or 'rate' and update the 'amount' accordingly
             if (field === 'quantity' || field === 'rate') {
@@ -73,7 +65,7 @@ const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSucc
         const userInfo = await getUserInfo();
         var temp = newMaterialPurchase
         temp.createdBy = userInfo.name
-        temp.materialId = material.value
+        temp.materialId = material.id
         temp.purchaseDate = purchaseDate
 
         const result = await saveMaterialPurchase(temp);
@@ -98,15 +90,6 @@ const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSucc
         <View className="bg-white p-4 mx-2 rounded-lg shadow-lg my-4 border border-gray-200">
             <View className="flex-row justify-between mb-2">
                 <View className="flex-1 pr-2">
-                    <Text className="text-gray-700 font-semibold">Item:</Text>
-
-                    <RNPickerSelect
-                        onValueChange={(value) => handleNewChange('materialId', value)}
-                        items={materials}
-                        placeholder={{ label: 'Choose Material', value: null }}
-                        style={pickerSelectStyles} />
-                </View>
-                <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Purchase Date: </Text>
                     <TouchableOpacity
                         onPress={showDatePicker}
@@ -123,12 +106,8 @@ const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSucc
                         onCancel={hideDatePicker}
                         maximumDate={new Date()} // Prevent selecting future dates
                     />
-
                 </View>
-            </View>
-
-            <View className="flex-row justify-between mb-2">
-                <View className="flex-1 pr-2">
+                <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Quantity {material == null ? '' : material.unit}: </Text>
 
                     <TextInput
@@ -136,8 +115,12 @@ const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSucc
                         onChangeText={(text) => handleNewChange('quantity', text)}
                         keyboardType="numeric"
                     />
+
                 </View>
-                <View className="flex-1 pl-2">
+            </View>
+
+            <View className="flex-row justify-between mb-2">
+                <View className="flex-1 pr-2">
                     <Text className="text-gray-700 font-semibold">Rate: </Text>
 
                     <TextInput
@@ -147,11 +130,7 @@ const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSucc
                     />
 
                 </View>
-
-            </View>
-            <View className="flex-row justify-between mb-2">
-
-                <View className="flex-1 pr-2">
+                <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Amount: </Text>
 
                     <TextInput
@@ -159,7 +138,6 @@ const CreateMaterialPurchase = ({ onClose, materials, onRefreshOnChange, setSucc
                         value={amount}
                         editable={false} // Make the field non-editable
                     />
-
                 </View>
             </View>
 

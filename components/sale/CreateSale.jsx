@@ -11,7 +11,7 @@ import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
 
-const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
+const CreateSale = ({ eggTypeId, onClose, vendorData, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [saleDate, setSaleDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
@@ -53,7 +53,7 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
 
                 // Calculate the amount only if both soldCount and rate are valid numbers
                 if (!isNaN(soldCount) && !isNaN(rate)) {
-                    updatedItem.amount = (soldCount/210 * rate).toFixed(2);
+                    updatedItem.amount = (soldCount / 210 * rate).toFixed(2);
                     setAmount(updatedItem.amount)
                 } else {
                     updatedItem.amount = ''; // Clear the amount if the inputs are invalid
@@ -73,6 +73,8 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
         temp.createdBy = userInfo.name
         temp.saleDate = saleDate
         temp.vendorId = temp.vendor
+        temp.eggTypeId = eggTypeId
+
         const result = await saveSaleData(temp);
         setSubmitModalVisible(false)
         if (result.errorMessage == null) {
@@ -169,6 +171,20 @@ const CreateSale = ({ onClose, vendorData, onRefreshOnChange, setSuccessModalVis
                 </View>
 
             </View>
+
+            <View className="">
+
+                <View className="">
+                    <Text className="text-gray-700 font-semibold">Payment Remarks:</Text>
+                    <TextInput
+                        className={`border border-gray-300 px-3 py-2 rounded-lg text-gray-700 ${newItem?.paidAmount && parseFloat(newItem.paidAmount) > 0 ? '' : 'bg-gray-200'}`}
+                        onChangeText={(text) => handleNewChange('paymentRemarks', text)}
+                        keyboardType="numeric"
+                        editable={newItem?.paidAmount && parseFloat(newItem.paidAmount) > 0}
+                    />
+                </View>
+            </View>
+
             <View className="flex-row justify-between mt-4">
                 <MaterialIcons name="cancel" size={30} color="black" onPress={onClose} />
                 <Entypo name="save" size={30} color="black" onPress={saveNewItem} />

@@ -29,7 +29,7 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
 
         // Calculate the amount only if both soldCount and rate are valid numbers
         if (!isNaN(soldCount) && !isNaN(rate)) {
-          updatedItem.amount = (soldCount/210 * rate).toFixed(2);
+          updatedItem.amount = (soldCount / 210 * rate).toFixed(2);
           edited.amount = updatedItem.amount
         } else {
           updatedItem.amount = ''; // Clear the amount if the inputs are invalid
@@ -200,40 +200,50 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
             )}
           </View>
         </View>
+        <View className="flex-row justify-between mb-3">
+          <View className={`flex-1 ${editItem === item ? '' : 'flex-row items-center'}`}>
+            <Text className="text-gray-700 font-semibold">Payment Remarks: </Text>
+            {editItem === item ? (
+              <TextInput
+                className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+                value={edited.paymentRemarks}
+                onChangeText={(text) => handleEditChange('paymentRemarks', text)}
+              />
+            ) : (
+              <Text className="text-gray-700">{item.paymentRemarks}</Text>
+            )}
+          </View>
 
-        {/* Conditionally render additional content */}
+        </View>
+
         {isExpanded && (
           <View>
-            {/* Fourth Row */}
             <View className="flex-row justify-between mb-3">
-            <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
-              <Text className="text-gray-700 font-semibold">Created By: </Text>
-              {editItem === item ? (
-                <TextInput
-                  className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 bg-gray-200"
-                  value={item.createdBy}
-                  editable={false}
-                />
-              ) : (
-                <Text className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
-              )}
-            </View>
-
-              <View className={`flex-1 pl-4 w-1/2 ${editItem === item ? '' : 'flex-row items-center'}`}>
-                <Text className="text-gray-700 font-semibold">Updated By: </Text>
+              <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
+                <Text className="text-gray-700 font-semibold">Created By:</Text>
                 {editItem === item ? (
                   <TextInput
-                    className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700 bg-gray-200"
+                    className="border border-gray-300 p-2 rounded-md text-gray-700 bg-gray-200"
+                    value={item.createdBy}
+                    editable={false}
+                  />
+                ) : (
+                  <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.createdBy}</Text>
+                )}
+              </View>
+              <View className={`flex-1 pl-4 ${editItem === item ? '' : 'flex-row'}`}>
+                <Text className="text-gray-700 font-semibold">Updated By:</Text>
+                {editItem === item ? (
+                  <TextInput
+                    className="border border-gray-300 p-2 rounded-md text-gray-700  bg-gray-200"
                     value={item.updatedBy}
                     editable={false}
                   />
                 ) : (
-                  <Text className="text-gray-600 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.updatedBy}</Text>
-
+                  <Text className="text-gray-600 ml-2 flex-1" numberOfLines={1} ellipsizeMode="tail">{item.updatedBy}</Text>
                 )}
               </View>
             </View>
-
             {/* Edit and Delete Buttons */}
             <View className="flex-row justify-end mt-7 mb-5">
               {editItem === item ? (

@@ -3,12 +3,10 @@ import React, { useState } from 'react';
 import PriceRecommendationDataItem from './PriceRecommendationDataItem';
 
 const PriceRecommendationDataList = ({ data, listHeaderComponent, listFooterComponent, onRefresh, refreshing }) => {
-    const [expandedItemId, setExpandedItemId] = useState(null);
 
     const renderItem = ({ item }) => (
         <PriceRecommendationDataItem
             item={item}
-            isExpanded={expandedItemId === item.id}
         />
     );
 
@@ -18,7 +16,6 @@ const PriceRecommendationDataList = ({ data, listHeaderComponent, listFooterComp
             data={data}
             renderItem={renderItem}
             keyExtractor={(item) => item.region.toString()}
-            extraData={expandedItemId}
             showsVerticalScrollIndicator={false}
             refreshControl={
                 <RefreshControl

@@ -1,21 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState, useCallback } from 'react';
 import { getSheds } from '@/lib/shed';
-import { getMonthStartAndEndDate, monthNames, formatDateToDDMMYYYY } from '@/lib/util';
-import { getDocument } from '@/lib/download';
-import { useNavigation } from '@react-navigation/native';
+import { getMonthStartAndEndDate } from '@/lib/util';
 import { getProductionDataDateRange } from '@/lib/production';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MonthYearAndFilter from '../MonthYearAndFilter';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 import CustomModal from '../CustomModal';
 import ShedList from '../shed/ShedList';
+import { formatMoneyOrNumber } from '@/lib/util';
 
 
 const ProductionScreen = () => {
-
-  const navigation = useNavigation()
 
   const [shedData, setShedData] = useState([])
 
@@ -129,12 +124,9 @@ const ProductionScreen = () => {
 
       <ShedList
         listHeaderComponent={<>
-          <View className="mx-2 my-1">
-            <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
-          </View>
           <View style={styles.container}>
             <View className="p-7 justify-center items-center">
-              <Text className="text-xl font-bold text-black">Total Production: {totalProduction} </Text>
+              <Text className="text-xl font-bold text-black">Total Production: {formatMoneyOrNumber(totalProduction)} </Text>
             </View>
             <View className="flex flex-row">
               <Text className="text-left text-gray-700 font-semibold mx-5 mb-2">Average Production</Text>

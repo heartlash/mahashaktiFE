@@ -47,6 +47,12 @@ export default function MoneyLayout() {
           headerShown: false, // Hides the header
         }}
       />
+       <Stack.Screen
+        name="paymentsHistory"
+        options={{
+          headerShown: false, // Hides the header
+        }}
+      />
     </Stack>
   );
 }

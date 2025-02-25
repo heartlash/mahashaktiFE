@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 const EggAndFlockGrid = ({ refreshTrigger }) => {
 
   const [flockCount, setFlockCount] = useState(null);
-  const [eggCount, setEggCount] = useState(null);
+  const [eggCount, setEggCount] = useState(0);
 
   const [loadingEgg, setLoadingEgg] = useState(true);
   const [loadingFlock, setLoadingFlock] = useState(true);
@@ -31,9 +31,8 @@ const EggAndFlockGrid = ({ refreshTrigger }) => {
 
     const fetchEggCount = async () => {
       const result = await getEggCount();
-
       if (result.errorMessage == null) {
-        setEggCount(result.data)
+        setEggCount(Object.values(result.data).reduce((sum, value) => sum + value, 0));
         setLoadingEgg(false);
       } else {
         setEggCount(null)
@@ -55,7 +54,8 @@ const EggAndFlockGrid = ({ refreshTrigger }) => {
       <View className="basis-1/2 pr-1">
         <TouchableOpacity
           className="bg-amber-200 rounded-3xl flex-1"
-          activeOpacity={0.7}>
+          activeOpacity={0.7}
+          onPress={() => router.push('/home/egg')}>
           <ImageBackground
             source={require('../../assets/images/orange.jpeg')}
             //source={require('../../assets/images/Egg.jpg')}

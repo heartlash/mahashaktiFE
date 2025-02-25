@@ -4,15 +4,13 @@ import MonthYearAndFilter from '../MonthYearAndFilter';
 import { getProfitData } from '@/lib/money';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import { router } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { formatMoneyOrNumber } from '@/lib/util';
 
 
 
 const MoneyScreen = () => {
-
-    const navigation = useNavigation()
 
     const [loading, setLoading] = useState(true)
 
@@ -89,13 +87,13 @@ const MoneyScreen = () => {
         >
 
             <View style={styles.container} className="p-10 justify-center items-center mb-4">
-                <Text className="text-xl font-bold text-black">Sale Amount: ₹{profitData.saleAmount} </Text>
-                <Text className="text-lg text-black mt-2">Credits: ₹{profitData.credits}</Text>
+                <Text className="text-xl font-bold text-black">Sale Amount: ₹{formatMoneyOrNumber(profitData.saleAmount)} </Text>
+                <Text className="text-lg text-black mt-2">Credits: ₹{formatMoneyOrNumber(profitData.credits)}</Text>
                 <Text className="text-lg text-black mt-2">
-                    Total Expenses: ₹{profitData.materialPurchaseExpenses + profitData.operationalExpenses}
+                    Total Expenses: ₹{formatMoneyOrNumber(profitData.materialPurchaseExpenses + profitData.operationalExpenses)}
                 </Text>
                 <Text className="text-lg text-black mt-2">{profitData.profit === 0 ? 'Profit' : profitData.profit > 0
-                    ? 'Profit' : 'Loss'} : ₹{Math.abs(parseInt(profitData.profit))}</Text>
+                    ? 'Profit' : 'Loss'} : ₹{formatMoneyOrNumber(Math.abs(parseInt(profitData.profit)))}</Text>
             </View>
 
             <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} download={false} />
@@ -126,7 +124,7 @@ const MoneyScreen = () => {
                     style={styles.container}
                     className="p-3 rounded-3xl mx-10 my-3"
                 >
-                    <Text className="text-black text-center font-semibold p-3">Material Expenses ₹{profitData.materialPurchaseExpenses}</Text>
+                    <Text className="text-black text-center font-semibold p-3">Material Expenses</Text>
                 </TouchableOpacity>
             </Animated.View>
 
@@ -145,7 +143,7 @@ const MoneyScreen = () => {
                     style={styles.container}
                     className="p-3 rounded-3xl mx-10 my-3"
                 >
-                    <Text className="text-black text-center font-semibold p-3">Operational Expenses ₹{profitData.operationalExpenses}</Text>
+                    <Text className="text-black text-center font-semibold p-3">Operational Expenses</Text>
                 </TouchableOpacity>
             </Animated.View>
 
@@ -164,7 +162,7 @@ const MoneyScreen = () => {
                     style={styles.container}
                     className="p-3 rounded-3xl  mx-10 my-3"
                 >
-                    <Text className="text-black text-center font-semibold p-3">All Time Credits</Text>
+                    <Text className="text-black text-center font-semibold p-3">Credits</Text>
                 </TouchableOpacity>
             </Animated.View>
 

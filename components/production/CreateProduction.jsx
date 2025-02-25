@@ -102,7 +102,7 @@ const CreateProduction = ({ shedId, onClose, onRefreshOnChange, setSuccessModalV
 
       <View className="flex-row justify-between mb-2">
         <View className="flex-1 pr-2">
-          <Text className="text-gray-700 font-semibold">Broken:</Text>
+          <Text className="text-gray-700 font-semibold">Total Broken:</Text>
 
           <TextInput
             className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
@@ -112,6 +112,17 @@ const CreateProduction = ({ shedId, onClose, onRefreshOnChange, setSuccessModalV
 
         </View>
         <View className="flex-1 pl-2">
+          <Text className="text-gray-700 font-semibold">Waste:</Text>
+
+          <TextInput
+            className="border border-gray-300 px-3 py-2 rounded-lg text-gray-700"
+            onChangeText={(text) => handleNewProduction('wasteCount', text)}
+          />
+        </View>
+      </View>
+
+      <View className="flex-row justify-between mb-2">
+        <View className="flex-1">
           <Text className="text-gray-700 font-semibold">Reason:</Text>
 
           <TextInput

@@ -18,14 +18,27 @@ export const saveOperationalExpense = async (operationalExpense) => {
 
 
 
-export const getOperationalExpenses = async (startDate, endDate) => {
+export const getOperationalExpenses = async (itemId, startDate, endDate) => {
     try {
-        const response = await Backend.get("/operational-expense", {
-            params: {
-                startDate,
-                endDate,
-            },
-        });
+
+        var response;
+        if (itemId != null) {
+            response = await Backend.get(`/operational-expense/itemId/${itemId}`, {
+                params: {
+                    startDate,
+                    endDate,
+                },
+            });
+        }
+
+        else {
+            response = await Backend.get("/operational-expense", {
+                params: {
+                    startDate,
+                    endDate,
+                },
+            });
+        }
 
         var operationalExpenseData = []
 
@@ -89,6 +102,19 @@ export const getOperationalExpenseItems = async () => {
         const response = await Backend.get("/data/operational-expense-items");
         return { data: response.data.data, errorMessage: null }
 
+    } catch (error) {
+        console.log(error);
+        return {
+            data: null,
+            errorMessage: error.response?.data?.errorMessage || error.message || error
+        }
+    }
+}
+
+export const getOperationalExpensesLatest = async () => {
+    try {
+        const response = await Backend.get("/operational-expense/latest");
+        return { data: response.data.data, errorMessage: null }
     } catch (error) {
         console.log(error);
         return {

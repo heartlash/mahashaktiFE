@@ -19,6 +19,12 @@ const HomeLayout = () => {
         }}
       />
       <Stack.Screen
+        name="egg"
+        options={{
+          headerShown: false, // Hides the header
+        }}
+      />
+      <Stack.Screen
         name="flockShedScreen"
         options={{
           headerShown: false, // Hides the header

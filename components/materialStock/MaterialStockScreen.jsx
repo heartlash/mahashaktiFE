@@ -10,9 +10,7 @@ import CustomModal from '../CustomModal';
 const MaterialStockScreen = () => {
 
     const [materialStockData, setMaterialStockData] = useState([])
-    const [outOfStock, setOutOfStock] = useState(0)
-    const [lowStock, setLowStock] = useState(0)
-    const [notInUse, setNotInUse] = useState(0)
+    const [activeFilter, setActiveFilter] = useState('ALL');
     const router = useRouter();
 
 
@@ -37,22 +35,16 @@ const MaterialStockScreen = () => {
         const result = await getMaterialStock();
         if (result.errorMessage == null) {
             setMaterialStockData(result.data);
-            var countNotInUse = 0;
-            var countOutOfStock = 0;
-            var countLowStock = 0;
             for (var data of result.data) {
                 if (parseFloat(data.expectedDailyConsumption) == 0)
-                    countNotInUse++;
+                    data.stockStatus = "NOT_IN_USE"
                 else if (parseInt(data.wouldLastFor) == 0)
-                    countOutOfStock++;
+                    data.stockStatus = "OUT_OF_STOCK"
 
                 else if (parseFloat(data.minQuantity) > parseFloat(data.quantity))
-                    countLowStock++;
+                    data.stockStatus = "LOW_STOCK"
 
             }
-            setOutOfStock(countOutOfStock)
-            setLowStock(countLowStock)
-            setNotInUse(countNotInUse)
 
             setLoading(false);
         } else {
@@ -60,6 +52,10 @@ const MaterialStockScreen = () => {
         }
     };
 
+    const getFilteredMaterialData = () => {
+        if (activeFilter == 'ALL') return materialStockData;
+        return materialStockData.filter((item) => item.stockStatus === activeFilter);
+    };
 
 
     useEffect(() => {
@@ -69,6 +65,8 @@ const MaterialStockScreen = () => {
     if (loading) {
         return <AnimatedActivityIndicator />
     }
+
+    const filteredData = getFilteredMaterialData();
 
     return (
         <>
@@ -81,10 +79,37 @@ const MaterialStockScreen = () => {
                     <View style={styles.container}
                         className="p-10 justify-center items-center mb-4"
                     >
-                        <Text className="text-xl font-bold text-black">Total Materials: {materialStockData.length}</Text>
-                        <Text className="text-lg text-black mt-2">Not In Use: {notInUse}</Text>
-                        <Text className="text-lg text-black mt-2">Out of Stock: {outOfStock}</Text>
-                        <Text className="text-lg text-black mt-2">Low Stock: {lowStock}</Text>
+                        <TouchableOpacity
+                            onPress={() => setActiveFilter('ALL')}
+                            className={`px-2 py-1 rounded-lg ${
+                                activeFilter === 'ALL' ? 'bg-amber-200' : ''
+                            } shadow-md`}                        >
+                            <Text className="text-xl font-bold text-black">Total Materials: {materialStockData.length}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => setActiveFilter('NOT_IN_USE')}
+                            className={`px-2 py-1 rounded-lg ${
+                                activeFilter === 'NOT_IN_USE' ? 'bg-amber-200' : ''
+                            } shadow-md`}                                >
+                            <Text className="text-lg text-black">Not In Use: {materialStockData.filter((item) => item.stockStatus === 'NOT_IN_USE').length}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => setActiveFilter('OUT_OF_STOCK')}
+                            className={`px-2 py-1 rounded-lg ${
+                                activeFilter === 'OUT_OF_STOCK' ? 'bg-amber-200' : ''
+                            } shadow-md`}                                >
+                            <Text className="text-lg text-black">Out of Stock: {materialStockData.filter((item) => item.stockStatus === 'OUT_OF_STOCK').length}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => setActiveFilter('LOW_STOCK')}
+                            className={`px-2 py-1 rounded-lg ${
+                                activeFilter === 'LOW_STOCK' ? 'bg-amber-200' : ''
+                            } shadow-md`}                                >
+                            <Text className="text-lg text-black">Low Stock: {materialStockData.filter((item) => item.stockStatus === 'LOW_STOCK').length}</Text>
+                        </TouchableOpacity>
                     </View>
                     <View className="flex-1 justify-center items-center">
                         <TouchableOpacity
@@ -96,7 +121,7 @@ const MaterialStockScreen = () => {
                     </View></>
                 ) : (<></>)}
 
-                materialStockData={materialStockData.sort((a, b) => a.material.localeCompare(b.material))}
+                materialStockData={filteredData.sort((a, b) => a.material.localeCompare(b.material))}
                 onRefreshOnChange={onRefreshOnChange}
                 refreshing={refreshing}
                 onRefresh={onRefresh}

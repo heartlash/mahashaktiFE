@@ -11,6 +11,7 @@ import CustomModal from '../CustomModal';
 import FlockList from './FlockList';
 import { getMonthStartAndEndDate } from '@/lib/util';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
+import { checkAllowedToCreate } from '@/lib/auth';
 
 
 
@@ -25,6 +26,7 @@ const FlockShedScreen = () => {
     const [averageDailyMortality, setAverageDailyMortality] = useState(0)
 
     const [createNewFlockChange, setCreateNewFlockChange] = useState(false)
+    const [allowedToCreate, setAllowedToCreate] = useState(false)
 
     const [loading, setLoading] = useState(true)
     const [refresh, setRefresh] = useState(false)
@@ -88,18 +90,26 @@ const FlockShedScreen = () => {
         }
     };
 
+    const fetchCheckAllowedToCreate = async () => {
+
+        const result = await checkAllowedToCreate();
+        if (result != null) setAllowedToCreate(result)
+
+    }
+
     useEffect(() => {
 
         setMonth(new Date().getMonth() + 1);
         setYear(new Date().getFullYear());
         setSelectedMonth(new Date().getMonth() + 1); // Reset to the current month
         setSelectedYear(new Date().getFullYear()); // Reset to the current year
-
+        fetchCheckAllowedToCreate();
         fetchFlockData();
 
     }, [])
 
     useEffect(() => {
+        fetchCheckAllowedToCreate();
         fetchFlockData();
     }, [selectedMonth, selectedYear, refresh])
 
@@ -137,20 +147,21 @@ const FlockShedScreen = () => {
                     </View>
                     <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} handleDownload={handleDownload} />
 
-                    {createNewFlockChange ? (
-                        <CreateFlockChange
-                            shedId={shedId}
-                            onClose={() => setCreateNewFlockChange(false)}
-                            onRefreshOnChange={onRefreshOnChange}
-                            setSuccessModalVisible={setSuccessModalVisible}
-                            setFailureModalVisible={setFailureModalVisible}
-                            setSubmitModalVisible={setSubmitModalVisible}
+                    {allowedToCreate && (
+                        createNewFlockChange ? (
+                            <CreateFlockChange
+                                shedId={shedId}
+                                onClose={() => setCreateNewFlockChange(false)}
+                                onRefreshOnChange={onRefreshOnChange}
+                                setSuccessModalVisible={setSuccessModalVisible}
+                                setFailureModalVisible={setFailureModalVisible}
+                                setSubmitModalVisible={setSubmitModalVisible}
 
-                        />
-                    ) : (<View className="mb-3">
-                        <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateNewFlockChange(true)} />
-                    </View>
-                    )}
+                            />
+                        ) : (<View className="mb-3">
+                            <Ionicons name="add-circle" className="mb-3" size={45} style={{ alignSelf: 'center' }} color="black" onPress={() => setCreateNewFlockChange(true)} />
+                        </View>
+                        ))}
                 </>
                 }
                 data={flockChangeData.sort((a, b) => b.date.localeCompare(a.date))}

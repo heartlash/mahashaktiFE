@@ -1,143 +1,141 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
+import { StyleSheet, View, Text} from 'react-native';
 import { useRouter } from 'expo-router';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DonutChart from '../donut/DonutChart';
 import { useFont } from '@shopify/react-native-skia';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
-import RenderItem from '../donut/RenderItem';
-import { useGlobalSearchParams } from 'expo-router';
 import { getMonthStartAndEndDate } from '@/lib/util';
-import { getOperationalExpenses, getOperationalExpenseItems } from '@/lib/operationalExpense';
+import { getOperationalExpenses, getOperationalExpenseItems, getOperationalExpensesLatest } from '@/lib/operationalExpense';
 import { useNavigation } from '@react-navigation/native';
 import AnimatedActivityIndicator from '../AnimatedActivityIndicator';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import CustomModal from '../CustomModal';
-import CreateOperationalExpenseItem from '../operationalExpenses/CreateOperationalExpense';
+import OperationalExpenseList from '../operationalExpenses/OperationalExpenseList';
+import MonthYearAndFilter from '../MonthYearAndFilter';
+import { getFormattedDate } from '@/lib/util';
 
 const RADIUS = 120;
 
 
 export const OperationalExpensesScreen = () => {
 
-    const { month, year } = useGlobalSearchParams();
     const navigation = useNavigation();
     const router = useRouter();
 
-    const [operationExpenseItemToAmountExpense, setOperationExpenseItemToAmountExpense] = useState({})
-    const [createOperationalExpense, setCreateOperationalExpense] = useState(false)
-    const [operationalExpenseItems, setOperationalExpenseItems] = useState([]);
-
-
-    const [successModalVisible, setSuccessModalVisible] = useState(false)
-    const [failureModalVisible, setFailureModalVisible] = useState(false)
-    const [submitModalVisible, setSubmitModalVisible] = useState(false)
-
-
-    const [data, setData] = useState([]);
+    const [operationalExpenses, setOperationalExpenses] = useState([]);
     const totalValue = useSharedValue(0);
     const decimals = useSharedValue([]);
-    const colors = ['#fe769c', '#46a0f8', '#c3f439', '#88dabc', '#e43433', '#ff9cb1', '#5ab0ff', '#d5f97a',
-        '#a2ebd2', '#f75a59', '#ffa3c3', '#71b8ff', '#e1ff8c', '#b8eed9', '#ff7b7a'];
 
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
     const [refresh, setRefresh] = useState(false);
 
+    const [successModalVisible, setSuccessModalVisible] = useState(false)
+    const [failureModalVisible, setFailureModalVisible] = useState(false)
+    const [submitModalVisible, setSubmitModalVisible] = useState(false)
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchOperationalExpenses().then(() => setRefreshing(false));
+    }, []);
 
     const onRefreshOnChange = () => {
         setRefresh(prev => !prev);
     }
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        fetchOperationalExpensesHistory().then(() => setRefreshing(false));
-    }, []);
 
-    const fetchOperationalExpensesHistory = async () => {
-        setLoading(true)
-        const { startDate, endDate } = getMonthStartAndEndDate(month, year)
-        const result = await getOperationalExpenses(startDate, endDate);
-        if (result.errorMessage == null) {
-            const operationalExpenseItemToAmountMapped = result.data.reduce((acc, item) => {
-                if (acc[item.itemName]) {
-                    acc[item.itemName] += item.amount;
-                } else {
-                    acc[item.itemName] = item.amount;
-                }
-                return acc;
-            }, {});
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [month, setMonth] = useState(new Date().getMonth() + 1);
+    const [year, setYear] = useState(new Date().getFullYear());
 
-            setOperationExpenseItemToAmountExpense(operationalExpenseItemToAmountMapped);
-            generateData(operationalExpenseItemToAmountMapped);
-            setLoading(false)
-        }
-        if (result.data == null)
-            setMaterialToAmountExpense({})
+
+    const handleShowPress = () => {
+        setSelectedMonth(month);
+        setSelectedYear(year);
     }
 
-    const fetchOperationalExpenseItems = async () => {
-        const result = await getOperationalExpenseItems();
-        if (result.errorMessage == null) {
-            var expenseItems = []
-            for (var data of result.data) {
-                expenseItems.push({ label: data.item, value: data.id });
-            }
-            setOperationalExpenseItems(expenseItems)
+
+    const fetchOperationalExpenses = async () => {
+        setLoading(true)
+
+        var operationalExpensess = []
+        const operationExpenseItemResult = await getOperationalExpenseItems();
+        if (operationExpenseItemResult.errorMessage == null) {
+            operationalExpensess = operationExpenseItemResult.data
+        }
+
+        const operationExpenseLatestResult = await getOperationalExpensesLatest();
+        if (operationExpenseLatestResult.errorMessage == null) {
+
             setLoading(false);
         }
         else {
             setLoading(true);
         }
+
+        const { startDate, endDate } = getMonthStartAndEndDate(month, year)
+        const result = await getOperationalExpenses(null, startDate, endDate);
+        if (result.errorMessage == null) {
+            const operationalExpenseItemToAmountMapped = result.data.reduce((acc, item) => {
+                if (acc[item.itemId]) {
+                    acc[item.itemId] += item.amount;
+                } else {
+                    acc[item.itemId] = item.amount;
+                }
+                return acc;
+            }, {});
+
+
+            var total = Object.values(operationalExpenseItemToAmountMapped).reduce(
+                (acc, currentValue) => acc + currentValue,
+                0,
+            );
+
+            for (var operationalExpense of operationalExpensess) {
+                if (operationalExpense.id in operationalExpenseItemToAmountMapped) {
+                    operationalExpense.amountSpent = operationalExpenseItemToAmountMapped[operationalExpense.id]
+                }
+                else operationalExpense.amountSpent = 0
+
+                if (operationalExpense.id in operationExpenseLatestResult.data) {
+                    operationalExpense.lastAmountSpent = operationExpenseLatestResult.data[operationalExpense.id].amount
+                    operationalExpense.lastExpenseDate = getFormattedDate(operationExpenseLatestResult.data[operationalExpense.id].expenseDate)
+                    operationalExpense.lastRemark = operationExpenseLatestResult.data[operationalExpense.id].remarks
+                }
+                else {
+                    operationalExpense.lastAmount = "NA"
+                    operationalExpense.lastExpenseDate = "NA"
+                    operationalExpense.lastRemark = "NA"
+                }
+
+            }
+            setOperationalExpenses(operationalExpensess)
+            totalValue.value = withTiming(total, { duration: 1000 });
+            decimals.value = [...['0.1']];
+            setLoading(false)
+
+        }
+
     }
 
 
     useEffect(() => {
 
-        fetchOperationalExpensesHistory();
-        fetchOperationalExpenseItems();
+        setMonth(new Date().getMonth() + 1);
+        setYear(new Date().getFullYear());
+        setSelectedMonth(new Date().getMonth() + 1); // Reset to the current month
+        setSelectedYear(new Date().getFullYear()); // Reset to the current year
 
-    }, [refresh])
+        fetchOperationalExpenses();
 
+    }, [])
 
-    const calculatePercentage = (numbers, total) => {
-        const percentageArray = [];
+    useEffect(() => {
+        fetchOperationalExpenses();
+    }, [selectedMonth, selectedYear, refresh])
 
-        numbers.forEach(number => {
-            const percentage = Math.round((number / total) * 100);
-
-            percentageArray.push(percentage);
-        });
-
-        return percentageArray;
-    }
-
-    const generateData = (operationExpenseItemToAmountExpense) => {
-
-        const generateNumbers = Object.values(operationExpenseItemToAmountExpense)
-        const materialNames = Object.keys(operationExpenseItemToAmountExpense)
-
-        const total = generateNumbers.reduce(
-            (acc, currentValue) => acc + currentValue,
-            0,
-        );
-        const generatePercentages = calculatePercentage(generateNumbers, total);
-        const generateDecimals = generatePercentages.map(
-            number => Number(number.toFixed(0)) / 100,
-        );
-        totalValue.value = withTiming(total, { duration: 1000 });
-        decimals.value = [...generateDecimals];
-
-        const arrayOfObjects = generateNumbers.map((value, index) => ({
-            value,
-            percentage: generatePercentages[index],
-            color: colors[index],
-            name: materialNames[index]
-        }));
-
-        setData(arrayOfObjects);
-    };
 
     const font = useFont(require('../../assets/fonts/Roboto-Bold.ttf'), 40);
     const smallFont = useFont(require('../../assets/fonts/Roboto-Light.ttf'), 20);
@@ -148,104 +146,69 @@ export const OperationalExpensesScreen = () => {
 
     return (
         <View>
-            <View className="mx-2 my-1">
+            <View className="flex-row items-center mx-2 my-1">
                 <MaterialIcons name="arrow-back-ios-new" size={24} color="black" onPress={() => navigation.goBack()} />
+                <View className="flex-1 items-center">
+                    <Text className="text-lg font-bold mr-2">Operational Expenses</Text>
+                </View>
             </View>
 
             <CustomModal modalVisible={successModalVisible} setModalVisible={setSuccessModalVisible} theme="success" />
             <CustomModal modalVisible={failureModalVisible} setModalVisible={setFailureModalVisible} theme="failure" />
             <CustomModal modalVisible={submitModalVisible} setModalVisible={setSubmitModalVisible} theme="submit" />
 
-            <ScrollView
-                contentContainerStyle={{ alignItems: 'center' }}
-                showsVerticalScrollIndicator={false}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                }>
-                <View style={styles.chartContainer}>
-                    <DonutChart
-                        radius={RADIUS}
-                        font={font}
-                        smallFont={smallFont}
-                        totalValue={totalValue}
-                        n={data.length}
-                        decimals={decimals}
-                        colors={colors}
-                        type="Spent"
-                    />
-                </View>
 
-                {/* Centered Icon Section */}
-                {!createOperationalExpense && (
-                    <View className="items-center mb-7 space-y-5">
-                        <Ionicons
-                            name="add-circle"
-                            size={45}
-                            color="black"
-                            onPress={() => setCreateOperationalExpense(true)}
-                        />
-                        <FontAwesome5
-                            name="list"
-                            size={20}
-                            color="black"
-                            onPress={() => router.push('/money/operationalExpensesHistory')}
-                        />
-                    </View>
+            <OperationalExpenseList
+                listHeaderComponent={
+                    <>
+                        <View style={{ backgroundColor: '#FFFDD0' }}>
+                            <View style={styles.chartContainer}>
+                                <DonutChart
+                                    radius={RADIUS}
+                                    font={font}
+                                    smallFont={smallFont}
+                                    totalValue={totalValue}
+                                    n={1}
+                                    decimals={decimals}
+                                    colors={['#ffe680']}
+                                />
+                            </View>
+                        </View>
+
+                        <MonthYearAndFilter setMonth={setMonth} setYear={setYear} month={month} year={year} handleShowPress={handleShowPress} download={false} />
+
+                        <View className="items-center mb-7 space-y-5">
+                            <FontAwesome5
+                                name="list"
+                                size={20}
+                                color="black"
+                                onPress={() => router.push('/money/operationalExpensesHistory')}
+                            />
+                        </View>
 
 
-                )}
+                    </>
 
-                {/* CreateMaterialPurchase Section */}
-                {createOperationalExpense && (
-                    <View className="w-full px-4 mb-4">
-                        <CreateOperationalExpenseItem
-                            onClose={() => setCreateOperationalExpense(false)}
-                            onRefreshOnChange={onRefreshOnChange}
-                            operationalExpenseItems={operationalExpenseItems}
-                            setSuccessModalVisible={setSuccessModalVisible}
-                            setFailureModalVisible={setFailureModalVisible}
-                            setSubmitModalVisible={setSubmitModalVisible}
-                        />
-                    </View>
-                )}
-
-                <View className="w-full px-4">
-
-                    {data.map((item, index) => {
-                        return <RenderItem item={item} key={index} index={index} goTo={"/money/operationalExpensesHistory"} />;
-                    })}
-                </View>
-
-
-            </ScrollView>
+                }
+                operationalExpenseData={operationalExpenses.sort((a, b) => a.item.localeCompare(b.item))}
+                onRefreshOnChange={onRefreshOnChange}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                setSuccessModalVisible={setSuccessModalVisible}
+                setFailureModalVisible={setFailureModalVisible}
+                setSubmitModalVisible={setSubmitModalVisible}
+            />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     chartContainer: {
         width: RADIUS * 2,
         height: RADIUS * 2,
         marginTop: 10,
-        marginBottom: 20
-    },
-    button: {
-        marginVertical: 40,
-        backgroundColor: '#f4f7fc',
-        paddingHorizontal: 60,
-        paddingVertical: 15,
-        borderRadius: 10,
-    },
-    buttonText: {
-        color: 'black',
-        fontSize: 20,
+        marginBottom: 20,
+        alignSelf: 'center'
     },
 });
 
