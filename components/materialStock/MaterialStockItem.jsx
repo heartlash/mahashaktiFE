@@ -66,8 +66,8 @@ const MaterialStockItem = ({ item, onRefreshOnChange, isExpanded, onPress, setSu
         entering={FadeInDown.duration(1000).springify()}
       >
         <View className="flex-row justify-between mb-3">
-          <Text className="text-xl font-semibold text-gray-800">{item.material}</Text>
-          <Text className="text-xl font-medium text-gray-800">{item.quantity.toFixed(2)} {item.unit}</Text>
+          <Text className="text-lg font-semibold text-gray-800">{item.material}</Text>
+          <Text className="text-lg font-medium text-gray-800">{item.quantity.toFixed(2)} {item.unit}</Text>
         </View>
         <View className="flex-row justify-end mb-3">
           <View className={`${stockStatusColor} px-2 py-1 rounded-lg`}>

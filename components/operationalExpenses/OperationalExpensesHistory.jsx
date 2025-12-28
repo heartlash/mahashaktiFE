@@ -54,16 +54,37 @@ const OperationalExpensesHistory = () => {
 
     const handleDownload = async () => {
         var data = []
-        for (var operationalExpense of operationalExpensesData)
+        let itemTotals = {};
+        let grandTotal = 0;
+
+        for (var operationalExpense of operationalExpensesData) {
             data.push([formatDateToDDMMYYYY(operationalExpense.expenseDate), operationalExpense.itemName,
                 operationalExpense.amount, operationalExpense.remarks])
 
+            if (!itemTotals[operationalExpense.itemName]) 
+                itemTotals[operationalExpense.itemName] = 0;
+            
+            itemTotals[operationalExpense.itemName] += operationalExpense.amount;
+            grandTotal += operationalExpense.amount;
+        }
+
+        let summaryData = [];
+
+        for (let item in itemTotals) {
+            const totalSpent = itemTotals[item];
+            const percentageSpent = grandTotal > 0
+                ? ((totalSpent / grandTotal) * 100).toFixed(2)
+                : 0;
+
+            summaryData.push([item, totalSpent, `${percentageSpent}%`]);
+        }
+        
         await getDocument((name ?? '') + " Operational Expense Report",
             monthNames[selectedMonth - 1] + " " + selectedYear,
             ["Date", "Item", "Amount", "Remarks"],
             data.reverse(),
-            [],
-            []);
+            ["Item", "Amount Spent", "Precentage Spent"],
+            summaryData);
     };
 
     const fetchOperationalExpensesDateRange = async () => {

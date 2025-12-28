@@ -1,13 +1,11 @@
 import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import RNPickerSelect from 'react-native-picker-select';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getUserInfo } from '@/lib/auth';
 import { saveOperationalExpense } from '@/lib/operationalExpense';
 import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { pickerSelectStyles } from '@/styles/GlobalStyles';
 
 
 
@@ -90,6 +88,7 @@ const CreateOperationalExpense = ({ onClose, operationalExpenseItem, onRefreshOn
                         mode="date"
                         onConfirm={handleConfirm}
                         onCancel={hideDatePicker}
+                        date={new Date()}
                         maximumDate={new Date()} // Prevent selecting future dates
                     />
                 </View>

@@ -113,6 +113,7 @@ const CreateMaterialRestock = ({ onClose, materialId, materialUnit, onRefreshOnC
                         mode="date"
                         onConfirm={handleConfirm}
                         onCancel={hideDatePicker}
+                        date={new Date()}
                         maximumDate={new Date()} // Prevent selecting future dates
                     />
 

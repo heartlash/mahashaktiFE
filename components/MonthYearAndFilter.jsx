@@ -1,9 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 import FontsAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
-import { pickerSelectStyles } from '@/styles/GlobalStyles';
+import { dropdownStyles } from '@/styles/GlobalStyles';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const MonthYearAndFilter = ({
     setMonth,
@@ -33,62 +33,80 @@ const MonthYearAndFilter = ({
         { label: "December", value: 12 }
     ];
 
-    const yearOptions = Array.from({ length: 201 }, (_, i) => ({
-        label: `${1900 + i}`,
-        value: 1900 + i,
+    const yearOptions = Array.from({ length: 50 }, (_, i) => ({
+        label: `${2024 + i}`,
+        value: 2024 + i,
     }));
 
     return (
         <View className="space-y-4 p-4">
-            {/* Month and Year Pickers */}
             <View className="flex-row justify-between">
                 <View className="flex-1 mr-2">
-                    <RNPickerSelect
-                        onValueChange={setMonth}
-                        items={monthOptions}
+                    <Dropdown
+                        style={dropdownStyles.dropdown}
+                        placeholderStyle={dropdownStyles.placeholderStyle}
+                        selectedTextStyle={dropdownStyles.selectedTextStyle}
+                        iconStyle={dropdownStyles.iconStyle}
+                        data={monthOptions}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Select month..."
                         value={month}
-                        style={pickerSelectStyles}
-                        placeholder={{ label: "Select month...", value: null }}
-                        useNativeAndroidPickerStyle={false}  // Add this to have better control on Android
+                        onChange={item => setMonth(item.value)}
+                        selectedTextProps={{numberOfLines: 1}} 
                     />
                 </View>
                 <View className="flex-1 mr-2">
-                    <RNPickerSelect
-                        onValueChange={setYear}
-                        items={yearOptions}
+                    <Dropdown
+                        style={dropdownStyles.dropdown}
+                        placeholderStyle={dropdownStyles.placeholderStyle}
+                        selectedTextStyle={dropdownStyles.selectedTextStyle}
+                        iconStyle={dropdownStyles.iconStyle}
+                        data={yearOptions}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Select year..."
                         value={year}
-                        style={pickerSelectStyles}
-                        placeholder={{ label: "Select year...", value: null }}
-                        useNativeAndroidPickerStyle={false}  // Add this to have better control on Android
+                        onChange={item => setYear(item.value)}
+                        selectedTextProps={{numberOfLines: 1}} 
                     />
                 </View>
                 {showVendorAndPaid && (
                     <>
                         <View className="flex-1 mr-2">
-                            <RNPickerSelect
-                                onValueChange={(value) => {
-                                    // Force the value to null if it's the placeholder
-                                    setVendorFilter(value === "null" ? null : value);
+                            <Dropdown
+                                style={dropdownStyles.dropdown}
+                                placeholderStyle={dropdownStyles.placeholderStyle}
+                                selectedTextStyle={dropdownStyles.selectedTextStyle}
+                                iconStyle={dropdownStyles.iconStyle}
+                                data={vendorData}
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Vendor..."
+                                onChange={item => {
+                                    setVendorFilter(item.value === null ? null : item.value);
                                 }}
-                                items={vendorData}
-                                style={pickerSelectStyles}
-                                placeholder={{ label: "Vendor...", value: null }}
-                                useNativeAndroidPickerStyle={false}  // Add this to have better control on Android
+                                selectedTextProps={{numberOfLines: 1}}
+                                search="true"
                             />
                         </View>
                         <View className="flex-1">
-                            <RNPickerSelect
-                                onValueChange={(value) => {
-                                    // Force the value to null if it's the placeholder
-                                    setPaidFilter(value === "null" ? null : value);
-                                }}
-                                items={[
+                            <Dropdown
+                                style={dropdownStyles.dropdown}
+                                placeholderStyle={dropdownStyles.placeholderStyle}
+                                selectedTextStyle={dropdownStyles.selectedTextStyle}
+                                iconStyle={dropdownStyles.iconStyle}
+                                data={[
                                     { label: 'Yes', value: 'Yes' },
                                     { label: 'No', value: 'No' },
                                 ]}
-                                style={pickerSelectStyles}
-                                placeholder={{ label: "Paid status...", value: null }}
-                                useNativeAndroidPickerStyle={false}  // Add this to have better control on Android
+                                labelField="label"
+                                valueField="value"
+                                placeholder="Paid status..."
+                                onChange={item => {
+                                    setPaidFilter(item.value === null ? null : item.value);
+                                }}
+                                selectedTextProps={{numberOfLines: 1}}
                             />
                         </View>
                     </>

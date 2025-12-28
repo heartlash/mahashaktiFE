@@ -4,11 +4,10 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getUserInfo } from '@/lib/auth';
 import { saveSaleData } from '@/lib/sale';
 import moment from 'moment-timezone';
-import RNPickerSelect from 'react-native-picker-select';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { pickerSelectStyles } from '@/styles/GlobalStyles';
-
+import { dropdownStyles } from '@/styles/GlobalStyles';
+import { Dropdown } from 'react-native-element-dropdown';
 
 
 const CreateSale = ({ eggTypeId, onClose, vendorData, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
@@ -121,6 +120,7 @@ const CreateSale = ({ eggTypeId, onClose, vendorData, onRefreshOnChange, setSucc
                         mode="date"
                         onConfirm={handleConfirm}
                         onCancel={hideDatePicker}
+                        date={new Date()}
                         maximumDate={new Date()} // Prevent selecting future dates
                     />
 
@@ -153,11 +153,19 @@ const CreateSale = ({ eggTypeId, onClose, vendorData, onRefreshOnChange, setSucc
 
                 <View className="flex-1 pr-2">
                     <Text className="text-gray-700 font-semibold">Vendor: </Text>
-                    <RNPickerSelect
-                        onValueChange={(value) => handleNewChange('vendor', value)}
-                        items={vendorData}
-                        placeholder={{ label: 'Choose Vendor', value: null }}
-                        style={pickerSelectStyles} />
+                    <Dropdown
+                        style={dropdownStyles.dropdown}
+                        placeholderStyle={dropdownStyles.placeholderStyle}
+                        selectedTextStyle={dropdownStyles.selectedTextStyle}
+                        iconStyle={dropdownStyles.iconStyle}
+                        data={vendorData}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Choose Vendor"
+                        onChange={(item) => handleNewChange('vendor', item.value)}
+                        selectedTextProps={{numberOfLines: 1}} 
+                        search="true"
+                    />
 
                 </View>
 

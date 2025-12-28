@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { updatePayments, deletePayment } from '@/lib/payments';
 import { getUserInfo } from '@/lib/auth';
-import RNPickerSelect from 'react-native-picker-select';
 import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

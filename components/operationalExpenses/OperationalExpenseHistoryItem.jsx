@@ -3,11 +3,11 @@ import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { updateOperationalExpenses, deleteOperationalExpenses } from '@/lib/operationalExpense';
 import { getUserInfo } from '@/lib/auth';
 import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
-import RNPickerSelect from 'react-native-picker-select';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { pickerSelectStyles } from '@/styles/GlobalStyles';
+import { dropdownStyles } from '@/styles/GlobalStyles';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const OperationalExpenseHistoryItem = ({ item, isExpanded, operationalExpenseItems, onPress, editItem, setEditItem, onRefreshOnChange,
     setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible
@@ -99,17 +99,24 @@ const OperationalExpenseHistoryItem = ({ item, isExpanded, operationalExpenseIte
                     <View className={`flex-1 pr-2 ${editItem === item ? '' : 'flex-row items-center'}`}>
                         <Text className="text-gray-700 font-semibold">Item: </Text>
                         {editItem === item ? (
-                            <RNPickerSelect
-                                onValueChange={(value) => handleEditChange('itemId', value)}
-                                items={operationalExpenseItems}
+                            <Dropdown
+                                style={dropdownStyles.dropdown}
+                                placeholderStyle={dropdownStyles.placeholderStyle}
+                                selectedTextStyle={dropdownStyles.selectedTextStyle}
+                                iconStyle={dropdownStyles.iconStyle}
+                                data={operationalExpenseItems}
+                                labelField="label"
+                                valueField="value"
                                 placeholder={{
                                     label: item.itemName && operationalExpenseItems.find(v => v.label === item.itemName)
                                         ? item.itemName
                                         : 'Select Expense Item...',
                                     value: item.itemName,
                                 }}
-                                style={pickerSelectStyles}
-                            />
+                                value={year}
+                                onChange={(value) => handleEditChange('itemId', value)}
+                                selectedTextProps={{numberOfLines: 1}} 
+                            />  
                         ) : (
                             <Text className="text-gray-700">{item.itemName}</Text>)}
                     </View>

@@ -52,8 +52,8 @@ const FeedShedItem = ({ item, isExpanded, onPress, isEditing, setEditItemId, onR
   }, []); // Empty array means it runs only on mount
 
 
-  const shedStatus = 'Active'
-  const shedkStatusColor = 'bg-green-500'
+  const shedStatus = item.active === true ? 'Active' : 'In Active'
+  const shedkStatusColor = item.active === true ? 'bg-green-500' : 'bg-blue-500';  // Color for "In Stock"
 
   return (
     <TouchableOpacity

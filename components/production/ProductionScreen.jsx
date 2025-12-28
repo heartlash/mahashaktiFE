@@ -145,7 +145,7 @@ const ProductionScreen = () => {
         </>
         }
         isProduction={true}
-        data={shedData}
+        data={shedData.sort((a, b) => new Date(a.id) - new Date(b.id))}
         onRefreshOnChange={onRefreshOnChange}
         refreshing={refreshing}
         onRefresh={onRefresh}

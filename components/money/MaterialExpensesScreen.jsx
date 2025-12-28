@@ -61,12 +61,10 @@ export const MaterialExpensesScreen = () => {
     const fetchMaterialPurchase = async () => {
         setLoading(true)
 
-        var materials = []
+        var materialss = []
         const materialsResult = await getMaterials();
         if (materialsResult.errorMessage == null) {
-            materials = materialsResult.data
-            setMaterials(materialsResult.data)
-
+            materialss = materialsResult.data
         }
 
         const latestMaterialPurchaseResult = await getMaterialPurchaseLatest();
@@ -96,7 +94,7 @@ export const MaterialExpensesScreen = () => {
                 0,
             );
 
-            for (var material of materials) {
+            for (var material of materialss) {
                 if (material.id in materialToAmountMapped) {
                     material.amountSpent = materialToAmountMapped[material.id]
                 }
@@ -114,7 +112,7 @@ export const MaterialExpensesScreen = () => {
                 }
 
             }
-
+            setMaterials(materialss)
             totalValue.value = withTiming(total, { duration: 1000 });
             decimals.value = [...['0.1']];
             setLoading(false)

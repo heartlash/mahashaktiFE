@@ -8,8 +8,8 @@ const AuthContext = createContext();
 
 const TOKEN_KEY = 'accessToken';
 
-export const SERVER = "http://13.202.82.152:8080"
-//export const SERVER = "http://localhost:8080"
+export const SERVER = "http://13.200.236.210:8080"
+//export const SERVER = "http://192.168.0.5:8080"
 
 
 const AuthProvider = ({children}) => {

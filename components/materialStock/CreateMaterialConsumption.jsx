@@ -96,6 +96,7 @@ const CreateMaterialConsumption = ({ onClose, materialId, materialUnit, onRefres
                         mode="date"
                         onConfirm={handleConfirm}
                         onCancel={hideDatePicker}
+                        date={new Date()}
                         maximumDate={new Date()} // Prevent selecting future dates
                     />
 

@@ -149,7 +149,7 @@ const SaleTypeScreen = () => {
             ["Date", "Eggs Sold", "Cartons Sold", "Carton Rate", "Amount", "Paid Amount", "Payment Remarks", "Vendor"],
             data.reverse(),
             ["Total Eggs Sold", "Total Cartons", "Average Rate", "Total Amount", "Paid", "Credit"],
-            [totalEggsSold, (totalEggsSold / 210).toFixed(2), averageRatePerCarton, totalAmount.toFixed(2), totalPaidAmount.toFixed(2), (totalAmount - totalPaidAmount).toFixed(2)]
+            [[totalEggsSold, (totalEggsSold / 210).toFixed(2), averageRatePerCarton, totalAmount.toFixed(2), totalPaidAmount.toFixed(2), (totalAmount - totalPaidAmount).toFixed(2)]]
         )
     };
 

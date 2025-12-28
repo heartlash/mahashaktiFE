@@ -84,12 +84,12 @@ const ProductionShedScreen = () => {
             production.giftCount, production.selfUseCount])
         }
 
-        await getDocument("Production Report",
+        await getDocument(shedName + " " + "Production Report",
             monthNames[selectedMonth - 1] + " " + selectedYear,
             ["Date", "Produced", "Percentage", "Broken", "Waste", "Reason", "Gift", "Self Use"],
             data.reverse(),
             ["Total Production", "Average Percentage", "Total Grade A", "Total Broken", "Total Waste", "Total Grade B"],
-            [totalProduction, averageProductionPercentage, totalGradeA, totalBroken, totalWaste, totalGradeB]
+            [[totalProduction, averageProductionPercentage, totalGradeA, totalBroken, totalWaste, totalGradeB]]
         );
     };
 

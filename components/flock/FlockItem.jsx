@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 import { updateFlockChange, deleteFlockChange } from '@/lib/flock';
 import { getUserInfo } from '@/lib/auth';
 import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { pickerSelectStyles } from '@/styles/GlobalStyles';
+import { dropdownStyles } from '@/styles/GlobalStyles';
+import { Dropdown } from 'react-native-element-dropdown';
 
 
 
@@ -112,14 +112,21 @@ const FlockItem = ({ item, isExpanded, onPress, editItem, setEditItem, onRefresh
                     <View className={`flex-1 pl-2 ${editItem === item ? '' : 'flex-row'}`}>
                         <Text className="text-gray-700 font-semibold">Increase: </Text>
                         {editItem === item ? (
-                            <RNPickerSelect
-                                onValueChange={(value) => handleEditChange("added", value)}
-                                items={[
+                            <Dropdown
+                                style={dropdownStyles.dropdown}
+                                placeholderStyle={dropdownStyles.placeholderStyle}
+                                selectedTextStyle={dropdownStyles.selectedTextStyle}
+                                iconStyle={dropdownStyles.iconStyle}
+                                data= {[
                                     { label: 'Yes', value: 'true' },
                                     { label: 'No', value: 'false' },
                                 ]}
-                                style={pickerSelectStyles}
+                                labelField="label"
+                                valueField="value"
                                 placeholder={{ label: item.count > 0 ? 'Yes' : 'No', value: item.count > 0 ? 'true' : 'false' }}
+                                value={year}
+                                onChange={(value) => handleEditChange("added", value)}
+                                selectedTextProps={{numberOfLines: 1}} 
                             />
                         ) : (
                             <Text className="text-gray-600">{item.count > 0 ? 'Yes' : 'No'}</Text>

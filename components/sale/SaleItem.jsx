@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 import { deleteSaleData, updateSaleData } from '@/lib/sale';
 import { getUserInfo } from '@/lib/auth';
 import { PencilSquareIcon, TrashIcon } from 'react-native-heroicons/solid';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { pickerSelectStyles } from '@/styles/GlobalStyles';
-
+import { dropdownStyles } from '@/styles/GlobalStyles';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
 
@@ -171,17 +170,23 @@ const SaleItem = ({ item, isExpanded, onPress, editItem, setEditItem, vendorData
           <View className={`flex-1 pr-4 ${editItem === item ? '' : 'flex-row items-center'}`}>
             <Text className="text-gray-700 font-semibold">Vendor: </Text>
             {editItem === item ? (
-              <RNPickerSelect
-                onValueChange={(value) => handleEditChange('vendorId', value)}
-                items={vendorData}
-                placeholder={{
-                  label: item.vendorName && vendorData.find(v => v.label === item.vendorName)
+              <Dropdown
+                style={dropdownStyles.dropdown}
+                placeholderStyle={dropdownStyles.placeholderStyle}
+                selectedTextStyle={dropdownStyles.selectedTextStyle}
+                iconStyle={dropdownStyles.iconStyle}
+                data={vendorData}
+                labelField="label"
+                valueField="value"
+                placeholder={
+                  item.vendorName && vendorData.find(v => v.label === item.vendorName)
                     ? item.vendorName
-                    : 'Select Vendor...',
-                  value: item.vendorName,
-                }}
-                style={pickerSelectStyles}
-              />
+                    : 'Select Vendor...'
+                }
+                onChange={(item) => handleEditChange('vendorId', item.value)}
+                selectedTextProps={{numberOfLines: 1}} 
+                search="true"
+            />
             ) : (
               <Text className="text-gray-700">{item.vendorName}</Text>
             )}

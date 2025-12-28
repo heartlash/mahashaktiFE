@@ -15,13 +15,16 @@ const AnimatedText = ({selectedValue, font}) => {
   const fontSize = font?.measureText('0');
 
   const textX = useDerivedValue(() => {
-    const _fontSize = font?.measureText(animatedText.value);
+    if (!font || !animatedText.value) {
+      return 0;
+    }
+    const _fontSize = font.measureText(animatedText.value);
     return width / 2 - _fontSize.width / 2;
   }, []);
 
   return (
-    <Canvas style={{height: fontSize.height + MARGIN_VERTICAL}}>
-      <Text text={animatedText} className="justify-center" font={font} color={'black'} x={textX} y={fontSize.height + MARGIN_VERTICAL / 2}/>
+    <Canvas style={{height: fontSize?.height + MARGIN_VERTICAL}}>
+      <Text text={animatedText} className="justify-center" font={font} color={'black'} x={textX} y={fontSize?.height + MARGIN_VERTICAL / 2}/>
     </Canvas>
   );
 };

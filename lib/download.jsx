@@ -1,31 +1,26 @@
 import Backend from "@/config/backend";
 
-import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { Buffer } from 'buffer'; 
+import { File, Paths } from 'expo-file-system';
 
 export const getDocument = async (name, details, headers, data, summaryHeaders, summaryData) => {
     try {
         const response = await Backend.post(
-            "/generate-document", 
-            { name, details, headers, data, summaryHeaders, summaryData},
-            { responseType: 'arraybuffer' }  
+            "/generate-document",
+            { name, details, headers, data, summaryHeaders, summaryData },
+            { responseType: 'arraybuffer' }
         );
 
-        // Convert response (byte array) to base64 string
-        const base64Data = Buffer.from(response.data, 'binary').toString('base64');
+        const file = new File(Paths.cache, name + ' ' + details + '.pdf');
 
-        // Define file path for saving the PDF
-        const fileUri = FileSystem.documentDirectory + name + ' ' + details + '.pdf';
+        file.create({ overwrite: true });
 
-        // Save the base64 encoded PDF data as a file
-        await FileSystem.writeAsStringAsync(fileUri, base64Data, {
-            encoding: FileSystem.EncodingType.Base64,
-        });
-        // Optionally, share the file after downloading it
-        await sharePDF(fileUri);
+        file.write(new Uint8Array(response.data));
 
-        return { fileUri, errorMessage: null };
+        await sharePDF(file.uri);
+
+        return { fileUri: file.uri, errorMessage: null };
+
     } catch (error) {
         console.error('Error while downloading PDF:', error);
         return {

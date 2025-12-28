@@ -2,12 +2,12 @@ import { View, Text, TextInput, Alert, TouchableOpacity, StyleSheet } from 'reac
 import React, { useState } from 'react'
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { getUserInfo } from '@/lib/auth';
-import RNPickerSelect from 'react-native-picker-select';
 import { saveFlockChange } from '@/lib/flock';
 import moment from 'moment-timezone';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { pickerSelectStyles } from '@/styles/GlobalStyles';
+import { dropdownStyles } from '@/styles/GlobalStyles';
+import { Dropdown } from 'react-native-element-dropdown';
 
 
 const CreateFlockChange = ({ shedId, onClose, onRefreshOnChange, setSuccessModalVisible, setFailureModalVisible, setSubmitModalVisible }) => {
@@ -15,7 +15,7 @@ const CreateFlockChange = ({ shedId, onClose, onRefreshOnChange, setSuccessModal
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [changeDate, setChangeDate] = useState(moment(new Date()).tz(moment.tz.guess()).format('YYYY-MM-DD'));
     const [newFlockChange, setNewFlockChange] = useState(null);
-
+    const [increaseOrDecreaseFlock, setIncreaseOrDecreaseFlock] = useState(null)
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -83,13 +83,24 @@ const CreateFlockChange = ({ shedId, onClose, onRefreshOnChange, setSuccessModal
                 </View>
                 <View className="flex-1 pl-2">
                     <Text className="text-gray-700 font-semibold">Increase: </Text>
-                    <RNPickerSelect
-                        onValueChange={(text) => handleNewChange('added', text)}
-                        items={[
+                    <Dropdown
+                        style={dropdownStyles.dropdown}
+                        placeholderStyle={dropdownStyles.placeholderStyle}
+                        selectedTextStyle={dropdownStyles.selectedTextStyle}
+                        iconStyle={dropdownStyles.iconStyle}
+                        data={[
                             { label: 'Yes', value: 'true' },
                             { label: 'No', value: 'false' },
                         ]}
-                        style={pickerSelectStyles}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Yes/No"
+                        value={increaseOrDecreaseFlock}
+                        onChange={(item) => {
+                            setIncreaseOrDecreaseFlock(item.value)
+                            handleNewChange('added', item.value)}
+                        }
+                        selectedTextProps={{numberOfLines: 1}} 
                     />
                 </View>
             </View>
@@ -118,6 +129,7 @@ const CreateFlockChange = ({ shedId, onClose, onRefreshOnChange, setSuccessModal
                         mode="date"
                         onConfirm={handleConfirm}
                         onCancel={hideDatePicker}
+                        date={new Date()}
                         maximumDate={new Date()} // Prevent selecting future dates
                     />
                 </View>
